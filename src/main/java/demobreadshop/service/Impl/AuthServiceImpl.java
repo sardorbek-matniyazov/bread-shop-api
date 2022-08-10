@@ -1,0 +1,83 @@
+package demobreadshop.service.Impl;
+
+import demobreadshop.domain.Role;
+import demobreadshop.domain.User;
+import demobreadshop.domain.enums.RoleName;
+import demobreadshop.payload.LoginDto;
+import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.RegisterDto;
+import demobreadshop.repository.RoleRepository;
+import demobreadshop.repository.UserRepository;
+import demobreadshop.security.JwtProvider;
+import demobreadshop.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Optional;
+
+@Service
+public class AuthServiceImpl implements AuthService {
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public MyResponse login(LoginDto dto) {
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(dto.getPhoneNumber());
+        if (byPhoneNumber.isPresent()) {
+            User user = byPhoneNumber.get();
+            System.out.println(user.getPassword());
+            if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+                AuthenticationManager authenticationManager = authentication -> new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        user.getAuthorities()
+                );
+                return new MyResponse(
+                        "Successfully login",
+                        true,
+                        jwtProvider.generateToken(user.getUsername(), user.getAuthorities()));
+            }
+            return MyResponse.WRONG_PASSWORD;
+        }
+        return MyResponse.USER_NOT_FOUND;
+    }
+
+    @Override
+    public MyResponse register(RegisterDto dto) {
+        if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+            return MyResponse.PHONE_NUMBER_EXISTS;
+        }
+        if (userRepository.existsByFullName(dto.getFullName())) {
+            return MyResponse.FULL_NAME_EXISTS;
+        }
+        final Optional<Role> byId = roleRepository.findById(dto.getRoleId());
+        if (byId.isPresent()) {
+            final Role role = byId.get();
+            userRepository.save(
+                    new User(
+                            dto.getFullName(),
+                            dto.getPhoneNumber(),
+                            passwordEncoder.encode(dto.getPassword()),
+                            Collections.singleton(role)
+                    )
+            );
+            return MyResponse.SUCCESSFULLY_CREATED;
+        }
+        return MyResponse.ROLE_NOT_FOUND;
+    }
+}
