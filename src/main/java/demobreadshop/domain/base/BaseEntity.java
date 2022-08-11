@@ -3,6 +3,7 @@ package demobreadshop.domain.base;
 import demobreadshop.security.SpringSecurityAuditAwareImpl;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -26,6 +27,7 @@ public abstract class BaseEntity {
     @CreatedDate
     private Timestamp createdAt;
 
+    @UpdateTimestamp
     @LastModifiedDate
     private Timestamp updatedAt;
 

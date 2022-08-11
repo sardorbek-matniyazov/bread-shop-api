@@ -1,14 +1,15 @@
 package demobreadshop.domain.base;
 
 import demobreadshop.domain.WareHouse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+@Setter
+@Getter
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
