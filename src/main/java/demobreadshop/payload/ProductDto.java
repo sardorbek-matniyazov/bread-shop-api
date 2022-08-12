@@ -19,8 +19,11 @@ public class ProductDto {
     @Min(value = 1)
     @NotNull(message = "product price shouldn't be null")
     private double price;
+
     @NotNull(message = "product type shouldn't be null")
     private String productType;
+
     List<ProductListDto> materials;
+
     private String description;
 }
