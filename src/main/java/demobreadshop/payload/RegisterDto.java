@@ -15,11 +15,11 @@ public class RegisterDto {
     @NotBlank(message = "field fullName shouldn't be null")
     private String fullName;
 
-    @Size(min = 4, max = 5, message = "Role name should be in [4, 50]")
+    @Size(min = 4, max = 50, message = "Phone number should be in [4, 50]")
     @NotBlank(message = "phone number shouldn't be null")
     private String phoneNumber;
 
-    @Size(min = 4, max = 5, message = "Role name should be in [4, 50]")
+    @Size(min = 4, max = 50, message = "Password should be in [4, 50]")
     @NotBlank(message = "Role shouldn't be null")
     private String password;
 
