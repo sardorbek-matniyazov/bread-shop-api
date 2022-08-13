@@ -15,4 +15,6 @@ public interface InputService {
     List<Input> getAllWarehouseInputs();
 
     MyResponse create(InputDto dto);
+
+    MyResponse delete(long id);
 }

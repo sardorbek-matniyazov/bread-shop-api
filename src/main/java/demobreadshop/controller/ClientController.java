@@ -1,9 +1,10 @@
 package demobreadshop.controller;
 
-import demobreadshop.domain.WareHouse;
+import demobreadshop.domain.Client;
+import demobreadshop.payload.ClientDto;
 import demobreadshop.payload.MyResponse;
-import demobreadshop.payload.ProductDto;
-import demobreadshop.service.ProductService;
+import demobreadshop.service.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,18 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "api/product")
-public class ProductController {
-    private final ProductService service;
+@RequestMapping(value = "api/client")
+public class ClientController {
+    private final ClientService service;
 
-    public ProductController(ProductService productService) {
-        this.service = productService;
+    @Autowired
+    public ClientController(ClientService service) {
+        this.service = service;
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
+
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
@@ -31,21 +34,15 @@ public class ProductController {
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
-        WareHouse get = service.get(id);
+        Client get = service.get(id);
         return get != null
                 ? ResponseEntity.ok(get)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
-    @GetMapping(value = "/warehouse")
-    public HttpEntity<?> getAllWarehouse() {
-        return ResponseEntity.ok(service.getAllWarehouseProducts());
-    }
-
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/create")
-    public HttpEntity<?> create(@RequestBody @Valid ProductDto dto) {
+    public HttpEntity<?> create(@RequestBody @Valid ClientDto dto) {
         MyResponse create = service.create(dto);
         return create.isActive()
                 ? ResponseEntity.ok(create)
@@ -55,13 +52,12 @@ public class ProductController {
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PutMapping(value = "/{id}")
     public HttpEntity<?> update(@PathVariable(value = "id") long id,
-                                @RequestBody @Valid ProductDto dto) {
+                                @RequestBody @Valid ClientDto dto) {
         MyResponse update = service.update(id, dto);
         return update.isActive()
                 ? ResponseEntity.ok(update)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
-
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @DeleteMapping(value = "/{id}")

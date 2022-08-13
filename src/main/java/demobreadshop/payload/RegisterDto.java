@@ -12,17 +12,17 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterDto {
-    @NotBlank(message = "fullName shouldn't be null")
+    @NotBlank(message = "field fullName shouldn't be null")
     private String fullName;
 
-    @Size(min = 4, max = 50)
-    @NotBlank(message = "phone number shouldn't be null, and size should be in [5, 50]")
+    @Size(min = 4, max = 5, message = "Role name should be in [4, 50]")
+    @NotBlank(message = "phone number shouldn't be null")
     private String phoneNumber;
 
-    @Size(min = 4, max = 20)
-    @NotBlank(message = "role shouldn't be null, and size should be in [5, 20]")
+    @Size(min = 4, max = 5, message = "Role name should be in [4, 50]")
+    @NotBlank(message = "Role shouldn't be null")
     private String password;
 
-    @NotNull(message = "role shouldn't be null")
+    @NotNull(message = "Role shouldn't be null")
     private long roleId;
 }

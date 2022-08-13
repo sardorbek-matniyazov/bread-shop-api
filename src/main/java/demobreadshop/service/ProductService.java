@@ -16,4 +16,6 @@ public interface ProductService {
     WareHouse get(long id);
 
     MyResponse update(long id, ProductDto dto);
+
+    MyResponse delete(long id);
 }

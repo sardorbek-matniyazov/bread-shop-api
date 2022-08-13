@@ -8,6 +8,8 @@ import demobreadshop.payload.ProductDto;
 import demobreadshop.payload.ProductListDto;
 import demobreadshop.repository.WareHouseRepository;
 import demobreadshop.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     private final WareHouseRepository repository;
 
@@ -85,6 +88,21 @@ public class ProductServiceImpl implements ProductService {
 
             repository.save(product);
             return MyResponse.SUCCESSFULLY_UPDATED;
+        }
+        return MyResponse.PRODUCT_NOT_FOUND;
+    }
+
+    @Override
+    public MyResponse delete(long id) {
+        final Optional<WareHouse> byId = repository.findById(id);
+        if (byId.isPresent()) {
+            try {
+                repository.deleteById(id);
+                return MyResponse.SUCCESSFULLY_DELETED;
+            } catch (HibernateException e) {
+                log.info(e.getMessage());
+            }
+            return MyResponse.CANT_DELETE;
         }
         return MyResponse.PRODUCT_NOT_FOUND;
     }

@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InputDto {
-    @NotNull(message = "product id shouldn't be null")
+    @NotNull(message = "Product id shouldn't be null")
     private long productId;
-    @NotNull(message = "product amount shouldn't be null")
+    @NotNull(message = "Product amount shouldn't be null")
     private double amount;
 }

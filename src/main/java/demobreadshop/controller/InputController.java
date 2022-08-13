@@ -1,10 +1,8 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.Input;
-import demobreadshop.domain.WareHouse;
 import demobreadshop.payload.InputDto;
 import demobreadshop.payload.MyResponse;
-import demobreadshop.payload.ProductDto;
 import demobreadshop.service.InputService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -26,14 +24,14 @@ public class InputController {
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
-    public HttpEntity<?> getAll(){
+    public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
-    public HttpEntity<?> get(@PathVariable(value = "id") long id){
+    public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         Input get = service.get(id);
         return get != null
                 ? ResponseEntity.ok(get)
@@ -42,22 +40,31 @@ public class InputController {
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/warehouse")
-    public HttpEntity<?> getAllWarehouse(){
+    public HttpEntity<?> getAllWarehouse() {
         return ResponseEntity.ok(service.getAllWarehouseInputs());
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/create")
-    public HttpEntity<?> login(@RequestBody @Valid InputDto dto){
+    public HttpEntity<?> create(@RequestBody @Valid InputDto dto) {
         MyResponse create = service.create(dto);
         return create.isActive()
                 ? ResponseEntity.ok(create)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @DeleteMapping(value = "/{id}")
+    public HttpEntity<?> delete(@PathVariable long id) {
+        MyResponse delete = service.delete(id);
+        return delete.isActive()
+                ? ResponseEntity.ok(delete)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public HttpEntity<?> checkValidation(MethodArgumentNotValidException e){
+    public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
         return AuthController.checkValidation(e);
     }
 }

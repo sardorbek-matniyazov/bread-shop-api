@@ -11,11 +11,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductListDto {
-    @NotNull(message = "material id shouldn't be null")
+    @NotNull(message = "Material id shouldn't be null")
     private long materialId;
 
     @Min(value = 1)
-    @NotNull(message = "material amount shouldn't be null")
+    @NotNull(message = "Material amount shouldn't be null")
     private double amount;
 
     private String description;

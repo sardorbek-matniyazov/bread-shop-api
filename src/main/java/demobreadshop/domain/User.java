@@ -1,5 +1,6 @@
 package demobreadshop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import demobreadshop.domain.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -36,31 +38,48 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "deliverer", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    private Set<Delivery> deliveries;
+
+    public User(String fullName, String phoneNumber, String password, Set<Role> roles) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    @JsonIgnore
     @Override
     public Set<Role> getAuthorities() {
         return this.roles;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return this.phoneNumber;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

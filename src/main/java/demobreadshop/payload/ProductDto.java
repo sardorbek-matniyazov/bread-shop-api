@@ -17,10 +17,10 @@ public class ProductDto {
     private String name;
 
     @Min(value = 1)
-    @NotNull(message = "product price shouldn't be null")
+    @NotNull(message = "Product price shouldn't be null")
     private double price;
 
-    @NotNull(message = "product type shouldn't be null")
+    @NotNull(message = "Product type shouldn't be null")
     private String productType;
 
     List<ProductListDto> materials;

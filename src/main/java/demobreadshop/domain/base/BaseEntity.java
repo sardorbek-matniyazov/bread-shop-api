@@ -1,6 +1,7 @@
 package demobreadshop.domain.base;
 
-import demobreadshop.security.SpringSecurityAuditAwareImpl;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,12 +28,19 @@ public abstract class BaseEntity {
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createdAt;
 
+    @JsonIgnore
     @UpdateTimestamp
     @LastModifiedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp updatedAt;
 
     @CreatedBy
     private String createdBy;
+
+    public BaseEntity(long id) {
+        this.id = id;
+    }
 }

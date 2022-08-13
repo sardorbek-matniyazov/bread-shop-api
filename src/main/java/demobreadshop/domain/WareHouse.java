@@ -30,6 +30,7 @@ public class WareHouse extends BaseEntity {
     // type kg
     private double amount;
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private ProductType type;
 

@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 @Data
 @Entity
 public class Delivery extends BaseEntity {
+
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @ManyToOne
     private User deliverer;
 
