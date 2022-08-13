@@ -6,17 +6,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
+public class SpringSecurityAuditAwareImpl implements AuditorAware<String> {
     @Override
-    public Optional<Long> getCurrentAuditor() {
+    public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
         if (
                 authentication != null
                         && authentication.isAuthenticated()
                         && !authentication.getPrincipal().equals("anonymousUser")
-        ) return Optional.of(((User) authentication.getPrincipal()).getId());
-        return Optional.empty();
+        ) return Optional.of(((User) authentication.getPrincipal()).getFullName());
+        return Optional.of("test");
     }
 }

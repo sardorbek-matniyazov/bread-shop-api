@@ -1,4 +1,4 @@
-package demobreadshop.service.Impl;
+package demobreadshop.service.impl;
 
 import demobreadshop.domain.Input;
 import demobreadshop.domain.WareHouse;
@@ -45,9 +45,10 @@ public class InputServiceImpl implements InputService {
         final Optional<WareHouse> byId = wareHouseRepository.findById(dto.getProductId());
         if (byId.isPresent()){
             final WareHouse product = byId.get();
+            product.setAmount(product.getAmount() + dto.getAmount());
             repository.save(
                     new Input(
-                            product,
+                            wareHouseRepository.save(product),
                             dto.getAmount(),
                             product.getType()
                     )

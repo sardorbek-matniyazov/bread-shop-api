@@ -16,7 +16,7 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @Enumerated(EnumType.STRING)
     private RoleName roleName;
 
-    public Role(long id, Timestamp createdDate, Timestamp updatedDate, long createdBy) {
+    public Role(long id, Timestamp createdDate, Timestamp updatedDate, String createdBy) {
         super(id, createdDate, updatedDate, createdBy);
     }
 

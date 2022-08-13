@@ -15,5 +15,5 @@ spring:
         format_sql: true
         enable_lazy_load_no_trans: true
 app:
-  app-name: Demo Bread Shop
+  name: Demo Bread Shop
   version: 1.0

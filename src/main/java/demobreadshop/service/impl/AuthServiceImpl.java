@@ -1,8 +1,7 @@
-package demobreadshop.service.Impl;
+package demobreadshop.service.impl;
 
 import demobreadshop.domain.Role;
 import demobreadshop.domain.User;
-import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.RegisterDto;
@@ -13,6 +12,8 @@ import demobreadshop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -79,5 +80,16 @@ public class AuthServiceImpl implements AuthService {
             return MyResponse.SUCCESSFULLY_CREATED;
         }
         return MyResponse.ROLE_NOT_FOUND;
+    }
+
+    @Override
+    public User me() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (
+                authentication != null
+                        && authentication.isAuthenticated()
+                        && !authentication.getPrincipal().equals("anonymousUser")
+        ) return (User) authentication.getPrincipal();
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package demobreadshop.controller;
 
+import demobreadshop.domain.User;
 import demobreadshop.payload.ErrorResult;
 import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
@@ -41,6 +42,15 @@ public class AuthController {
         return register.isActive()
                 ? ResponseEntity.ok(register)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(register);
+    }
+
+    @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
+    @GetMapping(value = "me")
+    public HttpEntity<?> me(){
+        final User me = service.me();
+        return me != null
+                ? ResponseEntity.ok(me)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MyResponse.USER_NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

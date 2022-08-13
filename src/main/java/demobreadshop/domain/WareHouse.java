@@ -3,6 +3,7 @@ package demobreadshop.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import demobreadshop.domain.base.BaseEntity;
 import demobreadshop.domain.enums.ProductType;
+import demobreadshop.security.SpringSecurityAuditAwareImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

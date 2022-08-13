@@ -16,7 +16,7 @@ public class OpenApiConfig {
     private final String version;
 
     public OpenApiConfig(
-            @Value("${app.app-name}") String appName,
+            @Value("${app.name}") String appName,
             @Value("${app.version}") String version) {
         this.appName = appName;
         this.version = version;
@@ -44,7 +44,7 @@ public class OpenApiConfig {
         Info info = new Info();
         info.title(appName);
         info.version(version);
-        info.description("This is Api documentation for frontend or any person who interested my api.");
+        info.description("This is Api documentation for developer or any person who interested my api.");
         final Contact contact = new Contact();
         contact.name("Sardorbek Matniyazov");
         contact.email("sardorbekmatniyazov03@gmail.com");

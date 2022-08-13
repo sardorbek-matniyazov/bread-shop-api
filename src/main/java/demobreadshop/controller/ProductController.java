@@ -1,7 +1,6 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.WareHouse;
-import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.ProductDto;
 import demobreadshop.service.ProductService;
@@ -25,13 +24,13 @@ public class ProductController {
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
-    public HttpEntity<?> getAll(){
+    public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
-    public HttpEntity<?> get(@PathVariable(value = "id") long id){
+    public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         WareHouse get = service.get(id);
         return get != null
                 ? ResponseEntity.ok(get)
@@ -40,13 +39,13 @@ public class ProductController {
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/warehouse")
-    public HttpEntity<?> getAllWarehouse(){
+    public HttpEntity<?> getAllWarehouse() {
         return ResponseEntity.ok(service.getAllWarehouseProducts());
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/create")
-    public HttpEntity<?> login(@RequestBody @Valid ProductDto dto){
+    public HttpEntity<?> login(@RequestBody @Valid ProductDto dto) {
         MyResponse create = service.create(dto);
         return create.isActive()
                 ? ResponseEntity.ok(create)
@@ -56,7 +55,7 @@ public class ProductController {
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PutMapping(value = "/{id}")
     public HttpEntity<?> update(@PathVariable(value = "id") long id,
-                                @RequestBody @Valid ProductDto dto){
+                                @RequestBody @Valid ProductDto dto) {
         MyResponse update = service.update(id, dto);
         return update.isActive()
                 ? ResponseEntity.ok(update)
@@ -65,7 +64,7 @@ public class ProductController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public HttpEntity<?> checkValidation(MethodArgumentNotValidException e){
+    public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
         return AuthController.checkValidation(e);
     }
 }

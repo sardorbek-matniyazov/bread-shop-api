@@ -34,11 +34,11 @@ public class JwtProvider {
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
-        } catch (SignatureException e){
+        } catch (SignatureException e) {
             logger.warning("invalid jwt signature");
-        } catch (MalformedJwtException e){
+        } catch (MalformedJwtException e) {
             logger.warning("invalid jwt token");
-        } catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             logger.warning("token expired");
         }
         return "unDone";

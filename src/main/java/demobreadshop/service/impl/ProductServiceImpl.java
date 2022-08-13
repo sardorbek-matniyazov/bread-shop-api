@@ -1,4 +1,4 @@
-package demobreadshop.service.Impl;
+package demobreadshop.service.impl;
 
 import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
