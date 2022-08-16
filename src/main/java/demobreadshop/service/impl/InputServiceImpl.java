@@ -1,6 +1,7 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.domain.Input;
+import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.payload.InputDto;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -50,6 +52,8 @@ public class InputServiceImpl implements InputService {
         if (byId.isPresent()) {
             final WareHouse product = byId.get();
             product.setAmount(product.getAmount() + dto.getAmount());
+            divideMaterials(product.getMaterials(), dto.getAmount());
+
             repository.save(
                     new Input(
                             wareHouseRepository.save(product),
@@ -74,6 +78,8 @@ public class InputServiceImpl implements InputService {
                 // back up changes
                 final WareHouse product = wareHouseRepository.getById(input.getMaterial().getId());
                 product.setAmount(product.getAmount() - input.getAmount());
+                addMaterials(product.getMaterials(), input.getAmount());
+
                 wareHouseRepository.save(product);
 
                 return MyResponse.SUCCESSFULLY_DELETED;
@@ -84,4 +90,21 @@ public class InputServiceImpl implements InputService {
         }
         return MyResponse.INPUT_NOT_FOUND;
     }
+
+    private void addMaterials(Set<ProductList> materials, double amount) {
+        materials.forEach(productList -> {
+            final WareHouse material = productList.getMaterial();
+            material.setAmount(material.getAmount() + productList.getAmount() * amount);
+            wareHouseRepository.save(material);
+        });
+    }
+
+    private void divideMaterials(Set<ProductList> materials, double amount) {
+        materials.forEach(productList -> {
+            final WareHouse material = productList.getMaterial();
+            material.setAmount(material.getAmount() - productList.getAmount() * amount);
+            wareHouseRepository.save(material);
+        });
+    }
+
 }

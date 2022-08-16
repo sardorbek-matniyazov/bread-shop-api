@@ -1,5 +1,6 @@
 package demobreadshop.controller;
 
+import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.ProductDto;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "api/product")
@@ -35,6 +37,15 @@ public class ProductController {
         return get != null
                 ? ResponseEntity.ok(get)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @GetMapping(value = "/{id}/materials")
+    public HttpEntity<?> getMaterials(@PathVariable(value = "id") long id) {
+        final Set<ProductList> materials = service.getMaterials(id);
+        return materials != null
+                ? ResponseEntity.ok(materials)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MyResponse.PRODUCT_NOT_FOUND);
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")

@@ -6,12 +6,15 @@ import demobreadshop.domain.enums.ProductType;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.ProductDto;
 import demobreadshop.payload.ProductListDto;
+import demobreadshop.repository.ProductListRepository;
 import demobreadshop.repository.WareHouseRepository;
 import demobreadshop.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +24,12 @@ import java.util.Set;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
     private final WareHouseRepository repository;
+    private final ProductListRepository productListRepository;
 
-    public ProductServiceImpl(WareHouseRepository wareHouseRepository) {
+    @Autowired
+    public ProductServiceImpl(WareHouseRepository wareHouseRepository, ProductListRepository productListRepository) {
         this.repository = wareHouseRepository;
+        this.productListRepository = productListRepository;
     }
 
     @Override
@@ -36,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
         return repository.findAllByType(ProductType.MATERIAL);
     }
 
+    @Transactional
     @Override
     public MyResponse create(ProductDto dto) {
         if (repository.existsByName(dto.getName())) {
@@ -70,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional
     @Override
     public MyResponse update(long id, ProductDto dto) {
         if (repository.existsByNameAndIdIsNot(dto.getName(), id)) {
@@ -92,6 +100,7 @@ public class ProductServiceImpl implements ProductService {
         return MyResponse.PRODUCT_NOT_FOUND;
     }
 
+    @Transactional
     @Override
     public MyResponse delete(long id) {
         final Optional<WareHouse> byId = repository.findById(id);
@@ -101,10 +110,20 @@ public class ProductServiceImpl implements ProductService {
                 return MyResponse.SUCCESSFULLY_DELETED;
             } catch (HibernateException e) {
                 log.info(e.getMessage());
+                return MyResponse.CANT_DELETE;
             }
-            return MyResponse.CANT_DELETE;
         }
         return MyResponse.PRODUCT_NOT_FOUND;
+    }
+
+    @Override
+    public Set<ProductList> getMaterials(long id) {
+        final Optional<WareHouse> byId = repository.findById(id);
+        if (byId.isPresent()) {
+            final WareHouse product = byId.get();
+            return product.getMaterials();
+        }
+        return null;
     }
 
     private Set<ProductList> makeMaterials(List<ProductListDto> materials) {
@@ -114,10 +133,12 @@ public class ProductServiceImpl implements ProductService {
                     final Optional<WareHouse> byId = repository.findById(m.getMaterialId());
                     if (byId.isPresent()) {
                         materialList.add(
-                                new ProductList(
-                                        repository.getById(m.getMaterialId()),
-                                        m.getAmount(),
-                                        m.getDescription()
+                                productListRepository.save(
+                                        new ProductList(
+                                            repository.getById(m.getMaterialId()),
+                                            m.getAmount(),
+                                            m.getDescription()
+                                        )
                                 )
                         );
                     }

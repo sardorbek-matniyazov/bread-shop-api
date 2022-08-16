@@ -1,15 +1,13 @@
 package demobreadshop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import demobreadshop.domain.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +25,8 @@ public class Client extends BaseEntity {
 
     private String comment;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Set<Sale> sales;
 
     public Client(String fullName, String phoneNumber, String comment) {

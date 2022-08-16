@@ -3,7 +3,6 @@ package demobreadshop.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import demobreadshop.domain.base.BaseEntity;
 import demobreadshop.domain.enums.ProductType;
-import demobreadshop.security.SpringSecurityAuditAwareImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,7 +34,7 @@ public class WareHouse extends BaseEntity {
     private ProductType type;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "material")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductList> materials;
 
     public WareHouse(String name, double price, String description, ProductType type) {

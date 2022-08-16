@@ -28,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login")
-    public HttpEntity<?> login(@RequestBody @Valid LoginDto dto){
+    public HttpEntity<?> login(@RequestBody @Valid LoginDto dto) {
         MyResponse login = service.login(dto);
         return login.isActive()
                 ? ResponseEntity.ok(login)
@@ -37,7 +37,7 @@ public class AuthController {
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
     @PostMapping(value = "register")
-    public HttpEntity<?> registerUser(@RequestBody @Valid RegisterDto dto){
+    public HttpEntity<?> registerUser(@RequestBody @Valid RegisterDto dto) {
         final MyResponse register = service.register(dto);
         return register.isActive()
                 ? ResponseEntity.ok(register)
@@ -46,7 +46,7 @@ public class AuthController {
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
     @GetMapping(value = "me")
-    public HttpEntity<?> me(){
+    public HttpEntity<?> me() {
         final User me = service.me();
         return me != null
                 ? ResponseEntity.ok(me)
@@ -55,7 +55,7 @@ public class AuthController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public static HttpEntity<?> checkValidation(MethodArgumentNotValidException e){
+    public static HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
         StringBuilder message = new StringBuilder();
         e.getBindingResult().getAllErrors().forEach((error) -> {
             String errorMessage = error.getDefaultMessage();

@@ -20,8 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sale extends BaseEntity {
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
-    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(cascade = CascadeType.MERGE)
     private Output output;
 
     @OnDelete(action = OnDeleteAction.NO_ACTION)
@@ -38,6 +38,4 @@ public class Sale extends BaseEntity {
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private SaleType type;
-
-    private Timestamp expiredDate;
 }

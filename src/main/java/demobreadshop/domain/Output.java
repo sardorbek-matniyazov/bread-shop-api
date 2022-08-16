@@ -22,12 +22,18 @@ public class Output extends BaseInput {
     @Enumerated(EnumType.STRING)
     private OutputType status;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "output", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    private Set<Sale> sales;
+    public Output(WareHouse material, double amount, OutputType status) {
+        super(material, amount);
+        this.status = status;
+    }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "output", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "output", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    private Sale sale;
+
+    @JsonIgnore
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @ManyToMany(mappedBy = "outputs", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Set<Delivery> deliveries;
 
     public Output() {
