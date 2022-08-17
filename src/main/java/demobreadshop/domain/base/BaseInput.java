@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class BaseInput extends BaseEntity {
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(cascade = CascadeType.MERGE)
     private WareHouse material;
 

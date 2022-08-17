@@ -92,4 +92,10 @@ public class AuthServiceImpl implements AuthService {
         ) return (User) authentication.getPrincipal();
         return null;
     }
+
+    static boolean isNonDeletable(long time){
+        long minute = System.currentTimeMillis() - time;
+        minute /= 60 * 1000L;
+        return minute > 6;
+    }
 }

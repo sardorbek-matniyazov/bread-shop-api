@@ -37,6 +37,10 @@ public class WareHouse extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductList> materials;
 
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "material", orphanRemoval = true)
+    private Set<Input> input;
+
     public WareHouse(String name, double price, String description, ProductType type) {
         this.name = name;
         this.price = price;

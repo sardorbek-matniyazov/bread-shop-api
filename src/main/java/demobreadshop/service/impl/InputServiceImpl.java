@@ -73,6 +73,10 @@ public class InputServiceImpl implements InputService {
         if (byId.isPresent()) {
             try {
                 final Input input = byId.get();
+                if (AuthServiceImpl.isNonDeletable(input.getCreatedAt().getTime())) {
+                    return MyResponse.CANT_DELETE;
+                }
+
                 repository.deleteById(id);
 
                 // back up changes

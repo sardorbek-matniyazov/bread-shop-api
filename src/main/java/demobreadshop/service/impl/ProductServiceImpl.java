@@ -1,5 +1,6 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
 import demobreadshop.domain.enums.ProductType;
@@ -105,12 +106,16 @@ public class ProductServiceImpl implements ProductService {
         final Optional<WareHouse> byId = repository.findById(id);
         if (byId.isPresent()) {
             try {
+                final WareHouse product = byId.get();
+                if (AuthServiceImpl.isNonDeletable(product.getCreatedAt().getTime())) {
+                    return MyResponse.CANT_DELETE;
+                }
+
                 repository.deleteById(id);
+                return MyResponse.SUCCESSFULLY_DELETED;
             } catch (Exception e) {
-                log.info(e.getMessage());
                 return MyResponse.CANT_DELETE;
             }
-            return MyResponse.SUCCESSFULLY_DELETED;
         }
         return MyResponse.PRODUCT_NOT_FOUND;
     }

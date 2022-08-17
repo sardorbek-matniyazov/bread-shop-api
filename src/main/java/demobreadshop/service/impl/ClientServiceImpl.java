@@ -1,6 +1,7 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.domain.Client;
+import demobreadshop.domain.WareHouse;
 import demobreadshop.payload.ClientDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.repository.ClientRepository;
@@ -75,6 +76,10 @@ public class ClientServiceImpl implements ClientService {
         final Optional<Client> byId = repository.findById(id);
         if (byId.isPresent()) {
             try {
+                final Client client = byId.get();
+                if (AuthServiceImpl.isNonDeletable(client.getCreatedAt().getTime())) {
+                    return MyResponse.CANT_DELETE;
+                }
                 repository.deleteById(id);
                 return MyResponse.SUCCESSFULLY_DELETED;
             } catch (HibernateException e) {
