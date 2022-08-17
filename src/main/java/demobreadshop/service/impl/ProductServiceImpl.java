@@ -10,7 +10,6 @@ import demobreadshop.repository.ProductListRepository;
 import demobreadshop.repository.WareHouseRepository;
 import demobreadshop.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,9 +87,9 @@ public class ProductServiceImpl implements ProductService {
             WareHouse product = repositoryById.get();
             product.setName(dto.getName());
             product.setPrice(dto.getPrice());
-            product.setDescription(dto.getDescription());
+            // product.setDescription(dto.getDescription());
 
-            if (product.getMaterials() != null) {
+            if (product.getType().name().equals("PRODUCT")) {
                 product.setMaterials(makeMaterials(dto.getMaterials()));
             }
 
@@ -107,11 +106,11 @@ public class ProductServiceImpl implements ProductService {
         if (byId.isPresent()) {
             try {
                 repository.deleteById(id);
-                return MyResponse.SUCCESSFULLY_DELETED;
-            } catch (HibernateException e) {
+            } catch (Exception e) {
                 log.info(e.getMessage());
                 return MyResponse.CANT_DELETE;
             }
+            return MyResponse.SUCCESSFULLY_DELETED;
         }
         return MyResponse.PRODUCT_NOT_FOUND;
     }
@@ -135,9 +134,9 @@ public class ProductServiceImpl implements ProductService {
                         materialList.add(
                                 productListRepository.save(
                                         new ProductList(
-                                            repository.getById(m.getMaterialId()),
-                                            m.getAmount(),
-                                            m.getDescription()
+                                                repository.getById(m.getMaterialId()),
+                                                m.getAmount(),
+                                                m.getDescription()
                                         )
                                 )
                         );
