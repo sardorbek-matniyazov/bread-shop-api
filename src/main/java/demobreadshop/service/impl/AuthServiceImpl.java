@@ -1,5 +1,6 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.Role;
 import demobreadshop.domain.User;
 import demobreadshop.payload.LoginDto;
@@ -96,6 +97,6 @@ public class AuthServiceImpl implements AuthService {
     static boolean isNonDeletable(long time){
         long minute = System.currentTimeMillis() - time;
         minute /= 60 * 1000L;
-        return minute > 6;
+        return minute > ConstProperties.DELETE_TIME;
     }
 }
