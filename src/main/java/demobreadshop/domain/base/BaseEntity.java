@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

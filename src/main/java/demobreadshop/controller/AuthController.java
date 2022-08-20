@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
-    @PostMapping(value = "register")
+    @PostMapping(value = "/register")
     public HttpEntity<?> registerUser(@RequestBody @Valid RegisterDto dto) {
         final MyResponse register = service.register(dto);
         return register.isActive()
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
-    @GetMapping(value = "me")
+    @GetMapping(value = "/me")
     public HttpEntity<?> me() {
         final User me = service.me();
         return me != null

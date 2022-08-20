@@ -4,4 +4,5 @@ import demobreadshop.domain.Sale;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
+    //@Query(value = "select a from sale a")
 }

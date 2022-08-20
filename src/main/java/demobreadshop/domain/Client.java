@@ -1,6 +1,7 @@
 package demobreadshop.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -40,5 +43,17 @@ public class Client extends BaseEntity {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.comment = comment;
+    }
+
+    @JsonValue
+    public Map<String, Object> toJson(){
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.getId());
+        response.put("fullName", getFullName());
+        response.put("phoneNumber", getPhoneNumber());
+        response.put("comment", getComment());
+        response.put("createdBy", getCreatedBy());
+        response.put("createdAt", getCreatedAt());
+        return response;
     }
 }
