@@ -1,5 +1,6 @@
 package demobreadshop.service;
 
+import demobreadshop.domain.PayArchive;
 import demobreadshop.domain.Sale;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -14,4 +15,6 @@ public interface SaleService {
     MyResponse sell(SaleDto dto);
 
     MyResponse delete(long id);
+
+    List<PayArchive> getArchives(long id);
 }

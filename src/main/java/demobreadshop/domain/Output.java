@@ -27,8 +27,8 @@ public class Output extends BaseInput {
         this.status = status;
     }
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "output", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.LAZY)
     private Sale sale;
 
     @JsonIgnore

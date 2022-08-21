@@ -12,7 +12,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,8 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sale extends BaseEntity {
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(mappedBy = "sale", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private Output output;
 
     @OnDelete(action = OnDeleteAction.NO_ACTION)
@@ -42,8 +40,16 @@ public class Sale extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SaleType type;
 
+    public Sale(Output output, Client client, double wholePrice, double debtPrice, SaleType type) {
+        this.output = output;
+        this.client = client;
+        this.wholePrice = wholePrice;
+        this.debtPrice = debtPrice;
+        this.type = type;
+    }
+
     @JsonValue
-    public Map<String, Object> toJson(){
+    public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.getId());
         response.put("amount", getOutput().getAmount());

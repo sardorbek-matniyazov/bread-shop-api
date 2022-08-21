@@ -41,6 +41,12 @@ public class SaleController {
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @GetMapping(value = "/{id}/archives")
+    public HttpEntity<?> getArchives(@PathVariable(value = "id") long id) {
+        return ResponseEntity.ok(service.getArchives(id));
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/sell")
     public HttpEntity<?> sell(@RequestBody @Valid SaleDto dto) {
         MyResponse sell = service.sell(dto);
