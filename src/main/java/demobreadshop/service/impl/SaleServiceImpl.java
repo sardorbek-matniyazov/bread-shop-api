@@ -79,15 +79,17 @@ public class SaleServiceImpl implements SaleService {
                 double wholePrice = product.getPrice() * dto.getAmount();
                 double debtPrice = product.getPrice() * dto.getAmount() - dto.getCostCash() - dto.getCostCard();
 
+                Sale sale = new Sale(
+                        outputRepository.save(output),
+                        client,
+                        archives,
+                        wholePrice,
+                        debtPrice,
+                        debtPrice == 0 ? SaleType.PAYED : SaleType.DEBT
+                );
+
                 repository.save(
-                        new Sale(
-                                outputRepository.save(output),
-                                client,
-                                archives,
-                                wholePrice,
-                                debtPrice,
-                                debtPrice == 0 ? SaleType.PAYED : SaleType.DEBT
-                        )
+                        sale
                 );
                 return MyResponse.SUCCESSFULLY_CREATED;
             }
@@ -98,6 +100,20 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public MyResponse delete(long id) {
-        return null;
+        final Optional<Sale> byId = repository.findById(id);
+        if (byId.isPresent()) {
+            try {
+                final Sale product = byId.get();
+                if (AuthServiceImpl.isNonDeletable(product.getCreatedAt().getTime())) {
+                    return MyResponse.CANT_DELETE;
+                }
+
+                repository.deleteById(id);
+                return MyResponse.SUCCESSFULLY_DELETED;
+            } catch (Exception e) {
+                return MyResponse.CANT_DELETE;
+            }
+        }
+        return MyResponse.SALE_NOT_FOUND;
     }
 }

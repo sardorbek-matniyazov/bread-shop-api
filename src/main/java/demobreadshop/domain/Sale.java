@@ -31,7 +31,7 @@ public class Sale extends BaseEntity {
     @ManyToOne
     private Client client;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sale", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, targetEntity = PayArchive.class)
     private Set<PayArchive> archives;
 
     private double wholePrice;

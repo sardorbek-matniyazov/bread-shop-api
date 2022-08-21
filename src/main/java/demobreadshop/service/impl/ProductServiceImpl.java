@@ -1,6 +1,5 @@
 package demobreadshop.service.impl;
 
-import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
 import demobreadshop.domain.enums.ProductType;
