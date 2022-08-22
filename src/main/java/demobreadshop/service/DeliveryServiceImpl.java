@@ -2,5 +2,6 @@ package demobreadshop.service;
 
 import org.springframework.stereotype.Service;
 
-public interface DeliveryService {
+@Service
+public class DeliveryServiceImpl implements DeliveryService {
 }

@@ -26,7 +26,6 @@ public class SaleController {
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
-
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
