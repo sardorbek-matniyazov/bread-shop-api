@@ -11,6 +11,7 @@ import demobreadshop.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,15 +101,20 @@ public class SaleServiceImpl implements SaleService {
         return MyResponse.CLIENT_NOT_FOUND;
     }
 
+    @Transactional
     @Override
     public MyResponse delete(long id) {
         final Optional<Sale> byId = repository.findById(id);
         if (byId.isPresent()) {
             try {
-                final Sale product = byId.get();
-                if (AuthServiceImpl.isNonDeletable(product.getCreatedAt().getTime())) {
+                final Sale sale = byId.get();
+                if (AuthServiceImpl.isNonDeletable(sale.getCreatedAt().getTime())) {
                     return MyResponse.CANT_DELETE;
                 }
+
+                WareHouse material = sale.getOutput().getMaterial();
+                material.setAmount(material.getAmount() + sale.getOutput().getAmount());
+                productRepository.save(material);
 
                 repository.deleteById(id);
                 return MyResponse.SUCCESSFULLY_DELETED;

@@ -22,14 +22,15 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sale extends BaseEntity {
-    @OneToOne(mappedBy = "sale", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Output output;
 
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @ManyToOne
     private Client client;
 
-    @OneToMany(mappedBy = "sale", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, targetEntity = PayArchive.class)
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PayArchive.class)
     private Set<PayArchive> archives;
 
     private double wholePrice;

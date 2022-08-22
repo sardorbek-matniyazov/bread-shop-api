@@ -28,16 +28,6 @@ public class Client extends BaseEntity {
 
     private String comment;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    private Set<Sale> sales;
-
-    public Client(String fullName, String phoneNumber, String comment) {
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.comment = comment;
-    }
-
     public Client(long id, String fullName, String phoneNumber, String comment) {
         super(id);
         this.fullName = fullName;

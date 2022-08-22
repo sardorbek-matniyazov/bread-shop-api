@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -26,10 +27,6 @@ public class Output extends BaseInput {
         super(material, amount);
         this.status = status;
     }
-
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToOne(fetch = FetchType.LAZY)
-    private Sale sale;
 
     @JsonIgnore
     @OnDelete(action = OnDeleteAction.NO_ACTION)
