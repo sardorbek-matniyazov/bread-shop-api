@@ -31,16 +31,16 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    private double userKPI;
+
+    private double balance;
+
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "deliverer", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    private Set<Delivery> deliveries;
 
     public User(String fullName, String phoneNumber, String password, Set<Role> roles) {
         this.fullName = fullName;

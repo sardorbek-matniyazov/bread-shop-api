@@ -1,9 +1,8 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
-import demobreadshop.domain.enums.OutputType;
-import demobreadshop.domain.enums.PayType;
-import demobreadshop.domain.enums.SaleType;
+import demobreadshop.domain.enums.*;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.repository.*;
@@ -11,6 +10,7 @@ import demobreadshop.service.SaleService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -27,14 +27,16 @@ public class SaleServiceImpl implements SaleService {
     private final WareHouseRepository productRepository;
     private final OutputRepository outputRepository;
     private final PayArchiveRepository archiveRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public SaleServiceImpl(SaleRepository repository, ClientRepository clientRepository, WareHouseRepository productRepository, OutputRepository outputRepository, PayArchiveRepository archiveRepository) {
+    public SaleServiceImpl(SaleRepository repository, ClientRepository clientRepository, WareHouseRepository productRepository, OutputRepository outputRepository, PayArchiveRepository archiveRepository, UserRepository userRepository) {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
         this.outputRepository = outputRepository;
         this.archiveRepository = archiveRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -78,13 +80,17 @@ public class SaleServiceImpl implements SaleService {
                         client,
                         wholePrice,
                         debtPrice,
-                        debtPrice == 0 ? SaleType.PAYED : SaleType.DEBT
+                        debtPrice == 0 ? Status.PAYED : Status.DEBT
                 );
 
-                repository.save(
-                        sale
-                );
+                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
+                    sale.setSaleType(SaleType.SALE_CAR);
+                } else {
+                    sale.setSaleType(SaleType.SALE_ADMIN);
+                }
 
+                sale = repository.save(sale);
                 if (dto.getCostCard() != 0.0) {
                     archiveRepository.save(
                             new PayArchive(
@@ -104,6 +110,7 @@ public class SaleServiceImpl implements SaleService {
                     );
                 }
 
+                changeMoneyWithKPI(sale, ConstProperties.OPERATOR_PLUS);
                 return MyResponse.SUCCESSFULLY_CREATED;
             }
             return MyResponse.PRODUCT_NOT_FOUND;
@@ -122,12 +129,18 @@ public class SaleServiceImpl implements SaleService {
                     return MyResponse.CANT_DELETE;
                 }
 
+                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                if (!sale.getCreatedBy().equals(user.getFullName())) {
+                    return MyResponse.CAN_DELETE_OWN;
+                }
                 WareHouse material = sale.getOutput().getMaterial();
                 material.setAmount(material.getAmount() + sale.getOutput().getAmount());
                 productRepository.save(material);
 
                 repository.delete(sale);
                 outputRepository.delete(sale.getOutput());
+
+                changeMoneyWithKPI(sale, ConstProperties.OPERATOR_MINUS);
                 return MyResponse.SUCCESSFULLY_DELETED;
             } catch (Exception e) {
                 return MyResponse.CANT_DELETE;
@@ -146,4 +159,23 @@ public class SaleServiceImpl implements SaleService {
         log.error(ex.getMessage());
         return MyResponse.CANT_DELETE;
     }
+
+    private void changeMoneyWithKPI(Sale sale, char type) {
+        User user = userRepository.findByFullName(sale.getCreatedBy());
+        if (sale.getSaleType().name().equals(SaleType.SALE_CAR.name())) {
+            if (type == ConstProperties.OPERATOR_MINUS) {
+                user.setBalance(user.getBalance() - sale.getWholePrice() * ConstProperties.SELLER_CAR_KPI);
+            } else {
+                user.setBalance(user.getBalance() + sale.getWholePrice() * ConstProperties.SELLER_CAR_KPI);
+            }
+        } else if (sale.getSaleType().name().equals(SaleType.SALE_ADMIN.name())) {
+            if (type == ConstProperties.OPERATOR_MINUS) {
+                user.setBalance(user.getBalance() - sale.getWholePrice() * ConstProperties.SELLER_ADMIN_KPI);
+            } else {
+                user.setBalance(user.getBalance() + sale.getWholePrice() * ConstProperties.SELLER_ADMIN_KPI);
+            }
+        }
+        userRepository.save(user);
+    }
+
 }

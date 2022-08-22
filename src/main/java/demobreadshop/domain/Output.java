@@ -1,14 +1,17 @@
 package demobreadshop.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseInput;
 import demobreadshop.domain.enums.OutputType;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -28,6 +31,22 @@ public class Output extends BaseInput {
         this.status = status;
     }
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Delivery delivery;
+
+    @JsonValue
+    public Map<String, Object> toJson() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.getId());
+        response.put("product", this.getMaterial().getName());
+        response.put("amount", this.getAmount());
+        response.put("createdBy", this.getCreatedBy());
+        response.put("createdAt", this.getCreatedAt());
+        return response;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,4 +59,5 @@ public class Output extends BaseInput {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }

@@ -1,6 +1,8 @@
 package demobreadshop.controller;
 
+import demobreadshop.domain.Delivery;
 import demobreadshop.domain.Sale;
+import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.service.DeliveryService;
@@ -24,5 +26,43 @@ public class DeliveryController {
         this.service = deliveryService;
     }
 
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @GetMapping(value = "/all")
+    public HttpEntity<?> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @GetMapping(value = "/{id}")
+    public HttpEntity<?> get(@PathVariable(value = "id") long id) {
+        Delivery get = service.get(id);
+        return get != null
+                ? ResponseEntity.ok(get)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @PostMapping(value = "/sell")
+    public HttpEntity<?> sell(@RequestBody @Valid DeliveryDto dto) {
+        MyResponse sell = service.deliver(dto);
+        return sell.isActive()
+                ? ResponseEntity.ok(sell)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @DeleteMapping(value = "/{id}")
+    public HttpEntity<?> delete(@PathVariable long id) {
+        MyResponse delete = service.delete(id);
+        return delete.isActive()
+                ? ResponseEntity.ok(delete)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
+        return AuthController.checkValidation(e);
+    }
 
 }

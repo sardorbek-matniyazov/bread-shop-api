@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import demobreadshop.domain.enums.SaleType;
+import demobreadshop.domain.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,7 +36,19 @@ public class Sale extends BaseEntity {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
-    private SaleType type;
+    private Status type;
+
+    public Sale(Output output, Client client, double wholePrice, double debtPrice, Status type) {
+        this.output = output;
+        this.client = client;
+        this.wholePrice = wholePrice;
+        this.debtPrice = debtPrice;
+        this.type = type;
+    }
+
+    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    private SaleType saleType;
 
     @JsonValue
     public Map<String, Object> toJson() {

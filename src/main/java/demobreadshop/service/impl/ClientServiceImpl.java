@@ -7,8 +7,6 @@ import demobreadshop.repository.ClientRepository;
 import demobreadshop.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
-import org.postgresql.util.PSQLException;
-import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -65,14 +63,11 @@ public class ClientServiceImpl implements ClientService {
             if (repository.existsByPhoneNumberAndIdIsNot(dto.getPhoneNumber(), id))
                 return MyResponse.PHONE_NUMBER_EXISTS;
 
-            repository.save(
-                    new Client(
-                            id,
-                            dto.getName(),
-                            dto.getPhoneNumber(),
-                            dto.getComment()
-                    )
-            );
+            Client client = byId.get();
+            client.setComment(dto.getComment());
+            client.setFullName(dto.getName());
+            client.setPhoneNumber(dto.getPhoneNumber());
+            repository.save(client);
             return MyResponse.SUCCESSFULLY_UPDATED;
         }
 
@@ -100,7 +95,6 @@ public class ClientServiceImpl implements ClientService {
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public static MyResponse handleHibernateException(DataIntegrityViolationException ex) {
-        log.warn(Marker.ANY_MARKER, ex.getMessage());
         log.warn(ex.getMessage());
         return MyResponse.CANT_DELETE;
     }

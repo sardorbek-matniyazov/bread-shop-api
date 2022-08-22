@@ -1,7 +1,6 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.Role;
-import demobreadshop.domain.WareHouse;
 
 import java.util.List;
 

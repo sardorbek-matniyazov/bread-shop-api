@@ -1,6 +1,6 @@
 package demobreadshop.domain.enums;
 
 public enum SaleType {
-    DEBT,
-    PAYED
+    SALE_ADMIN,
+    SALE_CAR
 }
