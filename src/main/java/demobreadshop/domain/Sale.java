@@ -14,7 +14,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -30,9 +29,6 @@ public class Sale extends BaseEntity {
     @ManyToOne
     private Client client;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PayArchive.class)
-    private Set<PayArchive> archives;
-
     private double wholePrice;
 
     private double debtPrice;
@@ -40,14 +36,6 @@ public class Sale extends BaseEntity {
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private SaleType type;
-
-    public Sale(Output output, Client client, double wholePrice, double debtPrice, SaleType type) {
-        this.output = output;
-        this.client = client;
-        this.wholePrice = wholePrice;
-        this.debtPrice = debtPrice;
-        this.type = type;
-    }
 
     @JsonValue
     public Map<String, Object> toJson() {

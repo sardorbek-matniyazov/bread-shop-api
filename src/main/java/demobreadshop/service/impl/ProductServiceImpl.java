@@ -99,7 +99,6 @@ public class ProductServiceImpl implements ProductService {
         return MyResponse.PRODUCT_NOT_FOUND;
     }
 
-    @Transactional
     @Override
     public MyResponse delete(long id) {
         final Optional<WareHouse> byId = repository.findById(id);

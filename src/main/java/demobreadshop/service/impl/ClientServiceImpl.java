@@ -1,15 +1,18 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.domain.Client;
-import demobreadshop.domain.WareHouse;
 import demobreadshop.payload.ClientDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.repository.ClientRepository;
 import demobreadshop.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
+import org.postgresql.util.PSQLException;
+import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,21 +57,26 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public MyResponse update(long id, ClientDto dto) {
-        if (repository.existsByFullNameAndIdIsNot(dto.getName(), id))
-            return MyResponse.FULL_NAME_EXISTS;
+        final Optional<Client> byId = repository.findById(id);
+        if (!byId.isPresent()) {
+            if (repository.existsByFullNameAndIdIsNot(dto.getName(), id))
+                return MyResponse.FULL_NAME_EXISTS;
 
-        if (repository.existsByPhoneNumberAndIdIsNot(dto.getPhoneNumber(), id))
-            return MyResponse.PHONE_NUMBER_EXISTS;
+            if (repository.existsByPhoneNumberAndIdIsNot(dto.getPhoneNumber(), id))
+                return MyResponse.PHONE_NUMBER_EXISTS;
 
-        repository.save(
-                new Client(
-                        id,
-                        dto.getName(),
-                        dto.getPhoneNumber(),
-                        dto.getComment()
-                )
-        );
-        return MyResponse.SUCCESSFULLY_UPDATED;
+            repository.save(
+                    new Client(
+                            id,
+                            dto.getName(),
+                            dto.getPhoneNumber(),
+                            dto.getComment()
+                    )
+            );
+            return MyResponse.SUCCESSFULLY_UPDATED;
+        }
+
+        return MyResponse.CLIENT_NOT_FOUND;
     }
 
     @Override
@@ -84,9 +92,16 @@ public class ClientServiceImpl implements ClientService {
                 return MyResponse.SUCCESSFULLY_DELETED;
             } catch (HibernateException e) {
                 log.info(e.getMessage());
+                return MyResponse.CANT_DELETE;
             }
-            return MyResponse.CANT_DELETE;
         }
         return MyResponse.CLIENT_NOT_FOUND;
+    }
+
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    public static MyResponse handleHibernateException(DataIntegrityViolationException ex) {
+        log.warn(Marker.ANY_MARKER, ex.getMessage());
+        log.warn(ex.getMessage());
+        return MyResponse.CANT_DELETE;
     }
 }

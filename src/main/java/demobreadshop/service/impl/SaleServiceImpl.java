@@ -8,14 +8,18 @@ import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.repository.*;
 import demobreadshop.service.SaleService;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class SaleServiceImpl implements SaleService {
 
     private final SaleRepository repository;
@@ -43,6 +47,7 @@ public class SaleServiceImpl implements SaleService {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional
     @Override
     public MyResponse sell(SaleDto dto) {
         final Optional<Client> byId = clientRepository.findById(dto.getClientId());
@@ -52,6 +57,14 @@ public class SaleServiceImpl implements SaleService {
                 final Client client = byId.get();
 
                 final WareHouse product = byId1.get();
+
+                double wholePrice = product.getPrice() * dto.getAmount();
+                double debtPrice = product.getPrice() * dto.getAmount() - dto.getCostCash() - dto.getCostCard();
+
+                if (debtPrice < 0) {
+                    return MyResponse.INPUT_TYPE_ERROR;
+                }
+
                 product.setAmount(product.getAmount() - dto.getAmount());
 
                 Output output = new Output(
@@ -59,9 +72,6 @@ public class SaleServiceImpl implements SaleService {
                         dto.getAmount(),
                         OutputType.O_SALE
                 );
-
-                double wholePrice = product.getPrice() * dto.getAmount();
-                double debtPrice = product.getPrice() * dto.getAmount() - dto.getCostCash() - dto.getCostCard();
 
                 Sale sale = new Sale(
                         outputRepository.save(output),
@@ -78,8 +88,8 @@ public class SaleServiceImpl implements SaleService {
                 if (dto.getCostCard() != 0.0) {
                     archiveRepository.save(
                             new PayArchive(
-                                dto.getCostCard(),
-                                PayType.CARD,
+                                    dto.getCostCard(),
+                                    PayType.CARD,
                                     sale
                             )
                     );
@@ -101,7 +111,7 @@ public class SaleServiceImpl implements SaleService {
         return MyResponse.CLIENT_NOT_FOUND;
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public MyResponse delete(long id) {
         final Optional<Sale> byId = repository.findById(id);
@@ -116,7 +126,8 @@ public class SaleServiceImpl implements SaleService {
                 material.setAmount(material.getAmount() + sale.getOutput().getAmount());
                 productRepository.save(material);
 
-                repository.deleteById(id);
+                repository.delete(sale);
+                outputRepository.delete(sale.getOutput());
                 return MyResponse.SUCCESSFULLY_DELETED;
             } catch (Exception e) {
                 return MyResponse.CANT_DELETE;
@@ -128,5 +139,11 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<PayArchive> getArchives(long id) {
         return archiveRepository.findAllBySaleId(id);
+    }
+
+    @ExceptionHandler(value = HibernateError.class)
+    public static MyResponse handleHibernateException(HibernateError ex) {
+        log.error(ex.getMessage());
+        return MyResponse.CANT_DELETE;
     }
 }

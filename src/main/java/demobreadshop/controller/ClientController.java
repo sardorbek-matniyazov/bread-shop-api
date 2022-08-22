@@ -59,15 +59,6 @@ public class ClientController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
-    @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable long id) {
-        MyResponse delete = service.delete(id);
-        return delete.isActive()
-                ? ResponseEntity.ok(delete)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {

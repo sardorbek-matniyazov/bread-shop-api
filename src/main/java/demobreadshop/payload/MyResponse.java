@@ -22,6 +22,7 @@ public class MyResponse {
     public static final MyResponse INPUT_NOT_FOUND = new MyResponse("The Input not found", false, null);
     public static final MyResponse CLIENT_NOT_FOUND = new MyResponse("The Client not found", false, null);;
     public static final MyResponse SALE_NOT_FOUND =  new MyResponse("The Sale not found", false, null);
+    public static final MyResponse INPUT_TYPE_ERROR = new MyResponse("The Input type error", false, null);
 
     private String message;
     private boolean active;

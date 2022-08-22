@@ -1,6 +1,5 @@
 package demobreadshop.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -36,7 +35,7 @@ public class Client extends BaseEntity {
     }
 
     @JsonValue
-    public Map<String, Object> toJson(){
+    public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.getId());
         response.put("fullName", getFullName());
