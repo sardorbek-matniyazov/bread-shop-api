@@ -41,14 +41,14 @@ public class Sale extends BaseEntity {
     public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.getId());
-        response.put("amount", getOutput().getAmount());
-        response.put("product", getOutput().getMaterial().getName());
-        response.put("client", getClient().getFullName());
-        response.put("wholePrice", getWholePrice());
-        response.put("debtPrice", getDebtPrice());
-        response.put("type", getType());
-        response.put("createdBy", getCreatedBy());
-        response.put("createdAt", getCreatedAt());
+        response.put("amount", this.getOutput().getAmount());
+        response.put("product", this.getOutput().getMaterial().getName());
+        response.put("client", this.getClient().getFullName());
+        response.put("wholePrice", this.getWholePrice());
+        response.put("debtPrice", this.getDebtPrice());
+        response.put("type", this.getType());
+        response.put("createdBy", this.getCreatedBy());
+        response.put("createdAt", this.getCreatedAt());
         return response;
     }
 }
