@@ -28,6 +28,7 @@ public class Delivery extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String name;
+
     private String description;
 
     @OnDelete(action = OnDeleteAction.NO_ACTION)

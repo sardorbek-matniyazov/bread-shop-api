@@ -58,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public MyResponse update(long id, ClientDto dto) {
         final Optional<Client> byId = repository.findById(id);
-        if (!byId.isPresent()) {
+        if (byId.isPresent()) {
             if (repository.existsByFullNameAndIdIsNot(dto.getName(), id))
                 return MyResponse.FULL_NAME_EXISTS;
 
