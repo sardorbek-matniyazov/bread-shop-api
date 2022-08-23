@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.client</OriginalElement>
+  <nodes>
+    <node x="205.27272727272725" y="0.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.users</node>
+    <node x="453.27272727272725" y="48.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.role</node>
+    <node x="150.0" y="1126.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.pay_archive</node>
+    <node x="504.25" y="580.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.product_list</node>
+    <node x="708.125" y="933.5">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house_materials</node>
+    <node x="669.2159090909091" y="278.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house</node>
+    <node x="187.64772727272725" y="326.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery</node>
+    <node x="32.25" y="568.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.output</node>
+    <node x="475.625" y="933.5">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery_balance</node>
+    <node x="133.5" y="824.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.sale</node>
+    <node x="415.77272727272725" y="375.5">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.users_roles</node>
+    <node x="255.25000000000003" y="580.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.client</node>
+    <node x="727.25" y="580.0">d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.input</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house_materials" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house" relationship="REFERENCES">
+      <point x="60.0" y="-16.5" />
+      <point x="888.125" y="798.0" />
+      <point x="940.75" y="798.0" />
+      <point x="940.75" y="527.0" />
+      <point x="821.4659090909091" y="527.0" />
+      <point x="50.75" y="114.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house_materials" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.product_list" relationship="REFERENCES">
+      <point x="-60.0" y="-16.5" />
+      <point x="768.125" y="798.0" />
+      <point x="656.5" y="798.0" />
+      <point x="50.75" y="90.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.sale" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.output" relationship="REFERENCES">
+      <point x="-59.0" y="-126.0" />
+      <point x="192.5" y="798.0" />
+      <point x="133.75" y="798.0" />
+      <point x="0.0" y="102.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.pay_archive" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.sale" relationship="REFERENCES">
+      <point x="0.0" y="-90.0" />
+      <point x="0.0" y="126.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.input" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house" relationship="REFERENCES">
+      <point x="0.0" y="-90.0" />
+      <point x="828.75" y="537.0" />
+      <point x="616.0852272727273" y="537.0" />
+      <point x="616.0852272727273" y="527.0" />
+      <point x="719.9659090909091" y="527.0" />
+      <point x="-50.75" y="114.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.users_roles" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.role" relationship="REFERENCES">
+      <point x="35.0" y="-16.5" />
+      <point x="520.7727272727273" y="253.0" />
+      <point x="553.7727272727273" y="253.0" />
+      <point x="0.0" y="66.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.users_roles" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.users" relationship="REFERENCES">
+      <point x="-35.0" y="-16.5" />
+      <point x="450.77272727272725" y="253.0" />
+      <point x="376.27272727272725" y="253.0" />
+      <point x="57.0" y="114.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.users" relationship="REFERENCES">
+      <point x="0.0" y="-66.0" />
+      <point x="288.14772727272725" y="253.0" />
+      <point x="262.27272727272725" y="253.0" />
+      <point x="-57.0" y="114.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery_balance" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery" relationship="REFERENCES">
+      <point x="-47.25" y="-16.5" />
+      <point x="522.875" y="798.0" />
+      <point x="493.75" y="798.0" />
+      <point x="493.75" y="547.0" />
+      <point x="288.14772727272725" y="547.0" />
+      <point x="0.0" y="66.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.sale" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.client" relationship="REFERENCES">
+      <point x="59.0" y="-126.0" />
+      <point x="310.5" y="798.0" />
+      <point x="369.25" y="798.0" />
+      <point x="0.0" y="90.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.output" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house" relationship="REFERENCES">
+      <point x="50.75" y="-102.0" />
+      <point x="184.5" y="537.0" />
+      <point x="616.0852272727273" y="537.0" />
+      <point x="616.0852272727273" y="527.0" />
+      <point x="719.9659090909091" y="527.0" />
+      <point x="-50.75" y="114.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.output" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery" relationship="REFERENCES">
+      <point x="-50.75" y="-102.0" />
+      <point x="83.0" y="547.0" />
+      <point x="288.14772727272725" y="547.0" />
+      <point x="0.0" y="66.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.delivery_balance" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.product_list" relationship="REFERENCES">
+      <point x="47.25" y="-16.5" />
+      <point x="617.375" y="798.0" />
+      <point x="555.0" y="798.0" />
+      <point x="-50.75" y="90.0" />
+    </edge>
+    <edge source="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.product_list" target="d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.ware_house" relationship="REFERENCES">
+      <point x="0.0" y="-90.0" />
+      <point x="605.75" y="537.0" />
+      <point x="616.0852272727273" y="537.0" />
+      <point x="616.0852272727273" y="527.0" />
+      <point x="719.9659090909091" y="527.0" />
+      <point x="-50.75" y="114.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.4856711915535445" showDependencies="false" x="498.0000000000002" y="653.0" />
+  <SelectedNodes>
+    <node>d6f50ec5-fd1a-474f-bdd0-06a51ce6a934.TABLE:demo_bread.public.client</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

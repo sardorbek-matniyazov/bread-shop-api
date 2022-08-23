@@ -30,13 +30,18 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         Delivery get = service.get(id);
         return get != null
                 ? ResponseEntity.ok(get)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @GetMapping(value = "/{id}/balance")
+    public HttpEntity<?> getBalance(@PathVariable(value = "id") long id) {
+        return ResponseEntity.ok(service.getBalance(id));
+
     }
 
     @GetMapping(value = "/{id}/deliveries")

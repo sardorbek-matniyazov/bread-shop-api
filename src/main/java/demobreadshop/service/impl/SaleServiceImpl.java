@@ -16,8 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @Slf4j
@@ -30,9 +34,10 @@ public class SaleServiceImpl implements SaleService {
     private final PayArchiveRepository archiveRepository;
     private final UserRepository userRepository;
     private final DeliveryRepository deliveryRepository;
+    private final ProductListRepository productListRepository;
 
     @Autowired
-    public SaleServiceImpl(SaleRepository repository, ClientRepository clientRepository, WareHouseRepository productRepository, OutputRepository outputRepository, PayArchiveRepository archiveRepository, UserRepository userRepository, DeliveryRepository deliveryRepository) {
+    public SaleServiceImpl(SaleRepository repository, ClientRepository clientRepository, WareHouseRepository productRepository, OutputRepository outputRepository, PayArchiveRepository archiveRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, ProductListRepository productListRepository) {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
@@ -40,6 +45,7 @@ public class SaleServiceImpl implements SaleService {
         this.archiveRepository = archiveRepository;
         this.userRepository = userRepository;
         this.deliveryRepository = deliveryRepository;
+        this.productListRepository = productListRepository;
     }
 
     @Override
@@ -54,7 +60,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Transactional
     @Override
-    public MyResponse sell(SaleDto dto){
+    public MyResponse sell(SaleDto dto) {
         final Optional<Client> byId = clientRepository.findById(dto.getClientId());
         if (byId.isPresent()) {
             final Optional<WareHouse> byId1 = productRepository.findById(dto.getProductId());
@@ -87,9 +93,9 @@ public class SaleServiceImpl implements SaleService {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
                     sale.setSaleType(SaleType.SALE_CAR);
-                    Delivery delivery = deliveryRepository.findByDelivererId(user.getId());
-                    delivery.setPocket(delivery.getPocket() - dto.getAmount());
-                    deliveryRepository.save(delivery);
+                    if (!changeDeliveryBalance(user.getId(), dto)) {
+                        return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
+                    }
                 } else {
                     sale.setSaleType(SaleType.SALE_ADMIN);
                     product.setAmount(product.getAmount() - dto.getAmount());
@@ -121,6 +127,9 @@ public class SaleServiceImpl implements SaleService {
                 if (!sale.getCreatedBy().equals(user.getFullName())) {
                     return MyResponse.CAN_DELETE_OWN;
                 }
+                if (sale.getSaleType().name().equals(SaleType.SALE_CAR.name())) {
+                    rollbackChangesInDeliveryBalance(user.getId(), sale.getOutput());
+                }
                 WareHouse material = sale.getOutput().getMaterial();
                 material.setAmount(material.getAmount() + sale.getOutput().getAmount());
                 productRepository.save(material);
@@ -146,7 +155,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public MyResponse payForDebt(DebtDto dto) {
         Optional<Sale> byId = repository.findById(dto.getSaleId());
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Sale sale = byId.get();
             double currentDebt = sale.getDebtPrice() - dto.getCostCard() - dto.getCostCash();
             if (currentDebt < 0) {
@@ -216,4 +225,35 @@ public class SaleServiceImpl implements SaleService {
         userRepository.save(user);
     }
 
+    private boolean changeDeliveryBalance(Long delivererId, SaleDto dto) {
+        AtomicBoolean isExist = new AtomicBoolean(false);
+        Delivery delivery = deliveryRepository.findByDelivererId(delivererId);
+        Set<ProductList> balance = new HashSet<>();
+        AtomicLong prId = new AtomicLong(0L);
+        delivery.getBalance().forEach(e -> {
+            if (e.getMaterial().getId() == dto.getProductId()) {
+                isExist.set(true);
+                if (e.getAmount() - dto.getAmount() <= 0) {
+                    prId.set(e.getId());
+                } else {
+                    e.setAmount(e.getAmount() - dto.getAmount());
+                    productListRepository.save(e);
+                    balance.add(e);
+                }
+            } else {
+                balance.add(e);
+            }
+        });
+        delivery.setBalance(balance);
+        if (prId.get() != 0) {
+            productListRepository.deleteById(prId.get());
+        }
+        return isExist.get();
+    }
+
+    private void rollbackChangesInDeliveryBalance(Long delivererId, Output output) {
+        AtomicBoolean isExist = new AtomicBoolean(false);
+        Delivery delivery = deliveryRepository.findByDelivererId(delivererId);
+        DeliveryServiceImpl.changeBalanceDelivery(delivery, output, isExist, productListRepository, deliveryRepository);
+    }
 }

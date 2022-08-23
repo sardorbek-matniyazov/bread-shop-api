@@ -2,6 +2,7 @@ package demobreadshop.service.impl;
 
 import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.Delivery;
+import demobreadshop.domain.ProductList;
 import demobreadshop.domain.Role;
 import demobreadshop.domain.User;
 import demobreadshop.domain.enums.RoleName;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -88,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
                 deliveryRepository.save(
                         new Delivery(
                                 user,
-                                0
+                                new HashSet<>()
                         )
                 );
             } else if (role.getRoleName().name().equals(RoleName.SELLER_ADMIN.name())) {

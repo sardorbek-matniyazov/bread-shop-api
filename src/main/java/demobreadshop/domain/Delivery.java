@@ -10,12 +10,11 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,18 +26,20 @@ public class Delivery extends BaseEntity {
     @OneToOne()
     private User deliverer;
 
-    private double pocket = 0;
-
-    public Delivery(User deliverer, double pocket) {
+    public Delivery(User deliverer, Set<ProductList> balance) {
         this.deliverer = deliverer;
-        this.pocket = pocket;
+        this.balance = balance;
     }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "delivery_fk", referencedColumnName = "id")
+    @ToString.Exclude
+    private Set<ProductList> balance;
 
     @JsonValue
     public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.getId());
-        response.put("balance", this.getPocket());
         response.put("deliverer", this.getDeliverer().getFullName());
         response.put("createdBy", this.getCreatedBy());
         response.put("createdAt", this.getCreatedAt());
