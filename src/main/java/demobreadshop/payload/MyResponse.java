@@ -20,11 +20,13 @@ public class MyResponse {
     public static final MyResponse CANT_DELETE = new MyResponse("You cant delete this item", false, null);
     public static final MyResponse SUCCESSFULLY_DELETED = new MyResponse("Deleted Successfully", true, null);
     public static final MyResponse INPUT_NOT_FOUND = new MyResponse("The Input not found", false, null);
-    public static final MyResponse CLIENT_NOT_FOUND = new MyResponse("The Client not found", false, null);;
+    public static final MyResponse CLIENT_NOT_FOUND = new MyResponse("The Client not found", false, null);
     public static final MyResponse SALE_NOT_FOUND =  new MyResponse("The Sale not found", false, null);
     public static final MyResponse INPUT_TYPE_ERROR = new MyResponse("The Input type error", false, null);
     public static final MyResponse CAN_DELETE_OWN = new MyResponse("You can't delete this item, you can delete your own item", false, null);
     public static final MyResponse SUCCESSFULLY_PAYED = new MyResponse("Successfully payed", true, null);
+    public static final MyResponse DELIVERY_NOT_FOUND = new MyResponse("The Delivery not found", false, null);;;
+    public static final MyResponse SUCCESSFULLY_DELIVERED = new MyResponse("The Delivery was successfully delivered", true, null);
 
     private String message;
     private boolean active;

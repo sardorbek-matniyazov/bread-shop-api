@@ -1,6 +1,7 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.Delivery;
+import demobreadshop.domain.Output;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
 
@@ -14,4 +15,6 @@ public interface DeliveryService {
     MyResponse deliver(DeliveryDto dto);
 
     MyResponse delete(long id);
+
+    List<Output> getDeliveries(long id);
 }

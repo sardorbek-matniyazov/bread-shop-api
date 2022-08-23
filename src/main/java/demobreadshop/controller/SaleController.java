@@ -59,7 +59,7 @@ public class SaleController {
         return ResponseEntity.ok(service.getArchives(id));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
     @PostMapping(value = "/sell")
     public HttpEntity<?> sell(@RequestBody @Valid SaleDto dto) {
         MyResponse sell = service.sell(dto);

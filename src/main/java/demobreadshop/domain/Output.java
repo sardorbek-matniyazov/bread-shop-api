@@ -36,6 +36,12 @@ public class Output extends BaseInput {
     @ToString.Exclude
     private Delivery delivery;
 
+    public Output(WareHouse material, double amount, OutputType status, Delivery delivery) {
+        super(material, amount);
+        this.status = status;
+        this.delivery = delivery;
+    }
+
     @JsonValue
     public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();

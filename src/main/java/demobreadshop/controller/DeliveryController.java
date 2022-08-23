@@ -1,10 +1,8 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.Delivery;
-import demobreadshop.domain.Sale;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
-import demobreadshop.payload.SaleDto;
 import demobreadshop.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
 @RequestMapping(value = "/api/delivery")
 public class DeliveryController {
     private final DeliveryService service;
@@ -26,7 +25,6 @@ public class DeliveryController {
         this.service = deliveryService;
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
@@ -41,8 +39,12 @@ public class DeliveryController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
-    @PostMapping(value = "/sell")
+    @GetMapping(value = "/{id}/deliveries")
+    public HttpEntity<?> getAllDeliveries(@PathVariable(value = "id") long id) {
+        return ResponseEntity.ok(service.getDeliveries(id));
+    }
+
+    @PostMapping(value = "/delivery")
     public HttpEntity<?> sell(@RequestBody @Valid DeliveryDto dto) {
         MyResponse sell = service.deliver(dto);
         return sell.isActive()
@@ -50,7 +52,6 @@ public class DeliveryController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public HttpEntity<?> delete(@PathVariable long id) {
         MyResponse delete = service.delete(id);

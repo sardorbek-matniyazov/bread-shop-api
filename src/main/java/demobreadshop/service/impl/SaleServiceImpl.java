@@ -29,15 +29,17 @@ public class SaleServiceImpl implements SaleService {
     private final OutputRepository outputRepository;
     private final PayArchiveRepository archiveRepository;
     private final UserRepository userRepository;
+    private final DeliveryRepository deliveryRepository;
 
     @Autowired
-    public SaleServiceImpl(SaleRepository repository, ClientRepository clientRepository, WareHouseRepository productRepository, OutputRepository outputRepository, PayArchiveRepository archiveRepository, UserRepository userRepository) {
+    public SaleServiceImpl(SaleRepository repository, ClientRepository clientRepository, WareHouseRepository productRepository, OutputRepository outputRepository, PayArchiveRepository archiveRepository, UserRepository userRepository, DeliveryRepository deliveryRepository) {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
         this.outputRepository = outputRepository;
         this.archiveRepository = archiveRepository;
         this.userRepository = userRepository;
+        this.deliveryRepository = deliveryRepository;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Transactional
     @Override
-    public MyResponse sell(SaleDto dto) {
+    public MyResponse sell(SaleDto dto){
         final Optional<Client> byId = clientRepository.findById(dto.getClientId());
         if (byId.isPresent()) {
             final Optional<WareHouse> byId1 = productRepository.findById(dto.getProductId());
@@ -68,10 +70,8 @@ public class SaleServiceImpl implements SaleService {
                     return MyResponse.INPUT_TYPE_ERROR;
                 }
 
-                product.setAmount(product.getAmount() - dto.getAmount());
-
                 Output output = new Output(
-                        productRepository.save(product),
+                        product,
                         dto.getAmount(),
                         OutputType.O_SALE
                 );
@@ -87,8 +87,13 @@ public class SaleServiceImpl implements SaleService {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
                     sale.setSaleType(SaleType.SALE_CAR);
+                    Delivery delivery = deliveryRepository.findByDelivererId(user.getId());
+                    delivery.setPocket(delivery.getPocket() - dto.getAmount());
+                    deliveryRepository.save(delivery);
                 } else {
                     sale.setSaleType(SaleType.SALE_ADMIN);
+                    product.setAmount(product.getAmount() - dto.getAmount());
+                    productRepository.save(product);
                 }
 
                 sale = createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());

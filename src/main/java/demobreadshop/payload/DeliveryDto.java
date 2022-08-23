@@ -13,6 +13,9 @@ public class DeliveryDto {
     @NotNull(message = "Delivery id should not be null")
     private long deliveryId;
 
+    @NotNull(message = "Product id should not be null")
+    private long productId;
+
     @NotNull(message = "Delivery amount should not be null")
     private double amount;
 }
