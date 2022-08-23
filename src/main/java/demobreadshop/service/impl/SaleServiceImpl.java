@@ -159,6 +159,11 @@ public class SaleServiceImpl implements SaleService {
         return MyResponse.SALE_NOT_FOUND;
     }
 
+    @Override
+    public List<Sale> getAllByType(Status debt) {
+        return repository.findAllByType(Status.DEBT);
+    }
+
     private Sale createPaymentArchive(Sale sale, double costCard, double costCash) {
         sale = repository.save(sale);
         if (costCard != 0.0) {

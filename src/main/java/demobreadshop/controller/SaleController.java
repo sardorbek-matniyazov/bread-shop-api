@@ -1,6 +1,7 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.Sale;
+import demobreadshop.domain.enums.Status;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -29,6 +30,18 @@ public class SaleController {
     @GetMapping(value = "/all")
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @GetMapping(value = "/allDebt")
+    public HttpEntity<?> getAllDebts() {
+        return ResponseEntity.ok(service.getAllByType(Status.DEBT));
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @GetMapping(value = "/allPayed")
+    public HttpEntity<?> getAllPayed() {
+        return ResponseEntity.ok(service.getAllByType(Status.PAYED));
     }
 
     @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
