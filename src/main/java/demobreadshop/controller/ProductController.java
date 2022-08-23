@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
+@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
 @RequestMapping(value = "api/product")
 public class ProductController {
     private final ProductService service;
@@ -24,13 +25,11 @@ public class ProductController {
         this.service = productService;
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         WareHouse get = service.get(id);
@@ -39,7 +38,6 @@ public class ProductController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}/materials")
     public HttpEntity<?> getMaterials(@PathVariable(value = "id") long id) {
         final Set<ProductList> materials = service.getMaterials(id);
@@ -48,13 +46,11 @@ public class ProductController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MyResponse.PRODUCT_NOT_FOUND);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/warehouse")
     public HttpEntity<?> getAllWarehouse() {
         return ResponseEntity.ok(service.getAllWarehouseProducts());
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/create")
     public HttpEntity<?> create(@RequestBody @Valid ProductDto dto) {
         MyResponse create = service.create(dto);
@@ -63,7 +59,6 @@ public class ProductController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PutMapping(value = "/{id}")
     public HttpEntity<?> update(@PathVariable(value = "id") long id,
                                 @RequestBody @Valid ProductDto dto) {
@@ -74,7 +69,6 @@ public class ProductController {
     }
 
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public HttpEntity<?> delete(@PathVariable long id) {
         MyResponse delete = service.delete(id);

@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
+@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
 @RequestMapping(value = "api/input")
 public class InputController {
     private final InputService service;
@@ -23,14 +24,12 @@ public class InputController {
         this.service = service;
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         Input get = service.get(id);
@@ -39,14 +38,12 @@ public class InputController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/warehouse")
     public HttpEntity<?> getAllWarehouse() {
         return ResponseEntity.ok(service.getAllWarehouseInputs());
     }
 
     @Transactional
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/create")
     public HttpEntity<?> create(@RequestBody @Valid InputDto dto) {
         MyResponse create = service.create(dto);
@@ -56,7 +53,6 @@ public class InputController {
     }
 
     @Transactional
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public HttpEntity<?> delete(@PathVariable long id) {
         MyResponse delete = service.delete(id);

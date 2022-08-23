@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
 @RequestMapping(value = "api/client")
 public class ClientController {
     private final ClientService service;
@@ -24,14 +25,12 @@ public class ClientController {
         this.service = service;
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
 
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         Client get = service.get(id);
@@ -40,7 +39,6 @@ public class ClientController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/create")
     public HttpEntity<?> create(@RequestBody @Valid ClientDto dto) {
         MyResponse create = service.create(dto);
@@ -49,7 +47,6 @@ public class ClientController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PutMapping(value = "/{id}")
     public HttpEntity<?> update(@PathVariable(value = "id") long id,
                                 @RequestBody @Valid ClientDto dto) {

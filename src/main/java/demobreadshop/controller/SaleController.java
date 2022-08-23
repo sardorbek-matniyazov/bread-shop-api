@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
 @RequestMapping(value = "api/sale")
 public class SaleController {
     private final SaleService service;
@@ -26,25 +27,21 @@ public class SaleController {
         this.service = service;
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/all")
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/allDebt")
     public HttpEntity<?> getAllDebts() {
         return ResponseEntity.ok(service.getAllByType(Status.DEBT));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/allPayed")
     public HttpEntity<?> getAllPayed() {
         return ResponseEntity.ok(service.getAllByType(Status.PAYED));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         Sale get = service.get(id);
@@ -53,13 +50,11 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @GetMapping(value = "/{id}/archives")
     public HttpEntity<?> getArchives(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(service.getArchives(id));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
     @PostMapping(value = "/sell")
     public HttpEntity<?> sell(@RequestBody @Valid SaleDto dto) {
         MyResponse sell = service.sell(dto);
@@ -68,7 +63,6 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @PostMapping(value = "/payDebt")
     public HttpEntity<?> payForDebt(@RequestBody @Valid DebtDto dto) {
         MyResponse sell = service.payForDebt(dto);
@@ -77,7 +71,6 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public HttpEntity<?> delete(@PathVariable long id) {
         MyResponse delete = service.delete(id);
