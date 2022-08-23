@@ -3,7 +3,7 @@ server:
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: Europe/Zagreb
+    time-zone: Asia/Tashkent
   datasource:
     username: postgres
     url: jdbc:postgresql://localhost:5432/demo_bread

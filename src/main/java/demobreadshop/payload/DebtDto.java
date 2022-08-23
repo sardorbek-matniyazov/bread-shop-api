@@ -12,6 +12,6 @@ import javax.validation.constraints.NotNull;
 public class DebtDto {
     @NotNull(message = "Sale id shouldn't be null")
     private long saleId;
-    @NotNull(message = "Amount of pay shouldn't be null")
-    private double amount;
+    private double costCash;
+    private double costCard;
 }
