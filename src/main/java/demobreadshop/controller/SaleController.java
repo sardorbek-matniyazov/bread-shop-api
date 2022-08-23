@@ -1,6 +1,7 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.Sale;
+import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.service.SaleService;
@@ -49,6 +50,15 @@ public class SaleController {
     @PostMapping(value = "/sell")
     public HttpEntity<?> sell(@RequestBody @Valid SaleDto dto) {
         MyResponse sell = service.sell(dto);
+        return sell.isActive()
+                ? ResponseEntity.ok(sell)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority('GL_ADMIN')")
+    @PostMapping(value = "/payDebt")
+    public HttpEntity<?> payForDebt(@RequestBody @Valid DebtDto dto) {
+        MyResponse sell = service.payForDebt(dto);
         return sell.isActive()
                 ? ResponseEntity.ok(sell)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);

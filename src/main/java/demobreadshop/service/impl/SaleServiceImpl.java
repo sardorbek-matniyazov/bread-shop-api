@@ -3,6 +3,7 @@ package demobreadshop.service.impl;
 import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
 import demobreadshop.domain.enums.*;
+import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.repository.*;
@@ -152,6 +153,24 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<PayArchive> getArchives(long id) {
         return archiveRepository.findAllBySaleId(id);
+    }
+
+    @Transactional
+    @Override
+    public MyResponse payForDebt(DebtDto dto) {
+        Optional<Sale> byId = repository.findById(dto.getSaleId());
+        if (byId.isPresent()){
+            Sale sale = byId.get();
+            double currentDebt = sale.getDebtPrice() - dto.getAmount();
+            if (currentDebt < 0) {
+                return MyResponse.INPUT_TYPE_ERROR;
+            }
+
+            sale.setDebtPrice(currentDebt);
+            repository.save(sale);
+            return MyResponse.SUCCESSFULLY_PAYED;
+        }
+        return MyResponse.SALE_NOT_FOUND;
     }
 
     @ExceptionHandler(value = HibernateError.class)
