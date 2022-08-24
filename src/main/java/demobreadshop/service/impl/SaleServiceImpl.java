@@ -195,7 +195,7 @@ public class SaleServiceImpl implements SaleService {
         if (costCash != 0.0) {
             archiveRepository.save(
                     new PayArchive(
-                            costCard,
+                            costCash,
                             PayType.CASH,
                             sale
                     )
