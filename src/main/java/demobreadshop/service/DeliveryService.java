@@ -21,4 +21,6 @@ public interface DeliveryService {
     List<Output> getDeliveries(long id);
 
     Set<ProductList> getBalance(long id);
+
+    List<Output> getAllDeliveries();
 }

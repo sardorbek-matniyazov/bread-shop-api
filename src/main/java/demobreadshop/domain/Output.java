@@ -24,11 +24,11 @@ public class Output extends BaseInput {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
-    private OutputType status;
+    private OutputType type;
 
     public Output(WareHouse material, double amount, OutputType status) {
         super(material, amount);
-        this.status = status;
+        this.type = status;
     }
 
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -38,7 +38,7 @@ public class Output extends BaseInput {
 
     public Output(WareHouse material, double amount, OutputType status, Delivery delivery) {
         super(material, amount);
-        this.status = status;
+        this.type = status;
         this.delivery = delivery;
     }
 

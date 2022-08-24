@@ -102,7 +102,8 @@ public class SaleServiceImpl implements SaleService {
                     productRepository.save(product);
                 }
 
-                sale = createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
+                repository.save(sale);
+                createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
 
                 changeMoneyWithKPI(sale, ConstProperties.OPERATOR_PLUS);
                 return MyResponse.SUCCESSFULLY_CREATED;
@@ -154,20 +155,23 @@ public class SaleServiceImpl implements SaleService {
     @Transactional
     @Override
     public MyResponse payForDebt(DebtDto dto) {
+        if (dto.getCostCash() == 0.0 && dto.getCostCard() == 0.0) {
+            return MyResponse.INPUT_TYPE_ERROR;
+        }
         Optional<Sale> byId = repository.findById(dto.getSaleId());
         if (byId.isPresent()) {
             Sale sale = byId.get();
             double currentDebt = sale.getDebtPrice() - dto.getCostCard() - dto.getCostCash();
-            if (currentDebt < 0) {
+            if (currentDebt < 0.0) {
                 return MyResponse.INPUT_TYPE_ERROR;
             }
-            if (currentDebt == 0) {
+            if (currentDebt == 0.0) {
                 sale.setType(Status.PAYED);
             }
-            createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
 
             sale.setDebtPrice(currentDebt);
             repository.save(sale);
+            createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
             return MyResponse.SUCCESSFULLY_PAYED;
         }
         return MyResponse.SALE_NOT_FOUND;
@@ -178,8 +182,7 @@ public class SaleServiceImpl implements SaleService {
         return repository.findAllByType(Status.DEBT);
     }
 
-    private Sale createPaymentArchive(Sale sale, double costCard, double costCash) {
-        sale = repository.save(sale);
+    private void createPaymentArchive(Sale sale, double costCard, double costCash) {
         if (costCard != 0.0) {
             archiveRepository.save(
                     new PayArchive(
@@ -198,7 +201,6 @@ public class SaleServiceImpl implements SaleService {
                     )
             );
         }
-        return sale;
     }
 
     @ExceptionHandler(value = HibernateError.class)

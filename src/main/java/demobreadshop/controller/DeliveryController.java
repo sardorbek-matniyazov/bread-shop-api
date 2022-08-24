@@ -41,11 +41,15 @@ public class DeliveryController {
     @GetMapping(value = "/{id}/balance")
     public HttpEntity<?> getBalance(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(service.getBalance(id));
+    }
 
+    @GetMapping(value = "/allDeliveries")
+    public HttpEntity<?> getAllDeliveries() {
+        return ResponseEntity.ok(service.getAllDeliveries());
     }
 
     @GetMapping(value = "/{id}/deliveries")
-    public HttpEntity<?> getAllDeliveries(@PathVariable(value = "id") long id) {
+    public HttpEntity<?> getAllDeliveriesWithId(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(service.getDeliveries(id));
     }
 
@@ -55,14 +59,6 @@ public class DeliveryController {
         return sell.isActive()
                 ? ResponseEntity.ok(sell)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable long id) {
-        MyResponse delete = service.delete(id);
-        return delete.isActive()
-                ? ResponseEntity.ok(delete)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -91,6 +91,11 @@ public class DeliveryServiceImpl implements DeliveryService {
         return null;
     }
 
+    @Override
+    public List<Output> getAllDeliveries() {
+        return outputRepository.findAllByType(OutputType.O_DELIVERER);
+    }
+
     public void addBalanceDelivery(Delivery delivery, Output output) {
         AtomicBoolean isExist = new AtomicBoolean(false);
         changeBalanceDelivery(delivery, output, isExist, productListRepository, repository);
