@@ -1,18 +1,13 @@
 package demobreadshop.service.impl;
 
-import demobreadshop.domain.Delivery;
-import demobreadshop.domain.Output;
-import demobreadshop.domain.ProductList;
-import demobreadshop.domain.WareHouse;
+import demobreadshop.domain.*;
 import demobreadshop.domain.enums.OutputType;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
-import demobreadshop.repository.DeliveryRepository;
-import demobreadshop.repository.OutputRepository;
-import demobreadshop.repository.ProductListRepository;
-import demobreadshop.repository.WareHouseRepository;
+import demobreadshop.repository.*;
 import demobreadshop.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,12 +21,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final WareHouseRepository productRepository;
     private final ProductListRepository productListRepository;
 
+    private final InputRepository inputRepository;
     @Autowired
-    public DeliveryServiceImpl(DeliveryRepository repository, OutputRepository outputRepository, WareHouseRepository productRepository, ProductListRepository productListRepository) {
+    public DeliveryServiceImpl(DeliveryRepository repository, OutputRepository outputRepository, WareHouseRepository productRepository, ProductListRepository productListRepository, InputRepository inputRepository) {
         this.repository = repository;
         this.outputRepository = outputRepository;
         this.productRepository = productRepository;
         this.productListRepository = productListRepository;
+        this.inputRepository = inputRepository;
     }
 
     @Override
@@ -45,7 +42,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public MyResponse deliver(DeliveryDto dto)  {
+    public MyResponse deliver(DeliveryDto dto) {
         Optional<Delivery> byId = repository.findById(dto.getDeliveryId());
         if (byId.isPresent()) {
             Optional<WareHouse> byIdProduct = productRepository.findById(dto.getProductId());
@@ -97,6 +94,10 @@ public class DeliveryServiceImpl implements DeliveryService {
             Output output = byId.get();
             WareHouse product = output.getMaterial();
 
+            if (AuthServiceImpl.isNonDeletable(output.getCreatedAt().getTime())) {
+                return MyResponse.CANT_DELETE;
+            }
+
             if (!changeDeliveryBalance(output.getDelivery().getDeliverer().getId(), output)) {
                 return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
             }
@@ -106,6 +107,24 @@ public class DeliveryServiceImpl implements DeliveryService {
             return MyResponse.SUCCESSFULLY_DELETED;
         }
         return MyResponse.DELIVERY_NOT_FOUND;
+    }
+
+    @Override
+    public MyResponse returnProduct() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Delivery delivery = repository.findByDelivererId(user.getId());
+        delivery.getBalance().forEach(e -> {
+            WareHouse product = e.getMaterial();
+            product.setAmount(product.getAmount() + e.getAmount());
+            inputRepository.save(
+                    new Input(
+                            productRepository.save(product),
+                            e.getAmount(),
+                            product.getType()
+                    )
+            );
+        });
+        return MyResponse.SUCCESSFULLY_CREATED;
     }
 
     public void addBalanceDelivery(Delivery delivery, Output output) {
@@ -146,7 +165,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         Set<ProductList> balance = new HashSet<>();
         AtomicLong prId = new AtomicLong(0L);
         delivery.getBalance().forEach(e -> {
-            if (e.getMaterial().getId() == output.getMaterial().getId()) {
+            if (Objects.equals(e.getMaterial().getId(), output.getMaterial().getId())) {
                 isExist.set(true);
                 if (e.getAmount() - output.getAmount() <= 0) {
                     prId.set(e.getId());

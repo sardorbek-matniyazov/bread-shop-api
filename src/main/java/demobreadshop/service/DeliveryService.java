@@ -23,4 +23,6 @@ public interface DeliveryService {
     List<Output> getAllDeliveries();
 
     MyResponse deleteOutputWithId(long id);
+
+    MyResponse returnProduct();
 }

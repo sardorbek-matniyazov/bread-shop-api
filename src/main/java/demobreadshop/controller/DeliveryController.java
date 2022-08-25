@@ -53,12 +53,20 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getDeliveries(id));
     }
 
-    @PostMapping(value = "/crateOutput")
-    public HttpEntity<?> sell(@RequestBody @Valid DeliveryDto dto) {
-        MyResponse sell = service.deliver(dto);
-        return sell.isActive()
-                ? ResponseEntity.ok(sell)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
+    @PostMapping(value = "/createOutput")
+    public HttpEntity<?> deliver(@RequestBody @Valid DeliveryDto dto) {
+        MyResponse deliver = service.deliver(dto);
+        return deliver.isActive()
+                ? ResponseEntity.ok(deliver)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(deliver);
+    }
+
+    @PostMapping(value = "/returnProduct")
+    public HttpEntity<?> returnProduct() {
+        MyResponse info = service.returnProduct();
+        return info.isActive()
+                ? ResponseEntity.ok(info)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
     }
 
     @DeleteMapping(value = "/output/{id}")
@@ -68,6 +76,7 @@ public class DeliveryController {
                 ? ResponseEntity.ok(delete)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
