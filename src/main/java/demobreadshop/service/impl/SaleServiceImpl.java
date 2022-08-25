@@ -72,7 +72,7 @@ public class SaleServiceImpl implements SaleService {
                 final WareHouse product = byId1.get();
 
                 double wholePrice = product.getPrice() * dto.getAmount();
-                double debtPrice = product.getPrice() * dto.getAmount() - dto.getCostCash() - dto.getCostCard();
+                double debtPrice = wholePrice - dto.getCostCash() - dto.getCostCard();
 
                 if (debtPrice < 0) {
                     return MyResponse.INPUT_TYPE_ERROR;

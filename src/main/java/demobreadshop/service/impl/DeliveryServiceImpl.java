@@ -113,7 +113,12 @@ public class DeliveryServiceImpl implements DeliveryService {
     public MyResponse returnProduct() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Delivery delivery = repository.findByDelivererId(user.getId());
-        delivery.getBalance().forEach(e -> {
+        if (delivery.getBalance().isEmpty()) {
+            return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
+        }
+        Set<ProductList> balance = delivery.getBalance();
+
+        balance.forEach(e -> {
             WareHouse product = e.getMaterial();
             product.setAmount(product.getAmount() + e.getAmount());
             inputRepository.save(
@@ -123,7 +128,12 @@ public class DeliveryServiceImpl implements DeliveryService {
                             product.getType()
                     )
             );
+
+            productListRepository.delete(e);
         });
+
+        delivery.setBalance(new HashSet<>());
+        repository.save(delivery);
         return MyResponse.SUCCESSFULLY_CREATED;
     }
 

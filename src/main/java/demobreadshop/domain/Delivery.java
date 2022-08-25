@@ -31,7 +31,7 @@ public class Delivery extends BaseEntity {
         this.balance = balance;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "delivery_fk", referencedColumnName = "id")
     @ToString.Exclude
     private Set<ProductList> balance;
