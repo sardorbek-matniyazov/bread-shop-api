@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static demobreadshop.service.impl.DeliveryServiceImpl.divideAmountOfProductInDelivery;
+
 @Service
 @Slf4j
 public class SaleServiceImpl implements SaleService {
@@ -93,7 +95,7 @@ public class SaleServiceImpl implements SaleService {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
                     sale.setSaleType(SaleType.SALE_CAR);
-                    if (!changeDeliveryBalance(user.getId(), dto)) {
+                    if (!changeDeliveryBalance(user.getId(), sale.getOutput())) {
                         return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
                     }
                 } else {
@@ -227,30 +229,8 @@ public class SaleServiceImpl implements SaleService {
         userRepository.save(user);
     }
 
-    private boolean changeDeliveryBalance(Long delivererId, SaleDto dto) {
-        AtomicBoolean isExist = new AtomicBoolean(false);
-        Delivery delivery = deliveryRepository.findByDelivererId(delivererId);
-        Set<ProductList> balance = new HashSet<>();
-        AtomicLong prId = new AtomicLong(0L);
-        delivery.getBalance().forEach(e -> {
-            if (e.getMaterial().getId() == dto.getProductId()) {
-                isExist.set(true);
-                if (e.getAmount() - dto.getAmount() <= 0) {
-                    prId.set(e.getId());
-                } else {
-                    e.setAmount(e.getAmount() - dto.getAmount());
-                    productListRepository.save(e);
-                    balance.add(e);
-                }
-            } else {
-                balance.add(e);
-            }
-        });
-        delivery.setBalance(balance);
-        if (prId.get() != 0) {
-            productListRepository.deleteById(prId.get());
-        }
-        return isExist.get();
+    private boolean changeDeliveryBalance(Long delivererId, Output output) {
+        return divideAmountOfProductInDelivery(delivererId, output, deliveryRepository, productListRepository);
     }
 
     private void rollbackChangesInDeliveryBalance(Long delivererId, Output output) {

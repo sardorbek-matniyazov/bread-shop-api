@@ -61,6 +61,13 @@ public class DeliveryController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
+    @DeleteMapping(value = "/output/{id}")
+    public HttpEntity<?> deleteOutput(@PathVariable(value = "id") long id) {
+        MyResponse delete = service.deleteOutputWithId(id);
+        return delete.isActive()
+                ? ResponseEntity.ok(delete)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {

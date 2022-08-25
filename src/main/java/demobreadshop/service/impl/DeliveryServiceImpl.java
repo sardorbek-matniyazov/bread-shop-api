@@ -15,11 +15,9 @@ import demobreadshop.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
@@ -71,10 +69,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
         return MyResponse.DELIVERY_NOT_FOUND;
     }
-    @Override
-    public MyResponse delete(long id) {
-        return null;
-    }
 
     @Override
     public List<Output> getDeliveries(long id) {
@@ -94,6 +88,24 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public List<Output> getAllDeliveries() {
         return outputRepository.findAllByType(OutputType.O_DELIVERER);
+    }
+
+    @Override
+    public MyResponse deleteOutputWithId(long id) {
+        Optional<Output> byId = outputRepository.findById(id);
+        if (byId.isPresent()) {
+            Output output = byId.get();
+            WareHouse product = output.getMaterial();
+
+            if (!changeDeliveryBalance(output.getDelivery().getDeliverer().getId(), output)) {
+                return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
+            }
+            product.setAmount(product.getAmount() + output.getAmount());
+            productRepository.save(product);
+
+            return MyResponse.SUCCESSFULLY_DELETED;
+        }
+        return MyResponse.DELIVERY_NOT_FOUND;
     }
 
     public void addBalanceDelivery(Delivery delivery, Output output) {
@@ -121,6 +133,37 @@ public class DeliveryServiceImpl implements DeliveryService {
             );
         }
         repository.save(delivery);
+    }
+
+
+    private boolean changeDeliveryBalance(Long delivererId, Output output) {
+        return divideAmountOfProductInDelivery(delivererId, output, repository, productListRepository);
+    }
+
+    static boolean divideAmountOfProductInDelivery(Long delivererId, Output output, DeliveryRepository repository, ProductListRepository productListRepository) {
+        AtomicBoolean isExist = new AtomicBoolean(false);
+        Delivery delivery = repository.findByDelivererId(delivererId);
+        Set<ProductList> balance = new HashSet<>();
+        AtomicLong prId = new AtomicLong(0L);
+        delivery.getBalance().forEach(e -> {
+            if (e.getMaterial().getId() == output.getMaterial().getId()) {
+                isExist.set(true);
+                if (e.getAmount() - output.getAmount() <= 0) {
+                    prId.set(e.getId());
+                } else {
+                    e.setAmount(e.getAmount() - output.getAmount());
+                    productListRepository.save(e);
+                    balance.add(e);
+                }
+            } else {
+                balance.add(e);
+            }
+        });
+        delivery.setBalance(balance);
+        if (prId.get() != 0) {
+            productListRepository.deleteById(prId.get());
+        }
+        return isExist.get();
     }
 
 }

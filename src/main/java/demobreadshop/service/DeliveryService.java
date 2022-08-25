@@ -16,11 +16,11 @@ public interface DeliveryService {
 
     MyResponse deliver(DeliveryDto dto);
 
-    MyResponse delete(long id);
-
     List<Output> getDeliveries(long id);
 
     Set<ProductList> getBalance(long id);
 
     List<Output> getAllDeliveries();
+
+    MyResponse deleteOutputWithId(long id);
 }
