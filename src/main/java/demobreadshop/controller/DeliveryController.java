@@ -43,17 +43,17 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getBalance(id));
     }
 
-    @GetMapping(value = "/allDeliveries")
+    @GetMapping(value = "/allOutputs")
     public HttpEntity<?> getAllDeliveries() {
         return ResponseEntity.ok(service.getAllDeliveries());
     }
 
-    @GetMapping(value = "/{id}/deliveries")
+    @GetMapping(value = "/{id}/outputs")
     public HttpEntity<?> getAllDeliveriesWithId(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(service.getDeliveries(id));
     }
 
-    @PostMapping(value = "/delivery")
+    @PostMapping(value = "/crateOutput")
     public HttpEntity<?> sell(@RequestBody @Valid DeliveryDto dto) {
         MyResponse sell = service.deliver(dto);
         return sell.isActive()
