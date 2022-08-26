@@ -1,10 +1,7 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.User;
-import demobreadshop.payload.ErrorResult;
-import demobreadshop.payload.LoginDto;
-import demobreadshop.payload.MyResponse;
-import demobreadshop.payload.RegisterDto;
+import demobreadshop.payload.*;
 import demobreadshop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -42,6 +39,14 @@ public class AuthController {
         return register.isActive()
                 ? ResponseEntity.ok(register)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(register);
+    }
+
+    @PutMapping(value = "/{id}")
+    public HttpEntity<?> update(@PathVariable long id, @RequestBody @Valid User dto){
+        MyResponse update = service.update(id, dto);
+        return update.isActive()
+                ? ResponseEntity.ok(update)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
 
     @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")

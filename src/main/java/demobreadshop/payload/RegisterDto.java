@@ -23,6 +23,9 @@ public class RegisterDto {
     @NotBlank(message = "Role shouldn't be null")
     private String password;
 
+    @NotNull(message = "User Kpi shouldn't be null")
+    private double userKPI;
+
     @NotNull(message = "Role shouldn't be null")
     private long roleId;
 }

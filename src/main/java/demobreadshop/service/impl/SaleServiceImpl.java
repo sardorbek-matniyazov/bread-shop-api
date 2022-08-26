@@ -16,12 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static demobreadshop.service.impl.DeliveryServiceImpl.divideAmountOfProductInDelivery;
 
@@ -213,18 +210,10 @@ public class SaleServiceImpl implements SaleService {
 
     private void changeMoneyWithKPI(Sale sale, char type) {
         User user = userRepository.findByFullName(sale.getCreatedBy());
-        if (sale.getSaleType().name().equals(SaleType.SALE_CAR.name())) {
-            if (type == ConstProperties.OPERATOR_MINUS) {
-                user.setBalance(user.getBalance() - sale.getWholePrice() * ConstProperties.SELLER_CAR_KPI);
-            } else {
-                user.setBalance(user.getBalance() + sale.getWholePrice() * ConstProperties.SELLER_CAR_KPI);
-            }
-        } else if (sale.getSaleType().name().equals(SaleType.SALE_ADMIN.name())) {
-            if (type == ConstProperties.OPERATOR_MINUS) {
-                user.setBalance(user.getBalance() - sale.getWholePrice() * ConstProperties.SELLER_ADMIN_KPI);
-            } else {
-                user.setBalance(user.getBalance() + sale.getWholePrice() * ConstProperties.SELLER_ADMIN_KPI);
-            }
+        if (type == ConstProperties.OPERATOR_MINUS) {
+            user.setBalance(user.getBalance() - sale.getWholePrice() * user.getUserKPI());
+        } else {
+            user.setBalance(user.getBalance() + sale.getWholePrice() * user.getUserKPI());
         }
         userRepository.save(user);
     }
@@ -239,3 +228,4 @@ public class SaleServiceImpl implements SaleService {
         DeliveryServiceImpl.changeBalanceDelivery(delivery, output, isExist, productListRepository, deliveryRepository);
     }
 }
+// Published by Sardorbek Matniyazov

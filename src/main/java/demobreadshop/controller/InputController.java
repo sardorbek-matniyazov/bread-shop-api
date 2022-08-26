@@ -29,7 +29,6 @@ public class InputController {
         return ResponseEntity.ok(service.getAll());
     }
 
-
     @GetMapping(value = "/{id}")
     public HttpEntity<?> get(@PathVariable(value = "id") long id) {
         Input get = service.get(id);

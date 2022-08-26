@@ -11,6 +11,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +27,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false, unique = true)
     private String fullName;
 
+    @Size(min = 4, max = 50, message = "Phone number should be in [4, 50]")
+    @NotBlank(message = "phone number shouldn't be null")
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
@@ -31,6 +36,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @NotNull(message = "User Kpi shouldn't be null")
     private double userKPI;
 
     private double balance;
@@ -42,11 +48,12 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(String fullName, String phoneNumber, String password, Set<Role> roles) {
+    public User(String fullName, String phoneNumber, String password, Set<Role> roles, double kpi) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.roles = roles;
+        this.userKPI = kpi;
     }
 
     @JsonIgnore

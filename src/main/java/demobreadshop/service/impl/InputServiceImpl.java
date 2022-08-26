@@ -6,6 +6,7 @@ import demobreadshop.domain.ProductList;
 import demobreadshop.domain.User;
 import demobreadshop.domain.WareHouse;
 import demobreadshop.domain.enums.ProductType;
+import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.InputDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.repository.InputRepository;
@@ -26,6 +27,7 @@ import java.util.Set;
 @Service
 @Slf4j
 public class InputServiceImpl implements InputService {
+
     private final InputRepository repository;
     private final WareHouseRepository wareHouseRepository;
     private final UserRepository userRepository;
@@ -72,7 +74,6 @@ public class InputServiceImpl implements InputService {
         }
         return MyResponse.PRODUCT_NOT_FOUND;
     }
-
 
     @Transactional
     @Override
@@ -125,12 +126,14 @@ public class InputServiceImpl implements InputService {
         if (input.getMaterial().getType().name().equals(ProductType.PRODUCT.name())) {
             User user = userRepository.findByFullName(input.getCreatedBy());
 
-            if (type == ConstProperties.OPERATOR_MINUS) {
-                user.setBalance(user.getBalance() - input.getAmount() * input.getMaterial().getPrice() * ConstProperties.WORKER_KPI);
-            } else {
-                user.setBalance(user.getBalance() + input.getAmount() * input.getMaterial().getPrice() * ConstProperties.WORKER_KPI);
+            if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.WORKER))) {
+                if (type == ConstProperties.OPERATOR_MINUS) {
+                    user.setBalance(user.getBalance() - input.getAmount() * input.getMaterial().getPrice() * user.getUserKPI());
+                } else {
+                    user.setBalance(user.getBalance() + input.getAmount() * input.getMaterial().getPrice() * user.getUserKPI());
+                }
+                userRepository.save(user);
             }
-            userRepository.save(user);
         }
     }
 }

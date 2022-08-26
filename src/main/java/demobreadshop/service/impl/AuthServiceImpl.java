@@ -81,11 +81,11 @@ public class AuthServiceImpl implements AuthService {
                     dto.getFullName(),
                     dto.getPhoneNumber(),
                     passwordEncoder.encode(dto.getPassword()),
-                    Collections.singleton(role)
+                    Collections.singleton(role),
+                    dto.getUserKPI()
             );
 
             if (role.getRoleName().name().equals(RoleName.SELLER_CAR.name())) {
-                user.setUserKPI(ConstProperties.SELLER_CAR_KPI);
                 user = userRepository.save(user);
                 deliveryRepository.save(
                         new Delivery(
@@ -93,12 +93,6 @@ public class AuthServiceImpl implements AuthService {
                                 new HashSet<>()
                         )
                 );
-            } else if (role.getRoleName().name().equals(RoleName.SELLER_ADMIN.name())) {
-                user.setUserKPI(ConstProperties.SELLER_ADMIN_KPI);
-                userRepository.save(user);
-            } else if (role.getRoleName().name().equals(RoleName.WORKER.name())) {
-                user.setUserKPI(ConstProperties.WORKER_KPI);
-                userRepository.save(user);
             }
 
             return MyResponse.SUCCESSFULLY_CREATED;
@@ -115,6 +109,25 @@ public class AuthServiceImpl implements AuthService {
                         && !authentication.getPrincipal().equals("anonymousUser")
         ) return (User) authentication.getPrincipal();
         return null;
+    }
+
+    @Override
+    public MyResponse update(long id, User dto) {
+        Optional<User> byId = userRepository.findById(id);
+        if (byId.isPresent()) {
+            User user = byId.get();
+
+            if (userRepository.existsByPhoneNumberAndIdIsNot(dto.getPhoneNumber(), id)) {
+                return MyResponse.PHONE_NUMBER_EXISTS;
+            }
+
+            user.setPhoneNumber(dto.getPhoneNumber());
+            user.setUserKPI(dto.getUserKPI());
+
+            userRepository.save(user);
+            return MyResponse.SUCCESSFULLY_UPDATED;
+        }
+        return MyResponse.USER_NOT_FOUND;
     }
 
     static boolean isNonDeletable(long time) {

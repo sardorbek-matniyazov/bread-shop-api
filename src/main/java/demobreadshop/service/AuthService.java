@@ -11,4 +11,6 @@ public interface AuthService {
     MyResponse register(RegisterDto dto);
 
     User me();
+
+    MyResponse update(long id, User dto);
 }

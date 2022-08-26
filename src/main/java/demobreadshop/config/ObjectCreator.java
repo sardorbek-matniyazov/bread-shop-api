@@ -51,7 +51,8 @@ public class ObjectCreator implements CommandLineRunner {
                             "Jumabay Bazarbayev",
                             "test",
                             passwordEncoder.encode("password"),
-                            Collections.singleton(roleRepository.getByRoleName(RoleName.GL_ADMIN))
+                            Collections.singleton(roleRepository.getByRoleName(RoleName.GL_ADMIN)),
+                            0.0
                     )
             );
         }
