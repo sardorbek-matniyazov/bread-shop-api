@@ -1,6 +1,7 @@
 package demobreadshop.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import demobreadshop.domain.enums.RoleName;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -37,5 +40,13 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return roleName.name();
+    }
+
+    @JsonValue
+    public Map<String, Object> toJson() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.getId());
+        response.put("name", this.getRoleName());
+        return response;
     }
 }

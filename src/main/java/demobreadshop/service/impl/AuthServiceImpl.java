@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -128,6 +129,11 @@ public class AuthServiceImpl implements AuthService {
             return MyResponse.SUCCESSFULLY_UPDATED;
         }
         return MyResponse.USER_NOT_FOUND;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     static boolean isNonDeletable(long time) {

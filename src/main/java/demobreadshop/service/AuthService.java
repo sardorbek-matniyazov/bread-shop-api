@@ -5,6 +5,8 @@ import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.RegisterDto;
 
+import java.util.List;
+
 public interface AuthService {
     MyResponse login(LoginDto dto);
 
@@ -13,4 +15,6 @@ public interface AuthService {
     User me();
 
     MyResponse update(long id, User dto);
+
+    List<User> getAllUsers();
 }

@@ -33,6 +33,12 @@ public class AuthController {
     }
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
+    @GetMapping(value = "/allUsers")
+    public HttpEntity<?> getAllUsers() {
+        return ResponseEntity.ok(service.getAllUsers());
+    }
+
+    @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
     @PostMapping(value = "/register")
     public HttpEntity<?> registerUser(@RequestBody @Valid RegisterDto dto) {
         final MyResponse register = service.register(dto);
@@ -41,8 +47,9 @@ public class AuthController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(register);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
     @PutMapping(value = "/{id}")
-    public HttpEntity<?> update(@PathVariable long id, @RequestBody @Valid User dto){
+    public HttpEntity<?> update(@PathVariable long id, @RequestBody @Valid User dto) {
         MyResponse update = service.update(id, dto);
         return update.isActive()
                 ? ResponseEntity.ok(update)

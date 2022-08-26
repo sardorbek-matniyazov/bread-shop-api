@@ -26,7 +26,6 @@ public class ClientController {
     }
 
     @GetMapping(value = "/all")
-
     public HttpEntity<?> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
