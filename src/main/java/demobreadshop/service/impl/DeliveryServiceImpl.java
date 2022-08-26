@@ -94,15 +94,19 @@ public class DeliveryServiceImpl implements DeliveryService {
             Output output = byId.get();
             WareHouse product = output.getMaterial();
 
+            // checking is non deletable
             if (AuthServiceImpl.isNonDeletable(output.getCreatedAt().getTime())) {
                 return MyResponse.CANT_DELETE;
             }
 
+            // changing balance and checking product is exists
             if (!changeDeliveryBalance(output.getDelivery().getDeliverer().getId(), output)) {
                 return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
             }
+
             product.setAmount(product.getAmount() + output.getAmount());
             productRepository.save(product);
+            outputRepository.delete(output);
 
             return MyResponse.SUCCESSFULLY_DELETED;
         }
@@ -196,3 +200,5 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
 }
+
+// published by Sardorbek Matniyazov
