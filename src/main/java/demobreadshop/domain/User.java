@@ -94,18 +94,4 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-    @JsonValue
-    public Map<String, Object> toJson(){
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", this.getId());
-        response.put("fullName", this.getFullName());
-        response.put("balance", this.getBalance());
-        response.put("KPI", this.getUserKPI());
-        response.put("phoneNumber", this.getPhoneNumber());
-        response.put("role", this.getRoles().stream().findFirst());
-        response.put("createdBy", this.getCreatedBy());
-        response.put("createdAt", this.getCreatedAt());
-        return response;
-    }
 }
