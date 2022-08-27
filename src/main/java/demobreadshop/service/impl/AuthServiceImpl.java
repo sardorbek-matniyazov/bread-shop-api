@@ -9,12 +9,16 @@ import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.RegisterDto;
+import demobreadshop.payload.ResultLogin;
 import demobreadshop.repository.DeliveryRepository;
 import demobreadshop.repository.RoleRepository;
 import demobreadshop.repository.UserRepository;
 import demobreadshop.security.JwtProvider;
 import demobreadshop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,25 +50,31 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public MyResponse login(LoginDto dto) {
+    public HttpEntity<?> login(LoginDto dto) {
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(dto.getPhoneNumber());
         if (byPhoneNumber.isPresent()) {
             User user = byPhoneNumber.get();
-            System.out.println(user.getPassword());
             if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
                 AuthenticationManager authenticationManager = authentication -> new UsernamePasswordAuthenticationToken(
                         user,
                         null,
                         user.getAuthorities()
                 );
-                return new MyResponse(
-                        "Successfully login",
-                        true,
-                        jwtProvider.generateToken(user.getUsername(), user.getAuthorities()));
+                return ResponseEntity.ok(
+                        new ResultLogin(
+                                "Successfully login",
+                                true,
+                                jwtProvider.generateToken(
+                                        user.getUsername(),
+                                        user.getRoles()
+                                ),
+                                user.getRoles().stream().findFirst()
+                        )
+                );
             }
-            return MyResponse.WRONG_PASSWORD;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MyResponse.WRONG_PASSWORD);
         }
-        return MyResponse.USER_NOT_FOUND;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MyResponse.USER_NOT_FOUND);
     }
 
     @Override

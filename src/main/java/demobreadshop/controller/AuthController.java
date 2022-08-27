@@ -26,10 +26,7 @@ public class AuthController {
 
     @PostMapping(value = "/login")
     public HttpEntity<?> login(@RequestBody @Valid LoginDto dto) {
-        MyResponse login = service.login(dto);
-        return login.isActive()
-                ? ResponseEntity.ok(login)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(login);
+        return service.login(dto);
     }
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")

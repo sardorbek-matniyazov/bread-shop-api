@@ -5,8 +5,8 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Tashkent
   datasource:
-    username: webclubu_demo_bread
-    url: jdbc:postgresql://localhost:5432/webclubu_demo_bread
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/demo_bread
     password: sardor
   jpa:
     hibernate:

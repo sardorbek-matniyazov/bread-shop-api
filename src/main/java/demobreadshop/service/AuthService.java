@@ -4,11 +4,12 @@ import demobreadshop.domain.User;
 import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.RegisterDto;
+import org.springframework.http.HttpEntity;
 
 import java.util.List;
 
 public interface AuthService {
-    MyResponse login(LoginDto dto);
+    HttpEntity<?> login(LoginDto dto);
 
     MyResponse register(RegisterDto dto);
 

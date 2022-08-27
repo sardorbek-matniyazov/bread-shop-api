@@ -1,6 +1,7 @@
 package demobreadshop.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -90,5 +93,19 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @JsonValue
+    public Map<String, Object> toJson(){
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.getId());
+        response.put("fullName", this.getFullName());
+        response.put("balance", this.getBalance());
+        response.put("KPI", this.getUserKPI());
+        response.put("phoneNumber", this.getPhoneNumber());
+        response.put("role", this.getRoles().stream().findFirst());
+        response.put("createdBy", this.getCreatedBy());
+        response.put("createdAt", this.getCreatedAt());
+        return response;
     }
 }
