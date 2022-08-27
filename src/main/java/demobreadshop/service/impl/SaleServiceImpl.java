@@ -211,9 +211,9 @@ public class SaleServiceImpl implements SaleService {
     private void changeMoneyWithKPI(Sale sale, char type) {
         User user = userRepository.findByFullName(sale.getCreatedBy());
         if (type == ConstProperties.OPERATOR_MINUS) {
-            user.setBalance(user.getBalance() - sale.getWholePrice() * user.getUserKPI());
+            user.setBalance(user.getBalance() - sale.getOutput().getAmount() * user.getUserKPI());
         } else {
-            user.setBalance(user.getBalance() + sale.getWholePrice() * user.getUserKPI());
+            user.setBalance(user.getBalance() + sale.getOutput().getAmount() * user.getUserKPI());
         }
         userRepository.save(user);
     }

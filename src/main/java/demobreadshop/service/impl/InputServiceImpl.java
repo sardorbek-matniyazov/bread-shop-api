@@ -128,9 +128,9 @@ public class InputServiceImpl implements InputService {
 
             if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.WORKER))) {
                 if (type == ConstProperties.OPERATOR_MINUS) {
-                    user.setBalance(user.getBalance() - input.getAmount() * input.getMaterial().getPrice() * user.getUserKPI());
+                    user.setBalance(user.getBalance() - input.getAmount() * user.getUserKPI());
                 } else {
-                    user.setBalance(user.getBalance() + input.getAmount() * input.getMaterial().getPrice() * user.getUserKPI());
+                    user.setBalance(user.getBalance() + input.getAmount() * user.getUserKPI());
                 }
                 userRepository.save(user);
             }

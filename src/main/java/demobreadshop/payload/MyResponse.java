@@ -28,6 +28,7 @@ public class MyResponse {
     public static final MyResponse DELIVERY_NOT_FOUND = new MyResponse("The Delivery not found", false, null);;;
     public static final MyResponse SUCCESSFULLY_DELIVERED = new MyResponse("The Delivery was successfully delivered", true, null);
     public static final MyResponse YOU_DONT_HAVE_THIS_PRODUCT = new MyResponse("Currently you don't have this product, please check your balance items", false, null);
+    public static final MyResponse OUTCOME_NOT_FOUND = new MyResponse("Outcome not found", false, null);
 
     private String message;
     private boolean active;
