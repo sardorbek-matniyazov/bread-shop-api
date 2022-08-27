@@ -30,6 +30,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Map<String, Double> getAll() {
         Map<String, Double> map = new HashMap<>();
         map.put("WholeIncome", saleRepository.sumOfIncome());
+        map.put("WholeDebt", saleRepository.sumOfDebt());
         map.put("Income", payArchiveRepository.sumOfAll());
         map.put("CashIncome", payArchiveRepository.sumOfAllCash(PayType.CASH.name()));
         map.put("CardIncome", payArchiveRepository.sumOfAllCash(PayType.CARD.name()));

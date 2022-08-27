@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<Sale> findAllByType(Status debt);
-    //@Query(value = "select a from sale a")
 
     @Query(
             value = "SELECT SUM(whole_price) FROM sale",
@@ -17,5 +16,9 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     )
     double sumOfIncome();
 
-
+    @Query(
+            value = "SELECT SUM(debt_price) FROM sale",
+            nativeQuery = true
+    )
+    Double sumOfDebt();
 }

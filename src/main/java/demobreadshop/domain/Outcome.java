@@ -39,7 +39,7 @@ public class Outcome extends BaseEntity {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.getId());
         response.put("type", this.getType().name());
-        response.put("user", this.getUser() == null ? null : getUser().getFullName());
+        response.put("user", this.getUser() == null ? "none" : getUser().getFullName());
         response.put("amount", this.getAmount());
         response.put("createdBy", this.getCreatedBy());
         response.put("createdAt", this.getCreatedAt());

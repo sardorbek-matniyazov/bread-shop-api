@@ -7,13 +7,14 @@ import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.OutcomeDto;
 import demobreadshop.repository.OutcomeRepository;
 import demobreadshop.repository.UserRepository;
-import demobreadshop.service.AuthService;
 import demobreadshop.service.OutcomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -51,8 +52,12 @@ public class OutcomeServiceImpl implements OutcomeService {
     }
 
     @Override
-    public OutcomeType[] getTypes() {
-        return OutcomeType.values();
+    public Map<String, String> getTypes() {
+        Map<String, String> types = new HashMap<>();
+        for (OutcomeType value : OutcomeType.values()) {
+            types.put("name", value.name());
+        }
+        return types;
     }
 
     @Override
