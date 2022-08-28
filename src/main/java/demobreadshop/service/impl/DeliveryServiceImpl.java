@@ -6,6 +6,7 @@ import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.repository.*;
 import demobreadshop.service.DeliveryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@Slf4j
 public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository repository;
     private final OutputRepository outputRepository;
@@ -117,10 +119,13 @@ public class DeliveryServiceImpl implements DeliveryService {
     public MyResponse returnProduct() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Delivery delivery = repository.findByDelivererId(user.getId());
-        if (delivery.getBalance().isEmpty()) {
+        Set<ProductList> balance;
+        try {
+            balance = delivery.getBalance();
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
             return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
         }
-        Set<ProductList> balance = delivery.getBalance();
 
         balance.forEach(e -> {
             WareHouse product = e.getMaterial();
