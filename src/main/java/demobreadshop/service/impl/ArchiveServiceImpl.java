@@ -1,16 +1,18 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.domain.Role;
 import demobreadshop.domain.enums.OutcomeType;
 import demobreadshop.domain.enums.PayType;
-import demobreadshop.repository.InputRepository;
-import demobreadshop.repository.OutcomeRepository;
-import demobreadshop.repository.PayArchiveRepository;
-import demobreadshop.repository.SaleRepository;
+import demobreadshop.domain.enums.RoleName;
+import demobreadshop.domain.projection.MaterialDecreaseStat;
+import demobreadshop.domain.projection.SaleStatistics;
+import demobreadshop.repository.*;
 import demobreadshop.service.ArchiveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -18,12 +20,14 @@ public class ArchiveServiceImpl implements ArchiveService {
     private final SaleRepository saleRepository;
     private final PayArchiveRepository payArchiveRepository;
     private final OutcomeRepository outcomeRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository) {
+    public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository) {
         this.saleRepository = saleRepository;
         this.payArchiveRepository = payArchiveRepository;
         this.outcomeRepository = outcomeRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -44,5 +48,16 @@ public class ArchiveServiceImpl implements ArchiveService {
             stat.put(type.name(), outcomeRepository.sumByType(type.name()));
         }
         return stat;
+    }
+
+    @Override
+    public List<SaleStatistics> getAllCarSellerInfo(RoleName seller) {
+        Role byRoleName = roleRepository.getByRoleName(seller);
+        return saleRepository.getAllUserInfoByRoleId(byRoleName.getId());
+    }
+
+    @Override
+    public List<MaterialDecreaseStat> getAllMaterialDecrease() {
+        return saleRepository.getAllMaterialDecrease();
     }
 }

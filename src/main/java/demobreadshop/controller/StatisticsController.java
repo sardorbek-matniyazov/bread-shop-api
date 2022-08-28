@@ -1,5 +1,6 @@
 package demobreadshop.controller;
 
+import demobreadshop.domain.enums.RoleName;
 import demobreadshop.service.ArchiveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -29,4 +30,20 @@ public class StatisticsController {
     public HttpEntity<?> outcomeStatistics(){
         return ResponseEntity.ok(service.outcomeStat());
     }
+
+    @GetMapping(value = "car-seller/all")
+    public HttpEntity<?> getAllCarSellerInfo() {
+        return ResponseEntity.ok(service.getAllCarSellerInfo(RoleName.SELLER_CAR));
+    }
+
+    @GetMapping(value = "admin-seller/all")
+    public HttpEntity<?> getAllAdminSellerInfo() {
+        return ResponseEntity.ok(service.getAllCarSellerInfo(RoleName.SELLER_ADMIN));
+    }
+
+    @GetMapping(value = "material-decrease/all")
+    public HttpEntity<?> getMaterialDecrease() {
+        return ResponseEntity.ok(service.getAllMaterialDecrease());
+    }
+
 }

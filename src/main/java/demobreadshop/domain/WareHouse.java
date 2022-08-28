@@ -27,6 +27,7 @@ public class WareHouse extends BaseEntity {
     private String description;
 
     // type kg
+    @Column(name = "house_amount")
     private double amount;
 
     @JsonIgnore
@@ -35,6 +36,7 @@ public class WareHouse extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_fk", referencedColumnName = "id")
     private Set<ProductList> materials;
 
     @JsonIgnore
