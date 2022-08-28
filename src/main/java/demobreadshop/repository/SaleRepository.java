@@ -14,7 +14,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             value = "SELECT SUM(whole_price) FROM sale",
             nativeQuery = true
     )
-    double sumOfIncome();
+    Double sumOfIncome();
 
     @Query(
             value = "SELECT SUM(debt_price) FROM sale",
