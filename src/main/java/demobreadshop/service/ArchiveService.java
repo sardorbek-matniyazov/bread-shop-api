@@ -1,10 +1,7 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.enums.RoleName;
-import demobreadshop.domain.projection.InputStatistics;
-import demobreadshop.domain.projection.MaterialDecreaseStat;
-import demobreadshop.domain.projection.SaleStatistics;
-import demobreadshop.domain.projection.GroupStatistics;
+import demobreadshop.domain.projection.*;
 
 import java.util.List;
 import java.util.Map;
@@ -23,4 +20,6 @@ public interface ArchiveService {
     List<InputStatistics> getAllProductStatistics();
 
     List<InputStatistics> getAllWarehouseStatistics();
+
+    List<SellerStatistics> getAllSellerStatistics();
 }

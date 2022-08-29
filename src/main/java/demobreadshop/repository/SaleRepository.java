@@ -4,6 +4,7 @@ import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.Status;
 import demobreadshop.domain.projection.MaterialDecreaseStat;
 import demobreadshop.domain.projection.SaleStatistics;
+import demobreadshop.domain.projection.SellerStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -42,4 +43,14 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     List<MaterialDecreaseStat> getAllMaterialDecrease();
+
+    @Query(
+            value = "with bum as\n" +
+                    "    (select sum(pa.amount) as sum, s.id, s.created_by, s.created_at from sale s join pay_archive pa on s.id = pa.sale_id group by s.id, s.created_by)\n" +
+                    "select sum(bum.sum) as sumAmount, bum.created_by as fullName, u.phone_number as phoneNumber, u.users_id as userId\n" +
+                    "from bum join (users u join users_roles ur on u.id = ur.users_id) u on bum.created_by = u.full_name\n" +
+                    "group by u.phone_number, bum.created_by, u.users_id;",
+            nativeQuery = true
+    )
+    List<SellerStatistics> getAllUserStatistics();
 }

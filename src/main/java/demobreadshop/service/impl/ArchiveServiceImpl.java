@@ -5,10 +5,7 @@ import demobreadshop.domain.enums.OutcomeType;
 import demobreadshop.domain.enums.PayType;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
-import demobreadshop.domain.projection.GroupStatistics;
-import demobreadshop.domain.projection.InputStatistics;
-import demobreadshop.domain.projection.MaterialDecreaseStat;
-import demobreadshop.domain.projection.SaleStatistics;
+import demobreadshop.domain.projection.*;
 import demobreadshop.repository.*;
 import demobreadshop.service.ArchiveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +77,10 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<InputStatistics> getAllWarehouseStatistics() {
         return inputRepository.getAllInputStatistics(ProductType.MATERIAL.name());
+    }
+
+    @Override
+    public List<SellerStatistics> getAllSellerStatistics() {
+        return saleRepository.getAllUserStatistics();
     }
 }

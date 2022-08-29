@@ -61,4 +61,9 @@ public class StatisticsController {
         return ResponseEntity.ok(service.getAllProductStatistics());
     }
 
+    @GetMapping(value = "seller-statistics")
+    public HttpEntity<?> getAllSellerStatistics() {
+        return ResponseEntity.ok(service.getAllSellerStatistics());
+    }
+
 }
