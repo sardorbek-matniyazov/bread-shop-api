@@ -3,8 +3,10 @@ package demobreadshop.service.impl;
 import demobreadshop.domain.Role;
 import demobreadshop.domain.enums.OutcomeType;
 import demobreadshop.domain.enums.PayType;
+import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.GroupStatistics;
+import demobreadshop.domain.projection.InputStatistics;
 import demobreadshop.domain.projection.MaterialDecreaseStat;
 import demobreadshop.domain.projection.SaleStatistics;
 import demobreadshop.repository.*;
@@ -68,5 +70,15 @@ public class ArchiveServiceImpl implements ArchiveService {
     public List<GroupStatistics> getAllGroupStatistics() {
         Role byRoleName = roleRepository.getByRoleName(RoleName.WORKER);
         return inputRepository.getAllGroupStatistics(byRoleName.getId());
+    }
+
+    @Override
+    public List<InputStatistics> getAllProductStatistics() {
+        return inputRepository.getAllInputStatistics(ProductType.PRODUCT.name());
+    }
+
+    @Override
+    public List<InputStatistics> getAllWarehouseStatistics() {
+        return inputRepository.getAllInputStatistics(ProductType.MATERIAL.name());
     }
 }

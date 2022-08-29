@@ -31,25 +31,34 @@ public class StatisticsController {
         return ResponseEntity.ok(service.outcomeStat());
     }
 
-    @GetMapping(value = "car-seller/all")
+    @GetMapping(value = "car-seller")
     public HttpEntity<?> getAllCarSellerInfo() {
         return ResponseEntity.ok(service.getAllCarSellerInfo(RoleName.SELLER_CAR));
     }
 
-    @GetMapping(value = "admin-seller/all")
+    @GetMapping(value = "admin-seller")
     public HttpEntity<?> getAllAdminSellerInfo() {
         return ResponseEntity.ok(service.getAllCarSellerInfo(RoleName.SELLER_ADMIN));
     }
 
-    @GetMapping(value = "material-decrease/all")
+    @GetMapping(value = "material-decrease")
     public HttpEntity<?> getMaterialDecrease() {
         return ResponseEntity.ok(service.getAllMaterialDecrease());
     }
 
-    @GetMapping(value = "group-statistics/all")
+    @GetMapping(value = "group-statistics")
     public HttpEntity<?> getAllGroupStatistics() {
         return ResponseEntity.ok(service.getAllGroupStatistics());
     }
 
+    @GetMapping(value = "warehouse-statistics")
+    public HttpEntity<?> getAllWarehouseStatistics() {
+        return ResponseEntity.ok(service.getAllWarehouseStatistics());
+    }
+
+    @GetMapping(value = "product-statistics")
+    public HttpEntity<?> getAllProductStatistics() {
+        return ResponseEntity.ok(service.getAllProductStatistics());
+    }
 
 }
