@@ -29,7 +29,7 @@ public class AuthController {
         return service.login(dto);
     }
 
-    @PreAuthorize(value = "hasAuthority('GL_ADMIN')")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
     @GetMapping(value = "/allUsers")
     public HttpEntity<?> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
