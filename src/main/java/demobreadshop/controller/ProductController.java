@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
-@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
+@PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
 @RequestMapping(value = "api/product")
 public class ProductController {
     private final ProductService service;

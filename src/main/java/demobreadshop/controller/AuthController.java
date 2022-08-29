@@ -44,7 +44,7 @@ public class AuthController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(register);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
     @PutMapping(value = "/{id}")
     public HttpEntity<?> update(@PathVariable long id, @RequestBody @Valid User dto) {
         MyResponse update = service.update(id, dto);
