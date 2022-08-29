@@ -53,7 +53,7 @@ public class AuthController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
     @GetMapping(value = "/me")
     public HttpEntity<?> me() {
         final User me = service.me();
