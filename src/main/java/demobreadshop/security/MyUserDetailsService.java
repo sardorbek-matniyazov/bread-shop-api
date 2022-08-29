@@ -1,4 +1,4 @@
-package demobreadshop.service;
+package demobreadshop.security;
 
 import demobreadshop.domain.User;
 import org.springframework.security.core.userdetails.UserDetails;
