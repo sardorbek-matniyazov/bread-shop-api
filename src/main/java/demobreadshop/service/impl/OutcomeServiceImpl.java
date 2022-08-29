@@ -32,7 +32,7 @@ public class OutcomeServiceImpl implements OutcomeService {
     public MyResponse create(OutcomeDto dto) {
         OutcomeType outcomeType = OutcomeType.valueOf(dto.getType());
         Outcome outcome = new Outcome(dto.getMoneyAmount(), outcomeType, dto.getComment());
-        if (outcomeType.equals(OutcomeType.SALARY)) {
+        if (outcomeType.equals(OutcomeType.OYLIK)) {
             Optional<User> byId = userRepository.findById(dto.getUserId());
             if (byId.isPresent()) {
                 User user = byId.get();
@@ -70,7 +70,7 @@ public class OutcomeServiceImpl implements OutcomeService {
                 return MyResponse.CANT_DELETE;
             }
             if (outcome.getCreatedBy().equals(creator.getFullName())) {
-                if (outcome.getType().equals(OutcomeType.SALARY)) {
+                if (outcome.getType().equals(OutcomeType.OYLIK)) {
                     User user = outcome.getUser();
                     user.setBalance(user.getBalance() + outcome.getAmount());
                     userRepository.save(user);
