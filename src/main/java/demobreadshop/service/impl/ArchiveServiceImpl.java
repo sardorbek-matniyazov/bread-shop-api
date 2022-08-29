@@ -4,6 +4,7 @@ import demobreadshop.domain.Role;
 import demobreadshop.domain.enums.OutcomeType;
 import demobreadshop.domain.enums.PayType;
 import demobreadshop.domain.enums.RoleName;
+import demobreadshop.domain.projection.GroupStatistics;
 import demobreadshop.domain.projection.MaterialDecreaseStat;
 import demobreadshop.domain.projection.SaleStatistics;
 import demobreadshop.repository.*;
@@ -21,13 +22,15 @@ public class ArchiveServiceImpl implements ArchiveService {
     private final PayArchiveRepository payArchiveRepository;
     private final OutcomeRepository outcomeRepository;
     private final RoleRepository roleRepository;
+    private final InputRepository inputRepository;
 
     @Autowired
-    public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository) {
+    public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository, InputRepository inputRepository) {
         this.saleRepository = saleRepository;
         this.payArchiveRepository = payArchiveRepository;
         this.outcomeRepository = outcomeRepository;
         this.roleRepository = roleRepository;
+        this.inputRepository = inputRepository;
     }
 
     @Override
@@ -59,5 +62,11 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<MaterialDecreaseStat> getAllMaterialDecrease() {
         return saleRepository.getAllMaterialDecrease();
+    }
+
+    @Override
+    public List<GroupStatistics> getAllGroupStatistics() {
+        Role byRoleName = roleRepository.getByRoleName(RoleName.WORKER);
+        return inputRepository.getAllGroupStatistics(byRoleName.getId());
     }
 }

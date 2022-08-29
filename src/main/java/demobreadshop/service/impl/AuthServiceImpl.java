@@ -96,8 +96,8 @@ public class AuthServiceImpl implements AuthService {
                     dto.getUserKPI()
             );
 
+            user = userRepository.save(user);
             if (role.getRoleName().name().equals(RoleName.SELLER_CAR.name())) {
-                user = userRepository.save(user);
                 deliveryRepository.save(
                         new Delivery(
                                 user,

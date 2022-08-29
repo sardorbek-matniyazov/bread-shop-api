@@ -5,5 +5,5 @@ public interface MaterialDecreaseStat {
     String getName();
     Double getPrice();
     Double getWholePrice();
-    Long getId();
+    Long getUserId();
 }

@@ -4,5 +4,11 @@ public enum OutcomeType {
     SALARY,
     FOR_CAR,
     FOR_LUNCH,
-    OTHER
+    OTHER,
+    KOMMUNAL,
+    ARENDA,
+    OMBOR,
+    REMONT,
+    TEXNIKA,
+    DIREKTOR
 }

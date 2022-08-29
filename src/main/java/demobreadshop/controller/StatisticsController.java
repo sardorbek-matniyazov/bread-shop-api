@@ -46,4 +46,10 @@ public class StatisticsController {
         return ResponseEntity.ok(service.getAllMaterialDecrease());
     }
 
+    @GetMapping(value = "group-statistics/all")
+    public HttpEntity<?> getAllGroupStatistics() {
+        return ResponseEntity.ok(service.getAllGroupStatistics());
+    }
+
+
 }
