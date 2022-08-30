@@ -15,6 +15,4 @@ public interface OutcomeService {
     Map<String, String> getTypes();
 
     MyResponse delete(long id);
-
-    List<Outcome> findByUserId(long id);
 }

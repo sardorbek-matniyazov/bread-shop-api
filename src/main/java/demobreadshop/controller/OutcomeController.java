@@ -49,10 +49,4 @@ public class OutcomeController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
     }
 
-
-    @GetMapping(value = "salaryHistory/{id}")
-    public HttpEntity<?> getUserHistory(@PathVariable long id) {
-         return ResponseEntity.ok(service.findByUserId(id));
-    }
-
 }
