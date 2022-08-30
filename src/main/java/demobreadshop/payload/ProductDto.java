@@ -24,6 +24,4 @@ public class ProductDto {
     private String productType;
 
     List<ProductListDto> materials;
-
-    private String description;
 }

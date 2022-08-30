@@ -11,7 +11,7 @@ public interface ArchiveService {
 
     Map<String, Double> outcomeStat();
 
-    List<SaleStatistics> getAllCarSellerInfo(RoleName sellerAdmin);
+    List<SaleStatistics> getAllSellerInfo(RoleName sellerAdmin);
 
     List<MaterialDecreaseStat> getAllMaterialDecrease();
 
@@ -22,4 +22,9 @@ public interface ArchiveService {
     List<InputStatistics> getAllWarehouseStatistics();
 
     List<SellerStatistics> getAllSellerStatistics();
+
+    List<ClientStatistics> clientStat();
+
+    List<SaleInfoProjection> getSaleInfo();
+
 }

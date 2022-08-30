@@ -82,4 +82,9 @@ public class OutcomeServiceImpl implements OutcomeService {
         }
         return MyResponse.OUTCOME_NOT_FOUND;
     }
+
+    @Override
+    public List<Outcome> findByUserId(long id) {
+        return repository.findAllByUserId(id);
+    }
 }

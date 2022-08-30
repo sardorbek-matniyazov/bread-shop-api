@@ -9,5 +9,5 @@ import java.util.List;
 public interface OutputRepository extends JpaRepository<Output, Long> {
     List<Output> findAllByDeliveryId(Long delivery_id);
 
-    List<Output> findAllByType(OutputType oDeliverer);
+    List<Output> findAllByTypeOrderByCreatedAtDesc(OutputType oDeliverer);
 }

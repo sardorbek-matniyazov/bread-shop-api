@@ -20,9 +20,11 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PayArchive extends BaseEntity {
+    @Column(name = "archive_amount")
     private double amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "pay_type")
     private PayType type;
 
     @OnDelete(action = OnDeleteAction.CASCADE)

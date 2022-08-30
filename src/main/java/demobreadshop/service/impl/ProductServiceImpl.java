@@ -3,6 +3,7 @@ package demobreadshop.service.impl;
 import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
 import demobreadshop.domain.enums.ProductType;
+import demobreadshop.domain.projection.ProductProjection;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.ProductDto;
 import demobreadshop.payload.ProductListDto;
@@ -32,8 +33,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<WareHouse> getAll() {
-        return repository.findAllByType(ProductType.PRODUCT);
+    public List<ProductProjection> getAll() {
+        return repository.findAllProduct();
     }
 
     @Override
@@ -51,7 +52,6 @@ public class ProductServiceImpl implements ProductService {
             WareHouse product = new WareHouse(
                     dto.getName(),
                     dto.getPrice(),
-                    dto.getDescription(),
                     ProductType.PRODUCT
             );
 
@@ -63,7 +63,6 @@ public class ProductServiceImpl implements ProductService {
                     new WareHouse(
                             dto.getName(),
                             dto.getPrice(),
-                            dto.getDescription(),
                             ProductType.MATERIAL
                     )
             );

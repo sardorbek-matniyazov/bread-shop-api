@@ -24,6 +24,7 @@ public class Output extends BaseInput {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "output_type")
     private OutputType type;
 
     public Output(WareHouse material, double amount, OutputType status) {

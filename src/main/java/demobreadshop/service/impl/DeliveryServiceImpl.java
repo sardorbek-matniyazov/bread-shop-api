@@ -35,7 +35,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Delivery> getAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByCreatedAtDesc();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Output> getAllDeliveries() {
-        return outputRepository.findAllByType(OutputType.O_DELIVERER);
+        return outputRepository.findAllByTypeOrderByCreatedAtDesc(OutputType.O_DELIVERER);
     }
 
     @Override
@@ -172,7 +172,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
         repository.save(delivery);
     }
-
 
     private boolean changeDeliveryBalance(Long delivererId, Output output) {
         return divideAmountOfProductInDelivery(delivererId, output, repository, productListRepository);

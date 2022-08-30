@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,7 +22,11 @@ import java.util.Map;
 public class Input extends BaseInput {
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "input_type")
     private ProductType type;
+
+    @Column(name = "product_price")
+    private double productPrice;
 
     public Input(WareHouse material, double amount, ProductType type) {
         super(material, amount);

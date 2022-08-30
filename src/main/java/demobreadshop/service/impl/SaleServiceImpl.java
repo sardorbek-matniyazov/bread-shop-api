@@ -3,6 +3,7 @@ package demobreadshop.service.impl;
 import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
 import demobreadshop.domain.enums.*;
+import demobreadshop.domain.projection.SalaryHistoryProjection;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -86,6 +87,7 @@ public class SaleServiceImpl implements SaleService {
                         client,
                         wholePrice,
                         debtPrice,
+                        product.getPrice(),
                         debtPrice == 0 ? Status.PAYED : Status.DEBT
                 );
 
@@ -181,6 +183,11 @@ public class SaleServiceImpl implements SaleService {
         return repository.findAllByType(Status.DEBT);
     }
 
+    @Override
+    public List<SalaryHistoryProjection> getSalaryHistory(long id) {
+        return repository.findAllSalaryHistory(id);
+    }
+
     private void createPaymentArchive(Sale sale, double costCard, double costCash) {
         if (costCard != 0.0) {
             archiveRepository.save(
@@ -228,4 +235,5 @@ public class SaleServiceImpl implements SaleService {
         DeliveryServiceImpl.changeBalanceDelivery(delivery, output, isExist, productListRepository, deliveryRepository);
     }
 }
+
 // Published by Sardorbek Matniyazov

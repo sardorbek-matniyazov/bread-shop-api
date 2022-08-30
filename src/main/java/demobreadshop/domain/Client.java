@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,12 +18,13 @@ import java.util.Set;
 @AllArgsConstructor
 public class Client extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "full_name", nullable = false, unique = true)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
+    @Column(name = "comment")
     private String comment;
 
     public Client(long id, String fullName, String phoneNumber, String comment) {

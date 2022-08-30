@@ -31,14 +31,19 @@ public class StatisticsController {
         return ResponseEntity.ok(service.outcomeStat());
     }
 
+    @GetMapping(value = "client-statistics")
+    public HttpEntity<?> clientStatistics(){
+        return ResponseEntity.ok(service.clientStat());
+    }
+
     @GetMapping(value = "car-seller")
     public HttpEntity<?> getAllCarSellerInfo() {
-        return ResponseEntity.ok(service.getAllCarSellerInfo(RoleName.SELLER_CAR));
+        return ResponseEntity.ok(service.getAllSellerInfo(RoleName.SELLER_CAR));
     }
 
     @GetMapping(value = "admin-seller")
     public HttpEntity<?> getAllAdminSellerInfo() {
-        return ResponseEntity.ok(service.getAllCarSellerInfo(RoleName.SELLER_ADMIN));
+        return ResponseEntity.ok(service.getAllSellerInfo(RoleName.SELLER_ADMIN));
     }
 
     @GetMapping(value = "material-decrease")
@@ -65,5 +70,11 @@ public class StatisticsController {
     public HttpEntity<?> getAllSellerStatistics() {
         return ResponseEntity.ok(service.getAllSellerStatistics());
     }
+
+    @GetMapping(value = "sale-info")
+    public HttpEntity<?> getAllSaleInfoStatistics() {
+        return ResponseEntity.ok(service.getSaleInfo());
+    }
+
 
 }

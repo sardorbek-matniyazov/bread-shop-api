@@ -30,17 +30,24 @@ public class Sale extends BaseEntity {
     @ManyToOne
     private Client client;
 
+    @Column(name = "whole_price")
     private double wholePrice;
 
+    @Column(name = "debt_price")
     private double debtPrice;
+
+    @Column(name = "product_price")
+    private double productPrice;
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status type;
 
-    public Sale(Output output, Client client, double wholePrice, double debtPrice, Status type) {
+    public Sale(Output output, Client client, double wholePrice, double debtPrice, double productPrice, Status type) {
         this.output = output;
         this.client = client;
+        this.productPrice = productPrice;
         this.wholePrice = wholePrice;
         this.debtPrice = debtPrice;
         this.type = type;
@@ -48,6 +55,7 @@ public class Sale extends BaseEntity {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "sale_type")
     private SaleType saleType;
 
     @JsonValue

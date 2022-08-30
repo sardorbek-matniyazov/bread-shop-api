@@ -2,6 +2,7 @@ package demobreadshop.service;
 
 import demobreadshop.domain.ProductList;
 import demobreadshop.domain.WareHouse;
+import demobreadshop.domain.projection.ProductProjection;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.ProductDto;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface ProductService {
-    List<WareHouse> getAll();
+    List<ProductProjection> getAll();
 
     List<WareHouse> getAllWarehouseProducts();
 

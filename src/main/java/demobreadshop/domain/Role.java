@@ -22,6 +22,7 @@ import java.util.Set;
 @Data
 public class Role extends BaseEntity implements GrantedAuthority {
     @Enumerated(EnumType.STRING)
+    @Column(name = "role_name")
     private RoleName roleName;
 
     public Role(long id, Timestamp createdDate, Timestamp updatedDate, String createdBy) {

@@ -17,14 +17,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WareHouse extends BaseEntity {
-    @Column(unique = true, nullable = false)
+    @Column(name = "wh_name", unique = true, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "wh_price", nullable = false)
     private double price;
-
-    // comment for the product
-    private String description;
 
     // type kg
     @Column(name = "house_amount")
@@ -32,6 +29,7 @@ public class WareHouse extends BaseEntity {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "product_type")
     private ProductType type;
 
     @JsonIgnore
@@ -43,10 +41,9 @@ public class WareHouse extends BaseEntity {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "material", orphanRemoval = true)
     private Set<Input> input;
 
-    public WareHouse(String name, double price, String description, ProductType type) {
+    public WareHouse(String name, double price, ProductType type) {
         this.name = name;
         this.price = price;
-        this.description = description;
         this.type = type;
     }
 }

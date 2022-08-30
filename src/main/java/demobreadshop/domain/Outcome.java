@@ -16,16 +16,17 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Outcome extends BaseEntity {
-    @Column(nullable = false)
+    @Column(name = "outcome_amount", nullable = false)
     private double amount;
 
     @ManyToOne()
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "outcome_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private OutcomeType type;
 
+    @Column(name = "outcome_comment")
     private String comment;
 
     public Outcome(double amount, OutcomeType type, String comment) {

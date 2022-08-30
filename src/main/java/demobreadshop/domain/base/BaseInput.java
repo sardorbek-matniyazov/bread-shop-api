@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
@@ -19,5 +20,6 @@ public abstract class BaseInput extends BaseEntity {
     @ManyToOne(cascade = CascadeType.MERGE)
     private WareHouse material;
 
+    @Column(name = "material_amount")
     private double amount;
 }

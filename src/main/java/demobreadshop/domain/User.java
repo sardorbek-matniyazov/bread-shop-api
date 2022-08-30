@@ -27,21 +27,23 @@ import java.util.Set;
 @Data
 public class User extends BaseEntity implements UserDetails {
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "full_name", nullable = false, unique = true)
     private String fullName;
 
     @Size(min = 4, max = 50, message = "Phone number should be in [4, 50]")
     @NotBlank(message = "phone number shouldn't be null")
-    @Column(nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @NotNull(message = "User Kpi shouldn't be null")
+    @Column(name = "user_kpi")
     private double userKPI;
 
+    @Column(name = "balance")
     private double balance;
 
     @OnDelete(action = OnDeleteAction.NO_ACTION)

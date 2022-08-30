@@ -3,6 +3,7 @@ package demobreadshop.service;
 import demobreadshop.domain.PayArchive;
 import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.Status;
+import demobreadshop.domain.projection.SalaryHistoryProjection;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -23,4 +24,6 @@ public interface SaleService {
     MyResponse payForDebt(DebtDto dto);
 
     List<Sale> getAllByType(Status debt);
+
+    List<SalaryHistoryProjection> getSalaryHistory(long id);
 }

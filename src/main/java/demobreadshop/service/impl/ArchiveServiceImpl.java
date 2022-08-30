@@ -22,20 +22,23 @@ public class ArchiveServiceImpl implements ArchiveService {
     private final OutcomeRepository outcomeRepository;
     private final RoleRepository roleRepository;
     private final InputRepository inputRepository;
+    private final ClientRepository clientRepository;
 
     @Autowired
-    public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository, InputRepository inputRepository) {
+    public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository, InputRepository inputRepository, ClientRepository clientRepository) {
         this.saleRepository = saleRepository;
         this.payArchiveRepository = payArchiveRepository;
         this.outcomeRepository = outcomeRepository;
         this.roleRepository = roleRepository;
         this.inputRepository = inputRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
     public Map<String, Double> getAll() {
         Map<String, Double> map = new HashMap<>();
         map.put("WholeIncome", saleRepository.sumOfIncome());
+        map.put("countClients", clientRepository.countAll());
         map.put("WholeDebt", saleRepository.sumOfDebt());
         map.put("Income", payArchiveRepository.sumOfAll());
         map.put("CashIncome", payArchiveRepository.sumOfAllCash(PayType.CASH.name()));
@@ -53,7 +56,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public List<SaleStatistics> getAllCarSellerInfo(RoleName seller) {
+    public List<SaleStatistics> getAllSellerInfo(RoleName seller) {
         Role byRoleName = roleRepository.getByRoleName(seller);
         return saleRepository.getAllUserInfoByRoleId(byRoleName.getId());
     }
@@ -82,5 +85,15 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<SellerStatistics> getAllSellerStatistics() {
         return saleRepository.getAllUserStatistics();
+    }
+
+    @Override
+    public List<ClientStatistics> clientStat() {
+        return saleRepository.getAllClientSale();
+    }
+
+    @Override
+    public List<SaleInfoProjection> getSaleInfo() {
+        return saleRepository.getSaleInfo();
     }
 }
