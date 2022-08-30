@@ -1,5 +1,6 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.domain.Outcome;
 import demobreadshop.domain.Role;
 import demobreadshop.domain.User;
 import demobreadshop.domain.enums.OutcomeType;
@@ -123,5 +124,10 @@ public class ArchiveServiceImpl implements ArchiveService {
         map.put("debtPrice", debtPrice);
         map.put("paidPrice", Math.abs((debtPrice != null ? debtPrice : 0) - (wholePrice != null ? wholePrice : 0)));
         return map;
+    }
+
+    @Override
+    public List<Outcome> getAllOutcomeHistoryInfo(Long id) {
+        return outcomeRepository.findAllByUserId(id);
     }
 }

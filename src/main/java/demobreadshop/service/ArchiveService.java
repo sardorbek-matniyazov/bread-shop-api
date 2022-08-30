@@ -1,5 +1,6 @@
 package demobreadshop.service;
 
+import demobreadshop.domain.Outcome;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
 
@@ -32,4 +33,6 @@ public interface ArchiveService {
     List<AllClientIncomeProjection> getAllClientIncome();
 
     Map<String, Double> getFinanceInfo();
+
+    List<Outcome> getAllOutcomeHistoryInfo(Long id);
 }

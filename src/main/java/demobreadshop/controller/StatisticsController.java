@@ -47,6 +47,11 @@ public class StatisticsController {
         return ResponseEntity.ok(service.getAllIncomeHistoryInfo(id));
     }
 
+    @GetMapping(value = "outcome-history/{id}")
+    public HttpEntity<?> getAllOutcomeHistoryInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getAllOutcomeHistoryInfo(id));
+    }
+
     @GetMapping(value = "allClientIncome")
     public HttpEntity<?> getAllClientIncome() {
         return ResponseEntity.ok(service.getAllClientIncome());
