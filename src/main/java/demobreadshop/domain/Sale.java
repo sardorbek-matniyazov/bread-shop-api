@@ -66,6 +66,7 @@ public class Sale extends BaseEntity {
         response.put("product", this.getOutput().getMaterial().getName());
         response.put("client", this.getClient().getFullName());
         response.put("wholePrice", this.getWholePrice());
+        response.put("paidPrice", this.getWholePrice() - this.getDebtPrice());
         response.put("debtPrice", this.getDebtPrice());
         response.put("type", this.getType());
         response.put("createdBy", this.getCreatedBy());

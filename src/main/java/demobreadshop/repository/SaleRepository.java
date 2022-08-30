@@ -100,4 +100,14 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     List<ClientSumStatistics> getAllClientPayedSums();
+
+    // qarizdarlar sani
+    @Query(
+            value = "select count(c.id), c.full_name\n" +
+                    "from sale s join client c on s.client_id = c.id\n" +
+                    "where s.status = 'DEBT'\n" +
+                    "group by c.full_name;",
+            nativeQuery = true
+    )
+    List<?> countOfDebtClients();
 }

@@ -37,12 +37,9 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public Map<String, Double> getAll() {
         Map<String, Double> map = new HashMap<>();
-        map.put("WholeIncome", saleRepository.sumOfIncome());
         map.put("countClients", clientRepository.countAll());
-        map.put("WholeDebt", saleRepository.sumOfDebt());
-        map.put("Income", payArchiveRepository.sumOfAll());
-        map.put("CashIncome", payArchiveRepository.sumOfAllCash(PayType.CASH.name()));
-        map.put("CardIncome", payArchiveRepository.sumOfAllCash(PayType.CARD.name()));
+        map.put("countDebt", saleRepository.countOfDebtClients().size() * 1.0);
+        map.put("sumDebt", saleRepository.sumOfDebt());
         return map;
     }
 
