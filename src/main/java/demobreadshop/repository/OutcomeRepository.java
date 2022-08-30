@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OutcomeRepository extends JpaRepository<Outcome, Long> {
     @Query(
-            value = "SELECT SUM(amount) FROM outcome WHERE type = ?1",
+            value = "SELECT SUM(outcome_amount) FROM outcome WHERE outcome_type = ?1",
             nativeQuery = true
     )
     Double sumByType(String name);
