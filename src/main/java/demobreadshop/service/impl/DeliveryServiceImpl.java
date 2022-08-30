@@ -120,6 +120,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Delivery delivery = repository.findByDelivererId(user.getId());
         Set<ProductList> balance;
+
         try {
             balance = delivery.getBalance();
         } catch (NullPointerException e) {

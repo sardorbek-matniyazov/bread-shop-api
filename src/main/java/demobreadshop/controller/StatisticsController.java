@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +40,21 @@ public class StatisticsController {
     @GetMapping(value = "car-seller")
     public HttpEntity<?> getAllCarSellerInfo() {
         return ResponseEntity.ok(service.getAllSellerInfo(RoleName.SELLER_CAR));
+    }
+
+    @GetMapping(value = "income-history/{id}")
+    public HttpEntity<?> getAllIncomeHistoryInfo(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getAllIncomeHistoryInfo(id));
+    }
+
+    @GetMapping(value = "allClientIncome")
+    public HttpEntity<?> getAllClientIncome() {
+        return ResponseEntity.ok(service.getAllClientIncome());
+    }
+
+    @GetMapping(value = "finance")
+    public HttpEntity<?> getFinance() {
+        return ResponseEntity.ok(service.getFinanceInfo());
     }
 
     @GetMapping(value = "admin-seller")

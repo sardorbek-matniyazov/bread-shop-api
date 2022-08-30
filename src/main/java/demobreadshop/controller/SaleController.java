@@ -55,11 +55,6 @@ public class SaleController {
         return ResponseEntity.ok(service.getArchives(id));
     }
 
-    @GetMapping(value = "salaryHistory/{id}")
-    public HttpEntity<?> getSalaryHistory(@PathVariable(value = "id") long id) {
-        return ResponseEntity.ok(service.getSalaryHistory(id));
-    }
-
     @PostMapping(value = "/sell")
     public HttpEntity<?> sell(@RequestBody @Valid SaleDto dto) {
         MyResponse sell = service.sell(dto);

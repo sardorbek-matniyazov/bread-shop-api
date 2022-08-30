@@ -5,6 +5,7 @@ import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.GroupStatistics;
 import demobreadshop.domain.projection.InputStatistics;
+import demobreadshop.domain.projection.SalaryHistoryProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,11 +24,19 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     List<GroupStatistics> getAllGroupStatistics(Long roleId);
 
     @Query(
-            value = "select wh.id as productId, sum(i.amount) as amount, wh.name as name, wh.price as price, wh.updated_at as updatedAt, sum(i.amount * wh.price) as wholePrice\n" +
+            value = "select wh.id as productId, sum(i.material_amount) as amount, wh.wh_name as name, wh.updated_at as updatedAt\n" +
                     "from input i join ware_house wh on wh.id = i.material_id\n" +
-                    "where i.type = ?1 \n" +
+                    "where wh.input_type = ?1 \n" +
                     "group by wh.id;",
             nativeQuery = true
     )
     List<InputStatistics> getAllInputStatistics(String type);
+
+    @Query(
+            value = "select i.material_amount as amount, i.user_kpi_value, i.created_by\n" +
+                    "from input i\n" +
+                    "where i.created_by = ?1;",
+            nativeQuery = true
+    )
+    List<SalaryHistoryProjection> getAllInputSalaryHistory(String fullName);
 }

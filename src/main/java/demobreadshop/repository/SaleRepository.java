@@ -81,7 +81,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "select sum(pa.archive_amount) as amount, s.id, pa.pay_type\n" +
                     "from sale s join pay_archive pa on s.id = pa.sale_id\n" +
                     "group by pa.pay_type, s.id\n" +
-                    ") select sum(s.whole_price) as wholePrice, sum(bum.amount) as typePrice, bum.pay_type as payType\n" +
+                    ") select sum(bum.amount) as amount, bum.pay_type as payType\n" +
                     "from sale s join bum on bum.id = s.id\n" +
                     " group by bum.pay_type;",
             nativeQuery = true
@@ -110,4 +110,16 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     List<?> countOfDebtClients();
+
+    @Query(
+            value = "with bum as (\n" +
+                    "select sum(pa.archive_amount) as amount, s.id, pa.pay_type, client_id\n" +
+                    "from sale s join pay_archive pa on s.id = pa.sale_id\n" +
+                    "group by pa.pay_type, s.id\n" +
+                    ") select sum(bum.amount) as amount, c.full_name as fullName\n" +
+                    "from client c join bum on bum.client_id = c.id\n" +
+                    "group by c.full_name;",
+            nativeQuery = true
+    )
+    List<AllClientIncomeProjection> allClientIncome();
 }

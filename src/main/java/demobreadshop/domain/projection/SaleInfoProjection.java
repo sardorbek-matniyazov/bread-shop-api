@@ -1,7 +1,6 @@
 package demobreadshop.domain.projection;
 
 public interface SaleInfoProjection {
-    Double getWholePrice();
-    Double getTypePrice();
+    Double getAmount();
     String getPayType();
 }

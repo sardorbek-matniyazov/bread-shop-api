@@ -28,6 +28,14 @@ public class Input extends BaseInput {
     @Column(name = "product_price")
     private double productPrice;
 
+    @Column(name = "user_kpi_value")
+    private double kpiValue;
+
+    public Input(WareHouse material, double amount, ProductType type, Double kpiValue) {
+        super(material, amount);
+        this.type = type;
+        this.kpiValue = kpiValue;
+    }
     public Input(WareHouse material, double amount, ProductType type) {
         super(material, amount);
         this.type = type;

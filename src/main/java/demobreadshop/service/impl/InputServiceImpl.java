@@ -62,11 +62,14 @@ public class InputServiceImpl implements InputService {
             product.setAmount(product.getAmount() + dto.getAmount());
             changeMaterials(product.getMaterials(), dto.getAmount(), ConstProperties.OPERATOR_MINUS);
 
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
             Input input = repository.save(
                     new Input(
                             wareHouseRepository.save(product),
                             dto.getAmount(),
-                            product.getType()
+                            product.getType(),
+                            user.getUserKPI()
                     )
             );
             changeMoneyWithKPI(input, ConstProperties.OPERATOR_PLUS);

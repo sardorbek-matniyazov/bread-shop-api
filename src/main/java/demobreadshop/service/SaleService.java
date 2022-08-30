@@ -24,6 +24,4 @@ public interface SaleService {
     MyResponse payForDebt(DebtDto dto);
 
     List<Sale> getAllByType(Status debt);
-
-    List<SalaryHistoryProjection> getSalaryHistory(long id);
 }

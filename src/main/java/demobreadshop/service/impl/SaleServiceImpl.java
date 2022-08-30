@@ -183,11 +183,6 @@ public class SaleServiceImpl implements SaleService {
         return repository.findAllByType(Status.DEBT);
     }
 
-    @Override
-    public List<SalaryHistoryProjection> getSalaryHistory(long id) {
-        return repository.findAllSalaryHistory(id);
-    }
-
     private void createPaymentArchive(Sale sale, double costCard, double costCash) {
         if (costCard != 0.0) {
             archiveRepository.save(

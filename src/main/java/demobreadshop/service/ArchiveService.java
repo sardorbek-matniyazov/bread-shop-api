@@ -27,4 +27,9 @@ public interface ArchiveService {
 
     List<SaleInfoProjection> getSaleInfo();
 
+    List<SalaryHistoryProjection> getAllIncomeHistoryInfo(Long id);
+
+    List<AllClientIncomeProjection> getAllClientIncome();
+
+    Map<String, Double> getFinanceInfo();
 }
