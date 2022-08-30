@@ -42,7 +42,7 @@ public class Input extends BaseInput {
     }
 
     @JsonValue
-    public Map<String, Object> toJson(){
+    public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.getId());
         response.put("product", getMaterial().getName());
