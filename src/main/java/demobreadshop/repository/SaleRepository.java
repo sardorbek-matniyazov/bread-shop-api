@@ -41,7 +41,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             value = "with bum as (select sum(input.material_amount * pl.material_amount) as sum, pl.material_id as material_id\n" +
                     "from input join product_list pl on input.material_id = pl.warehouse_fk\n" +
                     "group by pl.material_id)\n" +
-                    "select bum.sum as sum, w.wh_name as name, w.wh_price as price, bum.sum * w.wh_price as wholePrice, w.id\n" +
+                    "select bum.sum as amount, w.wh_name as name, w.wh_price as price, bum.sum * w.wh_price as wholePrice, w.id\n" +
                     "from bum inner join ware_house w on bum.material_id = w.id;",
             nativeQuery = true
     )

@@ -69,7 +69,8 @@ public class InputServiceImpl implements InputService {
                             wareHouseRepository.save(product),
                             dto.getAmount(),
                             product.getType(),
-                            user.getUserKPI()
+                            user.getUserKPI(),
+                            product.getPrice()
                     )
             );
             changeMoneyWithKPI(input, ConstProperties.OPERATOR_PLUS);
