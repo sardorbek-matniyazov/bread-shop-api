@@ -103,39 +103,33 @@
 			</plugin>
 		</plugins>
 	</build>
-	<profiles>
-		<profile>
-			<id>
-				demo
-			</id>
-			<properties>
-				<spring.profiles.active>
-					demo
-				</spring.profiles.active>
-			</properties>
-		</profile>
-		<profile>
-			<id>
-				demo-maven-compiler
-			</id>
-			<properties>
-				<spring.profiles.active>
-					demo
-				</spring.profiles.active>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<configuration>
-							<source>1.8</source>
-							<target>1.8</target>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+<!--	<profiles>-->
+<!--		<profile>-->
+<!--			<id>-->
+<!--				demo-->
+<!--			</id>-->
+<!--			<properties>-->
+<!--				<spring.profiles.active>-->
+<!--					demo-->
+<!--				</spring.profiles.active>-->
+<!--			</properties>-->
+<!--			<build>-->
+<!--				<plugins>-->
+<!--					<plugin>-->
+<!--						<groupId>org.springframework.boot</groupId>-->
+<!--						<artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--						<configuration>-->
+<!--							<excludes>-->
+<!--								<exclude>-->
+<!--									<groupId>org.projectlombok</groupId>-->
+<!--									<artifactId>lombok</artifactId>-->
+<!--								</exclude>-->
+<!--							</excludes>-->
+<!--						</configuration>-->
+<!--					</plugin>-->
+<!--				</plugins>-->
+<!--			</build>-->
+<!--		</profile>-->
+<!--	</profiles>-->
 
 </project>

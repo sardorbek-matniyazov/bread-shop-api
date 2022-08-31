@@ -9,15 +9,19 @@ import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
 import demobreadshop.repository.*;
 import demobreadshop.service.ArchiveService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ArchiveServiceImpl implements ArchiveService {
     private final SaleRepository saleRepository;
     private final PayArchiveRepository payArchiveRepository;
@@ -89,8 +93,12 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public List<ClientStatistics> clientStat() {
-        return saleRepository.getAllClientSale();
+    public List<ClientStatistics> clientStat(String start, String end) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime localDateTime = LocalDateTime.parse(start, timeFormatter);
+        System.out.println(localDateTime);
+        log.error(localDateTime.toString());
+        return saleRepository.getAllClientSale(start, end);
     }
 
     @Override

@@ -62,10 +62,11 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query(
             value = "select c.full_name as fullName, c.phone_number as phoneNumber, c.id as clientId, sum(s.whole_price) as wholePrice\n" +
                     "from sale s join client c on c.id = s.client_id\n" +
+                    "where s.created_at >= ?1 and s.created_at <= ?2\n" +
                     "group by c.created_by, c.id;",
             nativeQuery = true
     )
-    List<ClientStatistics> getAllClientSale();
+    List<ClientStatistics> getAllClientSale(String start, String end);
 
     // kpi bo'yincha qo'shilg'an summa istoriyasi
     @Query(

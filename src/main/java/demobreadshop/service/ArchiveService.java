@@ -24,7 +24,7 @@ public interface ArchiveService {
 
     List<SellerStatistics> getAllSellerStatistics();
 
-    List<ClientStatistics> clientStat();
+    List<ClientStatistics> clientStat(String start, String end);
 
     List<SaleInfoProjection> getSaleInfo();
 
