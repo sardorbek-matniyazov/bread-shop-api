@@ -120,14 +120,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<?> countOfDebtClients();
 
     @Query(
-            value = "with bum as\n" +
-                    "    (select sum(pa.archive_amount) as sum, s.id, s.created_by, s.created_at\n" +
-                    "     from sale s join pay_archive pa on s.id = pa.sale_id\n" +
-                    "     where s.created_at >= ?1 and s.created_at <= ?2\n" +
-                    "     group by s.id, s.created_by)\n" +
-                    "select sum(bum.sum) as amount, bum.created_by as fullName, u.users_id as userId\n" +
-                    "from bum join (users u join users_roles ur on u.id = ur.users_id) u on bum.created_by = u.full_name\n" +
-                    "group by bum.created_by, u.users_id;",
+            value = "select c.full_name as fullName, sum(s.whole_price) as amount\n" +
+                    "from sale s join client c on c.id = s.client_id\n" +
+                    "where s.created_at >= ?1 and s.created_at <= ?2\n" +
+                    "group by c.created_by, c.id;",
             nativeQuery = true
     )
     List<AllClientIncomeProjection> allClientIncome(Timestamp start, Timestamp end);
