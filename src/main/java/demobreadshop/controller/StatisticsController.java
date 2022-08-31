@@ -27,103 +27,103 @@ public class StatisticsController {
 
     // k -
     @GetMapping(value = "outcome")
-    public HttpEntity<?> outcomeStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end){
+    public HttpEntity<?> outcomeStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end){
         return ResponseEntity.ok(service.outcomeStat(start, end));
     }
 
     // k -
     @GetMapping(value = "client-statistics")
-    public HttpEntity<?> clientStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end){
+    public HttpEntity<?> clientStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end){
         return ResponseEntity.ok(service.clientStat(start, end));
     }
 
     // k -
     @GetMapping(value = "car-seller")
-    public HttpEntity<?> getAllCarSellerInfo(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllCarSellerInfo(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllSellerInfo(RoleName.SELLER_CAR, start, end));
     }
 
     // k -
     @GetMapping(value = "income-history/{id}")
-    public HttpEntity<?> getAllIncomeHistoryInfo(@PathVariable Long id, @RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllIncomeHistoryInfo(@PathVariable Long id, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllIncomeHistoryInfo(id, start, end));
     }
 
     // k -
     @GetMapping(value = "outcome-history/{id}")
-    public HttpEntity<?> getAllOutcomeHistoryInfo(@PathVariable Long id, @RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllOutcomeHistoryInfo(@PathVariable Long id, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllOutcomeHistoryInfo(id, start, end));
     }
 
     // k -
     @GetMapping(value = "car-seller/{id}")
-    public HttpEntity<?> getAllCarSellerSaleInfo(@PathVariable Long id, @RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllCarSellerSaleInfo(@PathVariable Long id, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllCarSellerSaleInfo(id, start, end));
     }
 
     // k -
     @GetMapping(value = "admin-seller/{id}")
-    public HttpEntity<?> getAllAdminSellerSaleInfo(@PathVariable Long id, @RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllAdminSellerSaleInfo(@PathVariable Long id, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllAdminSellerSaleInfo(id, start, end));
     }
 
     // k -
     @GetMapping(value = "allClientIncome")
-    public HttpEntity<?> getAllClientIncome(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllClientIncome(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllClientIncome(start, end));
     }
 
     // k -
     @GetMapping(value = "finance")
-    public HttpEntity<?> getFinance(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getFinance(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getFinanceInfo(start, end));
     }
 
     // k-
     @GetMapping(value = "admin-seller")
-    public HttpEntity<?> getAllAdminSellerInfo(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllAdminSellerInfo(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllSellerInfo(RoleName.SELLER_ADMIN, start, end));
     }
 
     // k -
     @GetMapping(value = "material-decrease")
-    public HttpEntity<?> getMaterialDecrease(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getMaterialDecrease(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllMaterialDecrease(start, end));
     }
 
     // k -
     @GetMapping(value = "group-statistics")
-    public HttpEntity<?> getAllGroupStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllGroupStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllGroupStatistics(start, end));
     }
 
     // k -
     @GetMapping(value = "warehouse-statistics")
-    public HttpEntity<?> getAllWarehouseStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllWarehouseStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllWarehouseStatistics(start, end));
     }
 
     // k
     @GetMapping(value = "product-statistics")
-    public HttpEntity<?> getAllProductStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllProductStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllProductStatistics(ProductType.PRODUCT, start, end));
     }
 
     // k -
     @GetMapping(value = "material-statistics")
-    public HttpEntity<?> getAllMaterialStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllMaterialStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllProductStatistics(ProductType.MATERIAL, start, end));
     }
 
     // k -
     @GetMapping(value = "seller-statistics")
-    public HttpEntity<?> getAllSellerStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllSellerStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllSellerStatistics(start, end));
     }
 
     // k -
     @GetMapping(value = "sale-info")
-    public HttpEntity<?> getAllSaleInfoStatistics(@RequestParam(value = "start") String start, @RequestParam(value = "end") String end) {
+    public HttpEntity<?> getAllSaleInfoStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getSaleInfo(start, end));
     }
 }

@@ -153,12 +153,13 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     static Timestamp getTime(String time) {
+        if (time == null) return null;
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(time);
             return new Timestamp(date.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return new Timestamp(661932679441L);
+        return null;
     }
 }
