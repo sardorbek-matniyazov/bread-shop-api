@@ -32,7 +32,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "FROM (sale s join (users k JOIN users_roles r ON k.id = r.users_id) u on s.created_by = u.full_name) u inner join output o on u.full_name = o.created_by\n" +
                     "where o.output_type='O_SALE' and u.roles_id = ?1 and o.created_at >= ?2 and o.created_at <= ?3\n" +
                     "group by u.full_name, u.user_kpi, u.users_id, u.roles_id, o.output_type)\n" +
-                    "select bum.amount / sqrt(bum.val) as amount, bum.allSum / sqrt(bum.val) as allSum, bum.user_kpi, bum.full_name, bum.userId as userId from bum;\n",
+                    "select bum.amount / sqrt(bum.val) as amount, bum.allSum / sqrt(bum.val) as allSum, bum.user_kpi as userKpi, bum.full_name as fullName, bum.userId as userId from bum;\n",
             nativeQuery = true
     )
     List<SaleStatistics> getAllUserInfoByRoleId(Long id, Timestamp time, Timestamp timestamp);
