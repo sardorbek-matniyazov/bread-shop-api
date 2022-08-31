@@ -21,7 +21,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // uliwmaliq qariz summalar
     @Query(
-            value = "SELECT SUM(debt_price) FROM sale where created_at >= ?1 and created_at <= ?2",
+            value = "SELECT SUM(debt_price) FROM sale",
             nativeQuery = true
     )
     Double sumOfDebt();
