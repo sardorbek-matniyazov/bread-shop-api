@@ -1,6 +1,8 @@
 server:
   port: 8088
 spring:
+  profiles:
+    active: spring.profiles.active
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Tashkent
