@@ -37,7 +37,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     )
     List<SaleStatistics> getAllUserInfoByRoleId(Long id, Timestamp time, Timestamp timestamp);
 
-    // isletilip atrg'an ingredientler statisticasi
+    // isletilip atrg'an ingredientler statisticasi l
     @Query(
             value = "with bum as (select sum(input.material_amount * pl.material_amount) as sum, pl.material_id as material_id\n" +
                     "from input join product_list pl on input.material_id = pl.warehouse_fk\n" +
