@@ -1,5 +1,6 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.Outcome;
 import demobreadshop.domain.Role;
 import demobreadshop.domain.Sale;
@@ -52,7 +53,10 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Map<String, Double> outcomeStat(String start, String end) {
         Map<String, Double> stat = new HashMap<>();
         for (OutcomeType type: OutcomeType.values()) {
-            stat.put(type.name(), outcomeRepository.sumByType(type.name(), getTime(start), getTime(end)));
+            if (start != null && end != null) {
+                stat.put(type.name(), outcomeRepository.sumByType(type.name(), getTime(start), getTime(end)));
+            }
+            else stat.put(type.name(), outcomeRepository.sumByType(type.name(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis())));
         }
         return stat;
     }
@@ -60,42 +64,66 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<SaleStatistics> getAllSellerInfo(RoleName seller, String start, String end) {
         Role byRoleName = roleRepository.getByRoleName(seller);
+        if (start == null && end == null) {
+            return saleRepository.getAllUserInfoByRoleId(byRoleName.getId(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return saleRepository.getAllUserInfoByRoleId(byRoleName.getId(), getTime(start), getTime(end));
     }
 
     @Override
     public List<MaterialDecreaseStat> getAllMaterialDecrease(String start, String end) {
+        if (start == null && end == null) {
+            return saleRepository.getAllMaterialDecrease(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return saleRepository.getAllMaterialDecrease(getTime(start), getTime(end));
     }
 
     @Override
     public List<GroupStatistics> getAllGroupStatistics(String start, String end) {
         Role byRoleName = roleRepository.getByRoleName(RoleName.WORKER);
+        if (start == null && end == null) {
+            return inputRepository.getAllGroupStatistics(byRoleName.getId(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return inputRepository.getAllGroupStatistics(byRoleName.getId(), getTime(start), getTime(end));
     }
 
     @Override
     public List<InputStatistics> getAllProductStatistics(ProductType type, String start, String end) {
+        if (start == null && end == null) {
+            return inputRepository.getAllInputStatistics(type.name(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return inputRepository.getAllInputStatistics(type.name(), getTime(start), getTime(end));
     }
 
     @Override
     public List<InputStatistics> getAllWarehouseStatistics(String start, String end) {
+        if (start == null && end == null) {
+            return inputRepository.getAllInputStatistics(ProductType.MATERIAL.name(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return inputRepository.getAllInputStatistics(ProductType.MATERIAL.name(), getTime(start), getTime(end));
     }
 
     @Override
     public List<SellerStatistics> getAllSellerStatistics(String start, String end) {
+        if (start == null && end == null) {
+            return saleRepository.getAllUserStatistics(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return saleRepository.getAllUserStatistics(getTime(start), getTime(end));
     }
 
     @Override
     public List<ClientStatistics> clientStat(String start, String end) {
+        if (start == null && end == null) {
+            return saleRepository.getAllClientSale(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return saleRepository.getAllClientSale(getTime(start), getTime(start));
     }
 
     @Override
     public List<SaleInfoProjection> getSaleInfo(String start, String end) {
+        if (start == null && end == null) {
+            return saleRepository.getSaleInfo(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return saleRepository.getSaleInfo(getTime(start), getTime(end));
     }
 
@@ -105,6 +133,9 @@ public class ArchiveServiceImpl implements ArchiveService {
         if (byId.isPresent()){
             User user = byId.get();
             if (user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.WORKER))) {
+                if (start == null && end == null) {
+                    return inputRepository.getAllInputSalaryHistory(user.getFullName(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+                }
                 return inputRepository.getAllInputSalaryHistory(user.getFullName(), getTime(start), getTime(end));
             }
         }
@@ -113,15 +144,29 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     public List<AllClientIncomeProjection> getAllClientIncome(String start, String end) {
+        if (start == null && end == null) {
+            return saleRepository.allClientIncome(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return saleRepository.allClientIncome(getTime(start), getTime(end));
     }
 
     @Override
     public Map<String, Double> getFinanceInfo(String start, String end) {
         Map<String, Double> map = new HashMap<>();
-        Double wholePrice = saleRepository.sumOfIncome(getTime(start), getTime(end));
+        Double wholePrice;
+        if (start == null && end == null) {
+            wholePrice =  saleRepository.sumOfIncome(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        } else {
+            wholePrice = saleRepository.sumOfIncome(getTime(start), getTime(end));
+        }
         map.put("wholePrice", wholePrice);
-        Double debtPrice = saleRepository.sumOfDebtByTime(getTime(start), getTime(end));
+
+        Double debtPrice;
+        if (start == null && end == null) {
+            debtPrice = saleRepository.sumOfDebtByTime(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        } else {
+            debtPrice = saleRepository.sumOfDebtByTime(getTime(start), getTime(end));
+        }
         map.put("debtPrice", debtPrice);
         map.put("paidPrice", Math.abs((debtPrice != null ? debtPrice : 0) - (wholePrice != null ? wholePrice : 0)));
         return map;
@@ -129,6 +174,9 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     public List<Outcome> getAllOutcomeHistoryInfo(Long id, String start, String end) {
+        if (start == null && end == null) {
+            return outcomeRepository.findAllByUserId(id, new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
         return outcomeRepository.findAllByUserId(id, getTime(start), getTime(end));
     }
 
@@ -137,6 +185,9 @@ public class ArchiveServiceImpl implements ArchiveService {
         Optional<User> byId = userRepository.findById(id);
         if (byId.isPresent()) {
             User user = byId.get();
+            if (start == null && end == null) {
+                return saleRepository.getAllSellerSales(user.getFullName(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            }
             return saleRepository.getAllSellerSales(user.getFullName(), getTime(start), getTime(end));
         }
         return null;
@@ -147,6 +198,9 @@ public class ArchiveServiceImpl implements ArchiveService {
         Optional<User> byId = userRepository.findById(id);
         if (byId.isPresent()) {
             User user = byId.get();
+            if (start == null && end == null) {
+                return saleRepository.getAllSellerSales(user.getFullName(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            }
             return saleRepository.getAllSellerSales(user.getFullName(), getTime(start), getTime(end));
         }
         return null;
