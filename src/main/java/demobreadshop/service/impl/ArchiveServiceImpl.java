@@ -144,7 +144,7 @@ public class ArchiveServiceImpl implements ArchiveService {
             }
             return saleRepository.findAllSalaryHistory(id, getTime(start), getTime(end));
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

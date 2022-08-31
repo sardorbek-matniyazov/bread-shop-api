@@ -28,11 +28,14 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // sellerler satiwina qaray qancha summa tapqani dastavchik ham admin seller ler
     @Query(
-            value = "with bum as (SELECT count(*) as val, sum(o.material_amount) as amount, sum(o.material_amount * u.user_kpi) as allSum, u.full_name, u.user_kpi, u.users_id as userId, u.roles_id as roleId\n" +
-                    "FROM (sale s join (users k JOIN users_roles r ON k.id = r.users_id) u on s.created_by = u.full_name) u inner join output o on u.full_name = o.created_by\n" +
-                    "where o.output_type='O_SALE' and u.roles_id = ?1 and o.created_at >= ?2 and o.created_at <= ?3\n" +
-                    "group by u.full_name, u.user_kpi, u.users_id, u.roles_id, o.output_type)\n" +
-                    "select bum.amount / sqrt(bum.val) as amount, bum.allSum / sqrt(bum.val) as allSum, bum.user_kpi as userKpi, bum.full_name as fullName, bum.userId as userId from bum;\n",
+            value = "with bum as(\n" +
+                    "    select s.created_by, o.material_amount as material_amount, sum(s.whole_price), sum(s.debt_price), sum(s.whole_price - s.debt_price)\n" +
+                    "from sale s join output o on o.id = s.output_id \n" +
+                    "where o.created_at >= ?2 and o.created_at <= ?3 \n" +
+                    "group by s.id, o.material_amount\n" +
+                    ") select u.full_name as fullName, bum.material_amount * u.user_kpi as allSum, u.user_kpi as userKpi, bum.material_amount as amount, u.users_id as userId\n" +
+                    "  from (users u join users_roles ur on u.id = ur.users_id) u join bum on bum.created_by = u.full_name\n" +
+                    "  where u.roles_id = ?1;",
             nativeQuery = true
     )
     List<SaleStatistics> getAllUserInfoByRoleId(Long id, Timestamp time, Timestamp timestamp);
