@@ -29,13 +29,13 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     // sellerler satiwina qaray qancha summa tapqani dastavchik ham admin seller ler
     @Query(
             value = "with bum as(\n" +
-                    "    select s.created_by, o.material_amount as material_amount, sum(s.whole_price), sum(s.debt_price), sum(s.whole_price - s.debt_price)\n" +
-                    "from sale s join output o on o.id = s.output_id \n" +
-                    "where o.created_at >= ?2 and o.created_at <= ?3 \n" +
-                    "group by s.id, o.material_amount\n" +
-                    ") select u.full_name as fullName, bum.material_amount * u.user_kpi as allSum, u.user_kpi as userKpi, bum.material_amount as amount, u.users_id as userId\n" +
-                    "  from (users u join users_roles ur on u.id = ur.users_id) u join bum on bum.created_by = u.full_name\n" +
-                    "  where u.roles_id = ?1;",
+                    "    select s.created_by, o.material_amount as material_amount, sum(s.whole_price), sum(s.debt_price), sum(s.whole_price - s.debt_price) " +
+                    "from sale s join output o on o.id = s.output_id " +
+                    "where o.created_at >= ?2 and o.created_at <= ?3 " +
+                    "group by s.id, o.material_amount " +
+                    ") select u.full_name as fullName, bum.material_amount * u.user_kpi as allSum, u.user_kpi as userKpi, bum.material_amount as amount, u.users_id as userId " +
+                    "  from (users u join users_roles ur on u.id = ur.users_id) u join bum on bum.created_by = u.full_name " +
+                    "  where u.roles_id = ?1",
             nativeQuery = true
     )
     List<SaleStatistics> getAllUserInfoByRoleId(Long id, Timestamp time, Timestamp timestamp);

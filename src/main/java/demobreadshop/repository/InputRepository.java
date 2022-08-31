@@ -27,15 +27,15 @@ public interface InputRepository extends JpaRepository<Input, Long> {
             value = "select wh.id as productId, sum(i.material_amount) as amount, wh.wh_name as name, wh.updated_at as updatedAt, sum(i.material_amount * i.product_price) as sum\n" +
                     "from input i join ware_house wh on wh.id = i.material_id\n" +
                     "where wh.product_type = ?1 and i.created_at >= ?2 and i.created_at <= ?3\n" +
-                    "group by wh.id;",
+                    "group by wh.id",
             nativeQuery = true
     )
     List<InputStatistics> getAllInputStatistics(String type, Timestamp time, Timestamp timestamp);
 
     @Query(
-            value = "select i.material_amount as amount, i.user_kpi_value, i.created_by\n" +
-                    "from input i\n" +
-                    "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3;",
+            value = "select i.material_amount as amount, i.user_kpi_value, i.created_by " +
+                    "from input i " +
+                    "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3",
             nativeQuery = true
     )
     List<SalaryHistoryProjection> getAllInputSalaryHistory(String fullName, Timestamp time, Timestamp timestamp);
