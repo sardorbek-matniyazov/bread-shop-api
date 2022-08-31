@@ -23,7 +23,6 @@ import java.util.*;
 @Slf4j
 public class ArchiveServiceImpl implements ArchiveService {
     private final SaleRepository saleRepository;
-    private final PayArchiveRepository payArchiveRepository;
     private final OutcomeRepository outcomeRepository;
     private final RoleRepository roleRepository;
     private final InputRepository inputRepository;
@@ -33,7 +32,6 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Autowired
     public ArchiveServiceImpl(SaleRepository saleRepository, PayArchiveRepository payArchiveRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository, InputRepository inputRepository, ClientRepository clientRepository, UserRepository userRepository) {
         this.saleRepository = saleRepository;
-        this.payArchiveRepository = payArchiveRepository;
         this.outcomeRepository = outcomeRepository;
         this.roleRepository = roleRepository;
         this.inputRepository = inputRepository;
@@ -93,16 +91,7 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     public List<ClientStatistics> clientStat(String start, String end) {
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2022-01-01");
-            Date go = new SimpleDateFormat("yyyy-MM-dd").parse("2022-12-12");
-            long from = date.getTime();
-            long to = go.getTime();
-            return saleRepository.getAllClientSale(new Timestamp(from), new Timestamp(to));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return saleRepository.getAllClientSale(getTime(start), getTime(start));
     }
 
     @Override
@@ -141,5 +130,15 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<Outcome> getAllOutcomeHistoryInfo(Long id) {
         return outcomeRepository.findAllByUserId(id);
+    }
+
+    static Timestamp getTime(String time) {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(time);
+            return new Timestamp(date.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new Timestamp(661932679441L);
     }
 }
