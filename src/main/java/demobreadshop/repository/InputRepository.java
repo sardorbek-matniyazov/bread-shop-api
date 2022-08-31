@@ -2,13 +2,13 @@ package demobreadshop.repository;
 
 import demobreadshop.domain.Input;
 import demobreadshop.domain.enums.ProductType;
-import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.GroupStatistics;
 import demobreadshop.domain.projection.InputStatistics;
 import demobreadshop.domain.projection.SalaryHistoryProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface InputRepository extends JpaRepository<Input, Long> {
@@ -21,22 +21,22 @@ public interface InputRepository extends JpaRepository<Input, Long> {
                     "group by u.full_name, u.user_kpi, u.users_id",
             nativeQuery = true
     )
-    List<GroupStatistics> getAllGroupStatistics(Long roleId);
+    List<GroupStatistics> getAllGroupStatistics(Long roleId, Timestamp time, Timestamp timestamp);
 
     @Query(
             value = "select wh.id as productId, sum(i.material_amount) as amount, wh.wh_name as name, wh.updated_at as updatedAt, sum(i.material_amount * i.product_price) as sum\n" +
                     "from input i join ware_house wh on wh.id = i.material_id\n" +
-                    "where wh.product_type = ?1\n" +
+                    "where wh.product_type = ?1 and i.created_at >= ?2 and i.created_at <= ?3\n" +
                     "group by wh.id;",
             nativeQuery = true
     )
-    List<InputStatistics> getAllInputStatistics(String type);
+    List<InputStatistics> getAllInputStatistics(String type, Timestamp time, Timestamp timestamp);
 
     @Query(
             value = "select i.material_amount as amount, i.user_kpi_value, i.created_by\n" +
                     "from input i\n" +
-                    "where i.created_by = ?1;",
+                    "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3;",
             nativeQuery = true
     )
-    List<SalaryHistoryProjection> getAllInputSalaryHistory(String fullName);
+    List<SalaryHistoryProjection> getAllInputSalaryHistory(String fullName, Timestamp time, Timestamp timestamp);
 }

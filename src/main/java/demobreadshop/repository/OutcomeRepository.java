@@ -1,18 +1,22 @@
 package demobreadshop.repository;
 
 import demobreadshop.domain.Outcome;
-import demobreadshop.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface OutcomeRepository extends JpaRepository<Outcome, Long> {
     @Query(
-            value = "SELECT SUM(outcome_amount) FROM outcome WHERE outcome_type = ?1",
+            value = "SELECT SUM(outcome_amount) FROM outcome WHERE outcome_type = ?1 and created_at >= ?2 and created_at <= ?3",
             nativeQuery = true
     )
-    Double sumByType(String name);
+    Double sumByType(String name, Timestamp time, Timestamp timestamp);
 
-    List<Outcome> findAllByUserId(Long user_id);
+    @Query(
+            value = "select * from outcome where user_id = ?1 and created_at >= ?2 and created_at <= ?3;\n",
+            nativeQuery = true
+    )
+    List<Outcome> findAllByUserId(Long user_id, Timestamp time, Timestamp timestamp);
 }

@@ -31,6 +31,7 @@ public class OutcomeController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
     }
 
+    // k
     @GetMapping(value = "all")
     public HttpEntity<?> all(){
         return ResponseEntity.ok(service.getAll());

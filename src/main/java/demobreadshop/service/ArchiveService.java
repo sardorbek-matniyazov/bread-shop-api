@@ -1,6 +1,7 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.Outcome;
+import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
@@ -11,29 +12,33 @@ import java.util.Map;
 public interface ArchiveService {
     Map<String, Double> getAll();
 
-    Map<String, Double> outcomeStat();
+    Map<String, Double> outcomeStat(String start, String end);
 
-    List<SaleStatistics> getAllSellerInfo(RoleName sellerAdmin);
+    List<SaleStatistics> getAllSellerInfo(RoleName sellerAdmin, String start, String end);
 
-    List<MaterialDecreaseStat> getAllMaterialDecrease();
+    List<MaterialDecreaseStat> getAllMaterialDecrease(String start, String end);
 
-    List<GroupStatistics> getAllGroupStatistics();
+    List<GroupStatistics> getAllGroupStatistics(String start, String end);
 
-    List<InputStatistics> getAllProductStatistics(ProductType material);
+    List<InputStatistics> getAllProductStatistics(ProductType material, String start, String end);
 
-    List<InputStatistics> getAllWarehouseStatistics();
+    List<InputStatistics> getAllWarehouseStatistics(String start, String end);
 
-    List<SellerStatistics> getAllSellerStatistics();
+    List<SellerStatistics> getAllSellerStatistics(String start, String end);
 
     List<ClientStatistics> clientStat(String start, String end);
 
-    List<SaleInfoProjection> getSaleInfo();
+    List<SaleInfoProjection> getSaleInfo(String start, String end);
 
-    List<SalaryHistoryProjection> getAllIncomeHistoryInfo(Long id);
+    List<SalaryHistoryProjection> getAllIncomeHistoryInfo(Long id, String start, String end);
 
-    List<AllClientIncomeProjection> getAllClientIncome();
+    List<AllClientIncomeProjection> getAllClientIncome(String start, String end);
 
-    Map<String, Double> getFinanceInfo();
+    Map<String, Double> getFinanceInfo(String start, String end);
 
-    List<Outcome> getAllOutcomeHistoryInfo(Long id);
+    List<Outcome> getAllOutcomeHistoryInfo(Long id, String start, String end);
+
+    List<Sale> getAllCarSellerSaleInfo(Long id, String start, String end);
+
+    List<Sale> getAllAdminSellerSaleInfo(Long id, String start, String end);
 }
