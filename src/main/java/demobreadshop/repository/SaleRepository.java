@@ -6,6 +6,7 @@ import demobreadshop.domain.projection.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
@@ -66,7 +67,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "group by c.created_by, c.id;",
             nativeQuery = true
     )
-    List<ClientStatistics> getAllClientSale(String start, String end);
+    List<ClientStatistics> getAllClientSale(Timestamp start, Timestamp end);
 
     // kpi bo'yincha qo'shilg'an summa istoriyasi
     @Query(

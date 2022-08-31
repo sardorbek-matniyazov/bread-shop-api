@@ -13,12 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -94,11 +93,16 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     public List<ClientStatistics> clientStat(String start, String end) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime localDateTime = LocalDateTime.parse(start, timeFormatter);
-        System.out.println(localDateTime);
-        log.error(localDateTime.toString());
-        return saleRepository.getAllClientSale(start, end);
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2022-01-01");
+            Date go = new SimpleDateFormat("yyyy-MM-dd").parse("2022-12-12");
+            long from = date.getTime();
+            long to = go.getTime();
+            return saleRepository.getAllClientSale(new Timestamp(from), new Timestamp(to));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
