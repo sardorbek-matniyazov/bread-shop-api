@@ -28,7 +28,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // sellerler satiwina qaray qancha summa tapqani dastavchik ham admin seller ler
     @Query(
-            value = "with bum as (SELECT DISTINCT count(*) as val, sum(o.material_amount) as amount, sum(o.material_amount * u.user_kpi) as allSum, u.full_name, u.user_kpi, u.users_id as userId, u.roles_id as roleId\n" +
+            value = "with bum as (SELECT count(*) as val, sum(o.material_amount) as amount, sum(o.material_amount * u.user_kpi) as allSum, u.full_name, u.user_kpi, u.users_id as userId, u.roles_id as roleId\n" +
                     "FROM (sale s join (users k JOIN users_roles r ON k.id = r.users_id) u on s.created_by = u.full_name) u inner join output o on u.full_name = o.created_by\n" +
                     "where o.output_type='O_SALE' and u.roles_id = ?1 and o.created_at >= ?2 and o.created_at <= ?3\n" +
                     "group by u.full_name, u.user_kpi, u.users_id, u.roles_id, o.output_type)\n" +
