@@ -125,7 +125,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "     from sale s join pay_archive pa on s.id = pa.sale_id\n" +
                     "     where s.created_at >= ?1 and s.created_at <= ?2\n" +
                     "     group by s.id, s.created_by)\n" +
-                    "select sum(bum.sum) as sumAmount, bum.created_by as fullName, u.users_id as userId\n" +
+                    "select sum(bum.sum) as amount, bum.created_by as fullName, u.users_id as userId\n" +
                     "from bum join (users u join users_roles ur on u.id = ur.users_id) u on bum.created_by = u.full_name\n" +
                     "group by bum.created_by, u.users_id;",
             nativeQuery = true
