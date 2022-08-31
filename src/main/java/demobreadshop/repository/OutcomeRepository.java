@@ -15,8 +15,8 @@ public interface OutcomeRepository extends JpaRepository<Outcome, Long> {
     Double sumByType(String name, Timestamp time, Timestamp timestamp);
 
     @Query(
-            value = "select * from outcome where user_id = ?1 and created_at >= ?2 and created_at <= ?3;\n",
+            value = "select * from outcome where user_id = ?1 and created_at >= ?2 and created_at <= ?3\n",
             nativeQuery = true
     )
-    List<Outcome> findAllByUserId(Long user_id, Timestamp time, Timestamp timestamp);
+    List<Outcome> getAllByUsersId(Long user_id, Timestamp time, Timestamp timestamp);
 }

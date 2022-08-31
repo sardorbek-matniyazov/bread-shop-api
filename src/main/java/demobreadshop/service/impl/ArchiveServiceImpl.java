@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.stream.events.EndDocument;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -138,6 +139,10 @@ public class ArchiveServiceImpl implements ArchiveService {
                 }
                 return inputRepository.getAllInputSalaryHistory(user.getFullName(), getTime(start), getTime(end));
             }
+            if (start == null && end == null) {
+                return saleRepository.findAllSalaryHistory(id, new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            }
+            return saleRepository.findAllSalaryHistory(id, getTime(start), getTime(end));
         }
         return null;
     }
@@ -175,9 +180,9 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<Outcome> getAllOutcomeHistoryInfo(Long id, String start, String end) {
         if (start == null && end == null) {
-            return outcomeRepository.findAllByUserId(id, new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            return outcomeRepository.getAllByUsersId(id, new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
         }
-        return outcomeRepository.findAllByUserId(id, getTime(start), getTime(end));
+        return outcomeRepository.getAllByUsersId(id, getTime(start), getTime(end));
     }
 
     @Override

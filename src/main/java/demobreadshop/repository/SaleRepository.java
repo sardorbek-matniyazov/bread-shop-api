@@ -77,11 +77,11 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query(
             value = "select sum(o.material_amount * u.user_kpi) as amount, o.created_at as createdAt\n" +
                     "from output o join users u on o.created_by = u.full_name\n" +
-                    "where output_type = 'O_SALE' and u.id = ?1\n" +
+                    "where output_type = 'O_SALE' and u.id = ?1 and o.created_at >= ?2 and o.created_at <= ?3\n" +
                     "group by o.created_at;",
             nativeQuery = true
     )
-    List<SalaryHistoryProjection> findAllSalaryHistory(Long id);
+    List<SalaryHistoryProjection> findAllSalaryHistory(Long id, Timestamp time, Timestamp timestamp);
 
     @Query(
             value = "with bum as (\n" +
