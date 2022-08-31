@@ -1,5 +1,6 @@
 package demobreadshop.controller;
 
+import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.service.ArchiveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,12 @@ public class StatisticsController {
 
     @GetMapping(value = "product-statistics")
     public HttpEntity<?> getAllProductStatistics() {
-        return ResponseEntity.ok(service.getAllProductStatistics());
+        return ResponseEntity.ok(service.getAllProductStatistics(ProductType.PRODUCT));
+    }
+
+    @GetMapping(value = "material-statistics")
+    public HttpEntity<?> getAllMaterialStatistics() {
+        return ResponseEntity.ok(service.getAllProductStatistics(ProductType.MATERIAL));
     }
 
     @GetMapping(value = "seller-statistics")

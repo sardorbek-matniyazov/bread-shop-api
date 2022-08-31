@@ -24,7 +24,7 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     List<GroupStatistics> getAllGroupStatistics(Long roleId);
 
     @Query(
-            value = "select wh.id as productId, sum(i.material_amount) as amount, wh.wh_name as name, wh.updated_at as updatedAt\n" +
+            value = "select wh.id as productId, sum(i.material_amount) as amount, wh.wh_name as name, wh.updated_at as updatedAt, sum(i.material_amount * i.product_price) as sum\n" +
                     "from input i join ware_house wh on wh.id = i.material_id\n" +
                     "where wh.product_type = ?1\n" +
                     "group by wh.id;",

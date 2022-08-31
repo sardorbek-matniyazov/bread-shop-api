@@ -78,8 +78,8 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public List<InputStatistics> getAllProductStatistics() {
-        return inputRepository.getAllInputStatistics(ProductType.PRODUCT.name());
+    public List<InputStatistics> getAllProductStatistics(ProductType type) {
+        return inputRepository.getAllInputStatistics(type.name());
     }
 
     @Override

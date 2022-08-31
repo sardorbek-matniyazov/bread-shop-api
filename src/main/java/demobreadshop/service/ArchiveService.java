@@ -1,6 +1,7 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.Outcome;
+import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
 
@@ -18,7 +19,7 @@ public interface ArchiveService {
 
     List<GroupStatistics> getAllGroupStatistics();
 
-    List<InputStatistics> getAllProductStatistics();
+    List<InputStatistics> getAllProductStatistics(ProductType material);
 
     List<InputStatistics> getAllWarehouseStatistics();
 
