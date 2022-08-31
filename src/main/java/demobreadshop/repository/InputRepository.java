@@ -18,7 +18,7 @@ public interface InputRepository extends JpaRepository<Input, Long> {
             value = "select sum(i.material_amount) as amount, u.full_name as name, u.user_kpi as kpi, sum(i.material_amount * u.user_kpi) as sum, u.users_id as userId\n" +
                     "from input i join (users u join users_roles ur on u.id = ur.users_id) u on i.created_by = u.full_name\n" +
                     "where u.roles_id = ?1 and i.input_type = 'PRODUCT'\n" +
-                    "group by u.full_name, u.user_kpi, u.usersz",
+                    "group by u.full_name, u.user_kpi, u.users",
             nativeQuery = true
     )
     List<GroupStatistics> getAllGroupStatistics(Long roleId);
