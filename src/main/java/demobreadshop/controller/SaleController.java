@@ -55,6 +55,7 @@ public class SaleController {
         return ResponseEntity.ok(service.getArchives(id));
     }
 
+    @PreAuthorize(value = "hasAnyAuthority({'SELLER_CAR', 'SELLER_ADMIN'})")
     @PostMapping(value = "/sell")
     public HttpEntity<?> sell(@RequestBody @Valid SaleDto dto) {
         MyResponse sell = service.sell(dto);
@@ -63,6 +64,7 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN'})")
     @PostMapping(value = "/payDebt")
     public HttpEntity<?> payForDebt(@RequestBody @Valid DebtDto dto) {
         MyResponse sell = service.payForDebt(dto);

@@ -64,6 +64,9 @@ public class InputServiceImpl implements InputService {
 
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+            if (user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN)) && product.getType().equals(ProductType.PRODUCT)) {
+                return MyResponse.YOU_CANT_CREATE;
+            }
             Input input = repository.save(
                     new Input(
                             wareHouseRepository.save(product),

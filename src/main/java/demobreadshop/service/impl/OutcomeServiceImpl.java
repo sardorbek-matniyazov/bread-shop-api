@@ -3,6 +3,7 @@ package demobreadshop.service.impl;
 import demobreadshop.domain.Outcome;
 import demobreadshop.domain.User;
 import demobreadshop.domain.enums.OutcomeType;
+import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.OutcomeDto;
 import demobreadshop.repository.OutcomeRepository;
@@ -32,7 +33,11 @@ public class OutcomeServiceImpl implements OutcomeService {
     public MyResponse create(OutcomeDto dto) {
         OutcomeType outcomeType = OutcomeType.valueOf(dto.getType());
         Outcome outcome = new Outcome(dto.getMoneyAmount(), outcomeType, dto.getComment());
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (outcomeType.equals(OutcomeType.OYLIK)) {
+            if (principal.getRoles().stream().noneMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN))) {
+                return MyResponse.YOU_CANT_CREATE;
+            }
             Optional<User> byId = userRepository.findById(dto.getUserId());
             if (byId.isPresent()) {
                 User user = byId.get();

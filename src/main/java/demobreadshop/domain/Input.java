@@ -31,7 +31,7 @@ public class Input extends BaseInput {
     @Column(name = "user_kpi_value")
     private double kpiValue;
 
-    public Input(WareHouse material, double amount, ProductType type, double productPrice, double kpiValue) {
+    public Input(WareHouse material, double amount, ProductType type, double kpiValue,  double productPrice) {
         super(material, amount);
         this.type = type;
         this.productPrice = productPrice;
