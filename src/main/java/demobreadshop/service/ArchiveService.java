@@ -38,9 +38,7 @@ public interface ArchiveService {
 
     List<Outcome> getAllOutcomeHistoryInfo(Long id, String start, String end);
 
-    List<Sale> getAllCarSellerSaleInfo(Long id, String start, String end);
-
-    List<Sale> getAllAdminSellerSaleInfo(Long id, String start, String end);
+    Map<String, Object> getAllSellerSaleInfo(Long id, String start, String end);
 
     List<ClientSumStatistics> getAllClientPaidSum(String start, String end);
 

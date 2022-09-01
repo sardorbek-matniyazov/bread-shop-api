@@ -3,6 +3,7 @@ package demobreadshop.service.impl;
 import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
 import demobreadshop.domain.enums.OutcomeType;
+import demobreadshop.domain.enums.PayType;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
@@ -182,30 +183,25 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public List<Sale> getAllCarSellerSaleInfo(Long id, String start, String end) {
+    public Map<String, Object> getAllSellerSaleInfo(Long id, String start, String end) {
         Optional<User> byId = userRepository.findById(id);
+        Map<String, Object> map = new HashMap<>();
         if (byId.isPresent()) {
             User user = byId.get();
             if (start == null && end == null) {
-                return saleRepository.getAllSellerSales(user.getFullName(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+                map.put("saleInfo", saleRepository.getAllSellerSales(user.getFullName(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis())));
+                map.put("cashSum", saleRepository.getSalePayInfo(PayType.CASH.name(), user.getFullName(),  new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis())));
+                map.put("cardSum", saleRepository.getSalePayInfo(PayType.CARD.name(), user.getFullName(),  new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis())));
+                return map;
             }
-            return saleRepository.getAllSellerSales(user.getFullName(), getTime(start), getTime(end));
+            map.put("saleInfo", saleRepository.getAllSellerSales(user.getFullName(), getTime(start), getTime(end)));
+            map.put("cashSum", saleRepository.getSalePayInfo(PayType.CASH.name(), user.getFullName(),  getTime(start), getTime(end)));
+            map.put("cardSum", saleRepository.getSalePayInfo(PayType.CARD.name(), user.getFullName(),  getTime(start), getTime(end)));
+            return map;
         }
         return null;
     }
 
-    @Override
-    public List<Sale> getAllAdminSellerSaleInfo(Long id, String start, String end) {
-        Optional<User> byId = userRepository.findById(id);
-        if (byId.isPresent()) {
-            User user = byId.get();
-            if (start == null && end == null) {
-                return saleRepository.getAllSellerSales(user.getFullName(), new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
-            }
-            return saleRepository.getAllSellerSales(user.getFullName(), getTime(start), getTime(end));
-        }
-        return null;
-    }
 
     @Override
     public List<ClientSumStatistics> getAllClientPaidSum(String start, String end) {

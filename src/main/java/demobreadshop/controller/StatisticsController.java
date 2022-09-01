@@ -58,13 +58,13 @@ public class StatisticsController {
     // k -
     @GetMapping(value = "car-seller/{id}")
     public HttpEntity<?> getAllCarSellerSaleInfo(@PathVariable Long id, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
-        return ResponseEntity.ok(service.getAllCarSellerSaleInfo(id, start, end));
+        return ResponseEntity.ok(service.getAllSellerSaleInfo(id, start, end));
     }
 
     // k -
     @GetMapping(value = "admin-seller/{id}")
     public HttpEntity<?> getAllAdminSellerSaleInfo(@PathVariable Long id, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
-        return ResponseEntity.ok(service.getAllAdminSellerSaleInfo(id, start, end));
+        return ResponseEntity.ok(service.getAllSellerSaleInfo(id, start, end));
     }
 
     // k -

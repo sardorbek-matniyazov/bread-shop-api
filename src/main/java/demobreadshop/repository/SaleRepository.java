@@ -1,6 +1,7 @@
 package demobreadshop.repository;
 
 import demobreadshop.domain.Sale;
+import demobreadshop.domain.enums.PayType;
 import demobreadshop.domain.enums.Status;
 import demobreadshop.domain.projection.*;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -150,4 +151,13 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     List<Sale> getAllClientSaleInfo(Long clientId, Timestamp timestamp, Timestamp timestamp1);
+
+    @Query(
+            value = "select sum(pa.archive_amount) as amount, pa.pay_type as payType " +
+                    "from sale s join pay_archive pa on s.id = pa.sale_id " +
+                    "where pa.pay_type = ?1 and s.created_by = ?2 and s.created_at >= ?3 and s.created_at <= ?4 " +
+                    "group by pa.pay_type, s.created_by;",
+            nativeQuery = true
+    )
+    SaleInfoProjection getSalePayInfo(String payType, String fullName, Timestamp timestamp, Timestamp timestamp1);
 }
