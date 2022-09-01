@@ -113,7 +113,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     )
     List<ClientSumStatistics> getAllClientPayedSums(Timestamp timestamp, Timestamp timestamp1);
 
-    // qarizdarlar sani
+    // qarizdarlar sani ..
     @Query(
             value = "select count(c.id), c.full_name " +
                     "from sale s join client c on s.client_id = c.id " +
