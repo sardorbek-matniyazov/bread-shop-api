@@ -211,6 +211,14 @@ public class ArchiveServiceImpl implements ArchiveService {
         return null;
     }
 
+    @Override
+    public List<ClientSumStatistics> getAllClientPaidSum(String start, String end) {
+        if (start == null || end == null) {
+            return saleRepository.getAllClientPayedSums(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
+        return saleRepository.getAllClientPayedSums(getTime(start), getTime(end));
+    }
+
     static Timestamp getTime(String time) {
         if (time == null) return null;
         try {

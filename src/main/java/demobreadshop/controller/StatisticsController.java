@@ -85,6 +85,12 @@ public class StatisticsController {
         return ResponseEntity.ok(service.getAllSellerInfo(RoleName.SELLER_ADMIN, start, end));
     }
 
+    // k-
+    @GetMapping(value = "finance-client")
+    public HttpEntity<?> getAllClientPaidSum(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
+        return ResponseEntity.ok(service.getAllClientPaidSum(start, end));
+    }
+
     // k -
     @GetMapping(value = "material-decrease")
     public HttpEntity<?> getMaterialDecrease(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
