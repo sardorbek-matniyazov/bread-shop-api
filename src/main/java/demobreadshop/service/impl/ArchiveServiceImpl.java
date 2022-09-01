@@ -1,10 +1,7 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.constants.ConstProperties;
-import demobreadshop.domain.Outcome;
-import demobreadshop.domain.Role;
-import demobreadshop.domain.Sale;
-import demobreadshop.domain.User;
+import demobreadshop.domain.*;
 import demobreadshop.domain.enums.OutcomeType;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
@@ -15,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.stream.events.EndDocument;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -217,6 +213,14 @@ public class ArchiveServiceImpl implements ArchiveService {
             return saleRepository.getAllClientPayedSums(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
         }
         return saleRepository.getAllClientPayedSums(getTime(start), getTime(end));
+    }
+
+    @Override
+    public List<Sale> getAllClientSaleInfo(Long id, String start, String end) {
+        if (start == null || end == null) {
+            return saleRepository.getAllClientSaleInfo(id, new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
+        return saleRepository.getAllClientSaleInfo(id, getTime(start), getTime(end));
     }
 
     static Timestamp getTime(String time) {

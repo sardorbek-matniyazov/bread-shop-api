@@ -144,4 +144,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     List<Sale> getAllSellerSales(String fullName, Timestamp start, Timestamp end);
+
+    @Query(
+            value = "SELECT * from sale where client_id = ?1 and created_at >= ?2 and created_at <= ?3",
+            nativeQuery = true
+    )
+    List<Sale> getAllClientSaleInfo(Long clientId, Timestamp timestamp, Timestamp timestamp1);
 }

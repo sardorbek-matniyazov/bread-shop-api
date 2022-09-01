@@ -43,4 +43,6 @@ public interface ArchiveService {
     List<Sale> getAllAdminSellerSaleInfo(Long id, String start, String end);
 
     List<ClientSumStatistics> getAllClientPaidSum(String start, String end);
+
+    List<Sale> getAllClientSaleInfo(Long id, String start, String end);
 }
