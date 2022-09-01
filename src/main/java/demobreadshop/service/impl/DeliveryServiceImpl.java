@@ -51,6 +51,10 @@ public class DeliveryServiceImpl implements DeliveryService {
             if (byIdProduct.isPresent()) {
                 WareHouse product = byIdProduct.get();
                 product.setAmount(product.getAmount() - dto.getAmount());
+                if (product.getAmount() < 0) {
+                    return MyResponse.INPUT_TYPE_ERROR;
+                }
+
                 Delivery delivery = byId.get();
 
                 Output output = outputRepository.save(
@@ -186,8 +190,10 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.getBalance().forEach(e -> {
             if (Objects.equals(e.getMaterial().getId(), output.getMaterial().getId())) {
                 isExist.set(true);
-                if (e.getAmount() - output.getAmount() <= 0) {
+                if (e.getAmount() - output.getAmount() == 0) {
                     prId.set(e.getId());
+                } else if (e.getAmount() - output.getAmount() < 0) {
+                    isExist.set(false);
                 } else {
                     e.setAmount(e.getAmount() - output.getAmount());
                     productListRepository.save(e);
@@ -197,7 +203,11 @@ public class DeliveryServiceImpl implements DeliveryService {
                 balance.add(e);
             }
         });
+        if (!isExist.get()) {
+            return false;
+        }
         delivery.setBalance(balance);
+        repository.save(delivery);
         if (prId.get() != 0) {
             productListRepository.deleteById(prId.get());
         }

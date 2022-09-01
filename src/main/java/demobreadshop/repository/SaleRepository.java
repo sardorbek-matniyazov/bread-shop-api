@@ -48,7 +48,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "from input join product_list pl on input.material_id = pl.warehouse_fk " +
                     "where input.created_at >= ?1 and input.created_at <= ?2 " +
                     "group by pl.material_id) " +
-                    "select bum.sum as sum, w.wh_name as name, w.wh_price as price, bum.sum * w.wh_price as wholePrice, w.id " +
+                    "select bum.sum as amount, w.wh_name as name, w.wh_price as price, bum.sum * w.wh_price as wholePrice, w.id " +
                     "from bum inner join ware_house w on bum.material_id = w.id",
             nativeQuery = true
     )

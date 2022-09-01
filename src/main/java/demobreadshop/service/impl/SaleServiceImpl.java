@@ -69,11 +69,6 @@ public class SaleServiceImpl implements SaleService {
 
                 final WareHouse product = byId1.get();
 
-                if (product.getAmount() < dto.getAmount()) {
-                    return MyResponse.INPUT_TYPE_ERROR;
-                }
-
-
                 double wholePrice = product.getPrice() * dto.getAmount();
                 double debtPrice = wholePrice - dto.getCostCash() - dto.getCostCard();
 
@@ -81,7 +76,6 @@ public class SaleServiceImpl implements SaleService {
                     return MyResponse.INPUT_TYPE_ERROR;
                 }
 
-                // TODO: hi
                 Output output = new Output(
                         product,
                         dto.getAmount(),
