@@ -48,11 +48,11 @@ public class ObjectCreator implements CommandLineRunner {
         if (!userRepository.existsByPhoneNumber("test")) {
             userRepository.save(
                     new User(
-                            "Jumabay Bazarbayev",
-                            "test",
-                            passwordEncoder.encode("password"),
+                            "Javlon",
+                            "admin",
+                            passwordEncoder.encode("admin123"),
                             Collections.singleton(roleRepository.getByRoleName(RoleName.GL_ADMIN)),
-                            0.0
+                            50.0
                     )
             );
         }
