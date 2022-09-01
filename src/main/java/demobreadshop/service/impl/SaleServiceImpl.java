@@ -81,6 +81,7 @@ public class SaleServiceImpl implements SaleService {
                     return MyResponse.INPUT_TYPE_ERROR;
                 }
 
+                // TODO: hi
                 Output output = new Output(
                         product,
                         dto.getAmount(),

@@ -33,7 +33,7 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     List<InputStatistics> getAllInputStatistics(String type, Timestamp time, Timestamp timestamp);
 
     @Query(
-            value = "select i.material_amount as amount, i.user_kpi_value, i.created_by " +
+            value = "select i.material_amount as amount, i.user_kpi_value as userKpi, (i.material_amount * i.user_kpi_value) as allSum,  i.created_by as fullName " +
                     "from input i " +
                     "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3 ",
             nativeQuery = true

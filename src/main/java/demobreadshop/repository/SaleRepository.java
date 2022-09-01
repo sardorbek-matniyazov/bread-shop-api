@@ -80,10 +80,9 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // kpi bo'yincha qo'shilg'an summa istoriyasi
     @Query(
-            value = "select sum(o.material_amount * u.user_kpi) as amount, o.created_at as createdAt " +
-                    "from output o join users u on o.created_by = u.full_name " +
-                    "where output_type = 'O_SALE' and u.id = ?1 and o.created_at >= ?2 and o.created_at <= ?3 " +
-                    "group by o.created_at;",
+            value = "select (o.material_amount * u.user_kpi) as allSum, o.created_at as createdAt, o.material_amount as amount, o.created_by as fullName, u.user_kpi as userKpi " +
+                    "    from output o join users u on o.created_by = u.full_name " +
+                    "    where output_type = 'O_SALE' and u.id = ?1 and o.created_at >= ?2 and o.created_at <= ?3",
             nativeQuery = true
     )
     List<SalaryHistoryProjection> findAllSalaryHistory(Long id, Timestamp time, Timestamp timestamp);
