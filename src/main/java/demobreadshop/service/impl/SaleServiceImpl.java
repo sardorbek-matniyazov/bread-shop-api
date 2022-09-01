@@ -68,7 +68,7 @@ public class SaleServiceImpl implements SaleService {
                 final Client client = byId.get();
 
                 final WareHouse product = byId1.get();
-
+//s
                 if (product.getAmount() < dto.getAmount()) {
                     return MyResponse.INPUT_TYPE_ERROR;
                 }
