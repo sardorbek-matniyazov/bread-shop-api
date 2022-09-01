@@ -68,10 +68,12 @@ public class SaleServiceImpl implements SaleService {
                 final Client client = byId.get();
 
                 final WareHouse product = byId1.get();
-//s
+
                 if (product.getAmount() < dto.getAmount()) {
                     return MyResponse.INPUT_TYPE_ERROR;
                 }
+
+
                 double wholePrice = product.getPrice() * dto.getAmount();
                 double debtPrice = wholePrice - dto.getCostCash() - dto.getCostCard();
 
@@ -79,12 +81,26 @@ public class SaleServiceImpl implements SaleService {
                     return MyResponse.INPUT_TYPE_ERROR;
                 }
 
-                // ss
                 Output output = new Output(
                         product,
                         dto.getAmount(),
                         OutputType.O_SALE
                 );
+                SaleType type;
+                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
+                    type = SaleType.SALE_CAR;
+                    if (!changeDeliveryBalance(user.getId(), output)) {
+                        return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
+                    }
+                } else {
+                    type = SaleType.SALE_ADMIN;
+                    product.setAmount(product.getAmount() - dto.getAmount());
+                    if (product.getAmount() < 0) {
+                        return MyResponse.INPUT_TYPE_ERROR;
+                    }
+                    productRepository.save(product);
+                }
 
                 Sale sale = new Sale(
                         outputRepository.save(output),
@@ -95,18 +111,7 @@ public class SaleServiceImpl implements SaleService {
                         debtPrice == 0 ? Status.PAYED : Status.DEBT
                 );
 
-                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
-                    sale.setSaleType(SaleType.SALE_CAR);
-                    if (!changeDeliveryBalance(user.getId(), sale.getOutput())) {
-                        return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
-                    }
-                } else {
-                    sale.setSaleType(SaleType.SALE_ADMIN);
-                    product.setAmount(product.getAmount() - dto.getAmount());
-                    productRepository.save(product);
-                }
-
+                sale.setSaleType(type);
                 repository.save(sale);
                 createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
 
