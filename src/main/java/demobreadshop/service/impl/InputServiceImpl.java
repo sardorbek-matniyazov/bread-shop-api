@@ -58,15 +58,17 @@ public class InputServiceImpl implements InputService {
     public MyResponse create(InputDto dto) {
         final Optional<WareHouse> byId = wareHouseRepository.findById(dto.getProductId());
         if (byId.isPresent()) {
-            final WareHouse product = byId.get();
-            product.setAmount(product.getAmount() + dto.getAmount());
-            changeMaterials(product.getMaterials(), dto.getAmount(), ConstProperties.OPERATOR_MINUS);
-
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            final WareHouse product = byId.get();
 
             if (user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN)) && product.getType().equals(ProductType.PRODUCT)) {
                 return MyResponse.YOU_CANT_CREATE;
             }
+
+            product.setAmount(product.getAmount() + dto.getAmount());
+            changeMaterials(product.getMaterials(), dto.getAmount(), ConstProperties.OPERATOR_MINUS);
+
             Input input = repository.save(
                     new Input(
                             wareHouseRepository.save(product),
@@ -91,11 +93,6 @@ public class InputServiceImpl implements InputService {
                 final Input input = byId.get();
                 if (AuthServiceImpl.isNonDeletable(input.getCreatedAt().getTime())) {
                     return MyResponse.CANT_DELETE;
-                }
-
-                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                if (!input.getCreatedBy().equals(user.getFullName())) {
-                    return MyResponse.CAN_DELETE_OWN;
                 }
 
                 repository.deleteById(id);
