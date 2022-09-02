@@ -25,8 +25,3 @@ spring:
 app:
   name: Demo Bread Shop
   version: 1.0
-  # spring.jpa.database-platform = org.hibernate.dialect.PostgreSQL94Dialect
-  # spring.jpa.show-sql = false
-  # spring.jpa.hibernate.ddl-auto = create-drop
-  # spring.jpa.hibernate.naming.implicit-strategy = org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
-  # spring.jpa.properties.hibernate.format_sql=true
