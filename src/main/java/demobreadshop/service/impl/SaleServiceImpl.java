@@ -236,4 +236,4 @@ public class SaleServiceImpl implements SaleService {
     }
 }
 
-// Published by Sardorbek Matniyazov
+// Published by Sardorbek Matniyazov 09.2022
