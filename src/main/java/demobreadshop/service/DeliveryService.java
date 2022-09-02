@@ -26,6 +26,5 @@ public interface DeliveryService {
 
     MyResponse returnProduct();
 
-    // k
     Set<ProductList> getCurrentBalance();
 }

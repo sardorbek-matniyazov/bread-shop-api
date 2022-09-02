@@ -1,5 +1,6 @@
 package demobreadshop.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.util.HashMap;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -31,5 +34,17 @@ public class Complaint extends BaseEntity {
         this.description = description;
         this.user = user;
         this.amount = amount;
+    }
+
+    @JsonValue
+    public Map<String, Object> toJson() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.getId());
+        response.put("fullName", this.getUser().getFullName());
+        response.put("amount", this.getAmount());
+        response.put("fileName", this.getFileName());
+        response.put("description", this.getDescription());
+        response.put("createdAt", this.getCreatedAt());
+        return response;
     }
 }

@@ -25,3 +25,13 @@ spring:
 app:
   name: Demo Bread Shop
   version: 1.0
+
+#    #!/usr/bin/python
+#    import psycopg2
+#
+#    conn = psycopg2.connect(
+#    host="172.16.16.4",
+#    database="default_db",
+#    user="gen_user",
+#    password="y0ebw5ucm1"
+#  )
