@@ -90,10 +90,11 @@ public class SaleServiceImpl implements SaleService {
                     }
                 } else {
                     type = SaleType.SALE_ADMIN;
-                    product.setAmount(product.getAmount() - dto.getAmount());
-                    if (product.getAmount() < 0) {
+
+                    if (product.getAmount() < dto.getAmount()) {
                         return MyResponse.INPUT_TYPE_ERROR;
                     }
+                    product.setAmount(product.getAmount() - dto.getAmount());
                     productRepository.save(product);
                 }
 
