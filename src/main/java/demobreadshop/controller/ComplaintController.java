@@ -48,7 +48,6 @@ public class ComplaintController {
         service.downloadPhoto(fileName, response);
     }
 
-    // k
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
