@@ -113,6 +113,7 @@ public class InputServiceImpl implements InputService {
         return MyResponse.INPUT_NOT_FOUND;
     }
 
+    // k
     private void changeMaterials(Set<ProductList> materials, double amount, char type) {
         materials.forEach(productList -> {
             final WareHouse material = productList.getMaterial();
