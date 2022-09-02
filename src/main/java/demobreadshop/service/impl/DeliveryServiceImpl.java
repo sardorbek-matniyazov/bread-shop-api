@@ -151,6 +151,13 @@ public class DeliveryServiceImpl implements DeliveryService {
         return MyResponse.SUCCESSFULLY_CREATED;
     }
 
+    @Override
+    public Set<ProductList> getCurrentBalance() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Delivery byDelivererId = repository.findByDelivererId(user.getId());
+        return byDelivererId.getBalance();
+    }
+
     public void addBalanceDelivery(Delivery delivery, Output output) {
         AtomicBoolean isExist = new AtomicBoolean(false);
         changeBalanceDelivery(delivery, output, isExist, productListRepository, repository);

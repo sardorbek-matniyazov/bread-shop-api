@@ -25,4 +25,6 @@ public interface DeliveryService {
     MyResponse deleteOutputWithId(long id);
 
     MyResponse returnProduct();
+
+    Set<ProductList> getCurrentBalance();
 }

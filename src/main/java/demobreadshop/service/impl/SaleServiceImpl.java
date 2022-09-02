@@ -136,10 +136,11 @@ public class SaleServiceImpl implements SaleService {
                 }
                 if (sale.getSaleType().name().equals(SaleType.SALE_CAR.name())) {
                     rollbackChangesInDeliveryBalance(user.getId(), sale.getOutput());
+                } else {
+                    WareHouse material = sale.getOutput().getMaterial();
+                    material.setAmount(material.getAmount() + sale.getOutput().getAmount());
+                    productRepository.save(material);
                 }
-                WareHouse material = sale.getOutput().getMaterial();
-                material.setAmount(material.getAmount() + sale.getOutput().getAmount());
-                productRepository.save(material);
 
                 repository.delete(sale);
                 outputRepository.delete(sale.getOutput());

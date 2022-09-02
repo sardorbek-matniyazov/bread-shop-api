@@ -48,6 +48,12 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getAllDeliveries());
     }
 
+    @PreAuthorize(value = "hasAnyAuthority({'SELLER_CAR'})")
+    @GetMapping(value = "/currentBalance")
+    public HttpEntity<?> getAllCurrentBalance() {
+        return ResponseEntity.ok(service.getCurrentBalance());
+    }
+
     @GetMapping(value = "/{id}/outputs")
     public HttpEntity<?> getAllDeliveriesWithId(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(service.getDeliveries(id));
