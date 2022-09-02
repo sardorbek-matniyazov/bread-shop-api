@@ -19,7 +19,6 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        globally_quoted_identifiers: true
         dialect: org.hibernate.dialect.PostgreSQL10Dialect
         format_sql: true
         enable_lazy_load_no_trans: true
