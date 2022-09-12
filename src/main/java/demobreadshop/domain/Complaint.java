@@ -30,10 +30,13 @@ public class Complaint extends BaseEntity {
 
     private String fileName;
 
-    public Complaint(String description, User user, Double amount) {
+    private String contentType;
+
+    public Complaint(String description, User user, Double amount, String contentType) {
         this.description = description;
         this.user = user;
         this.amount = amount;
+        this.contentType = contentType;
     }
 
     @JsonValue

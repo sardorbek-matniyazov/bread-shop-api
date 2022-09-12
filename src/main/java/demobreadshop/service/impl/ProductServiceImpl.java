@@ -137,8 +137,7 @@ public class ProductServiceImpl implements ProductService {
                                 productListRepository.save(
                                         new ProductList(
                                                 repository.getById(m.getMaterialId()),
-                                                m.getAmount(),
-                                                m.getDescription()
+                                                m.getAmount()
                                         )
                                 )
                         );

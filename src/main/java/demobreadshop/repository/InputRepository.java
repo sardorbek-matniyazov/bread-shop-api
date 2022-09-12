@@ -3,6 +3,7 @@ package demobreadshop.repository;
 import demobreadshop.domain.Input;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.projection.GroupStatistics;
+import demobreadshop.domain.projection.InputProjection;
 import demobreadshop.domain.projection.InputStatistics;
 import demobreadshop.domain.projection.SalaryHistoryProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,10 +34,24 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     List<InputStatistics> getAllInputStatistics(String type, Timestamp time, Timestamp timestamp);
 
     @Query(
-            value = "select i.material_amount as amount, i.user_kpi_value as userKpi, (i.material_amount * i.user_kpi_value) as allSum,  i.created_by as fullName " +
+            value = "select i.material_amount as amount, i.user_kpi_value as userKpi, (i.material_amount * i.user_kpi_value) as allSum,  i.created_by as fullName, i.created_at as createdAt " +
                     "from input i " +
                     "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3 ",
             nativeQuery = true
     )
     List<SalaryHistoryProjection> getAllInputSalaryHistory(String fullName, Timestamp time, Timestamp timestamp);
+
+    @Query(
+            value = "select sum(i.material_amount * i.product_price) as price, sum(i.material_amount) as amount " +
+                    "from input i where i.created_at >= ?1 and i.created_at <= ?2 and i.input_type = 'PRODUCT'",
+            nativeQuery = true
+    )
+    InputProjection findAmountOfProduct(Timestamp timestamp, Timestamp timestamp1);
+
+    @Query(
+            value = "select sum(i.material_amount * i.real_price) as price, sum(i.material_amount) as amount " +
+                    "from input i where i.created_at >= ?1 and i.created_at <= ?2 and i.input_type = 'PRODUCT'",
+            nativeQuery = true
+    )
+    InputProjection findAmountOfWarehouse(Timestamp timestamp, Timestamp timestamp1);
 }

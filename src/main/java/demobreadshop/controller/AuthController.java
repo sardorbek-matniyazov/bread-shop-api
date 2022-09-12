@@ -29,7 +29,7 @@ public class AuthController {
         return service.login(dto);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER', 'SUPERVISOR'})")
     @GetMapping(value = "/allUsers")
     public HttpEntity<?> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
@@ -53,7 +53,7 @@ public class AuthController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER', 'SUPERVISOR'})")
     @GetMapping(value = "/me")
     public HttpEntity<?> me() {
         final User me = service.me();

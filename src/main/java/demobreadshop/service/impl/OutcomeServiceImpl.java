@@ -1,5 +1,6 @@
 package demobreadshop.service.impl;
 
+import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.Outcome;
 import demobreadshop.domain.User;
 import demobreadshop.domain.enums.OutcomeType;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +54,13 @@ public class OutcomeServiceImpl implements OutcomeService {
     }
 
     @Override
-    public List<Outcome> getAll() {
-        return repository.findAll();
+    public List<Outcome> getAll(String start, String end) {
+        if (start == null && end == null) {
+            return repository.findAllByCreatedAtBetween(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
+        else {
+            return repository.findAllByCreatedAtBetween(ArchiveServiceImpl.getTime(start), ArchiveServiceImpl.getTime(end));
+        }
     }
 
     @Override

@@ -43,4 +43,8 @@ public interface ArchiveService {
     List<ClientSumStatistics> getAllClientPaidSum(String start, String end);
 
     List<Sale> getAllClientSaleInfo(Long id, String start, String end);
+
+    Map<String, Object> getAllBenefits(String start, String end);
+
+    Map<String, Object> getAllSale(String start, String end);
 }

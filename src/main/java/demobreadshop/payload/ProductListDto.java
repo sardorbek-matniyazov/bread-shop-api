@@ -15,8 +15,6 @@ public class ProductListDto {
     private long materialId;
 
     @Min(value = 1)
-    @NotNull(message = "Material amount shouldn't be null")
+    @NotNull(message = "Product amount shouldn't be null")
     private double amount;
-
-    private String description;
 }

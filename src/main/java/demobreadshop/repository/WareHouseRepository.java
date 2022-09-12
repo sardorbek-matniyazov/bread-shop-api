@@ -22,4 +22,11 @@ public interface WareHouseRepository extends JpaRepository<WareHouse, Long> {
             nativeQuery = true
     )
     List<ProductProjection> findAllProduct();
+
+    @Query(
+            value = "select sum(pl.material_amount * wh.wh_price) from product_list pl join ware_house wh on wh.id = pl.material_id " +
+                    "             where pl.warehouse_fk = ?1",
+            nativeQuery = true
+    )
+    Double findBenefitWithWarehouseId(Long id);
 }

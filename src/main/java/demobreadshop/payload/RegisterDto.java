@@ -12,20 +12,20 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterDto {
-    @NotBlank(message = "field fullName shouldn't be null")
+    @NotBlank(message = "User nomi bo'lishi kerak")
     private String fullName;
 
-    @Size(min = 4, max = 50, message = "Phone number should be in [4, 50]")
-    @NotBlank(message = "phone number shouldn't be null")
+    @Size(min = 4, max = 50, message = "User raqami 5 harfdan ko'p bo'lishi kerak")
+    @NotBlank(message = "User raqami bo'lishi kerak")
     private String phoneNumber;
 
-    @Size(min = 4, max = 50, message = "Password should be in [4, 50]")
-    @NotBlank(message = "Role shouldn't be null")
+    @Size(min = 4, max = 50, message = "User paroli 5 harfdan ko'p bo'lishi kerak")
+    @NotBlank(message = "User paroli bo'lishi kerak")
     private String password;
 
-    @NotNull(message = "User Kpi shouldn't be null")
+    @NotNull(message = "User kpi summasi kiritilishi kerak")
     private double userKPI;
 
-    @NotNull(message = "Role shouldn't be null")
+    @NotNull(message = "User roli kiritilishi kerak")
     private long roleId;
 }

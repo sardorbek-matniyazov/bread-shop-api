@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OutcomeDto {
-    @NotBlank(message = "Type shouldn't be null")
+    @NotBlank(message = "The outcome type shouldn't be null")
     private String type;
     @NotNull(message = "Money amount shouldn't be null")
     private double moneyAmount;

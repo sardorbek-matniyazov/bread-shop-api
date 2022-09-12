@@ -16,4 +16,8 @@ public interface ComplaintService {
     void downloadPhoto(String fileName, HttpServletResponse response);
 
     Complaint get(Long id);
+
+    String saveImage(MultipartFile file);
+
+    MyResponse delete(Long id);
 }

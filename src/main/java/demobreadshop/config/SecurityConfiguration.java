@@ -45,6 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable().cors().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/complaint/getPhoto/*").permitAll()
                 .antMatchers(
                         "/v3/api-docs/**",
                         "/swagger-ui/**",

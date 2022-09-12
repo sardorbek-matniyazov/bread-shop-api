@@ -11,11 +11,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class SaleDto {
 
-    @NotNull(message = "Client's id shouldn't be null")
+    @NotNull(message = "Client kiritilishi kerak")
     private long clientId;
-    @NotNull(message = "Product's id shouldn't be null")
+    @NotNull(message = "Maxsulot belgilanishi kerak")
     private long productId;
-    @NotNull(message = "Amount shouldn't be null")
+    @NotNull(message = "Maxsulot miqdori kiritilishi kerak")
     private double amount;
 
     private double costCash;

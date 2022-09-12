@@ -4,5 +4,6 @@ public enum RoleName {
     GL_ADMIN,
     SELLER_ADMIN,
     SELLER_CAR,
-    WORKER
+    WORKER,
+    SUPERVISOR
 }

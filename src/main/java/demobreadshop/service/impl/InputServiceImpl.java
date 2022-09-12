@@ -69,13 +69,15 @@ public class InputServiceImpl implements InputService {
             product.setAmount(product.getAmount() + dto.getAmount());
             changeMaterials(product.getMaterials(), dto.getAmount(), ConstProperties.OPERATOR_MINUS);
 
+            Double benefitWithWarehouseId = wareHouseRepository.findBenefitWithWarehouseId(product.getId());
             Input input = repository.save(
                     new Input(
                             wareHouseRepository.save(product),
                             dto.getAmount(),
                             product.getType(),
                             user.getUserKPI(),
-                            product.getPrice()
+                            product.getPrice(),
+                            benefitWithWarehouseId == null ? 0.0 : benefitWithWarehouseId
                     )
             );
             changeMoneyWithKPI(input, ConstProperties.OPERATOR_PLUS);

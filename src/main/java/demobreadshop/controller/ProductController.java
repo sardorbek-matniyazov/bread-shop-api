@@ -68,7 +68,6 @@ public class ProductController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
 
-
     @DeleteMapping(value = "/{id}")
     public HttpEntity<?> delete(@PathVariable long id) {
         MyResponse delete = service.delete(id);

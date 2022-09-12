@@ -12,10 +12,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class LoginDto {
     @Size(min = 4, max = 50, message = "User's phone number should be in [4, 50]")
-    @NotBlank(message = "Phone number shouldn't be null")
+    @NotBlank(message = "User's Phone number shouldn't be null")
     private String phoneNumber;
 
-    @Size(min = 4, max = 50, message = "Password should be in [4, 50]")
+    @Size(min = 4, max = 50, message = "User's password should be in [4, 50]")
     @NotBlank(message = "Password shouldn't be null")
     private String password;
 }

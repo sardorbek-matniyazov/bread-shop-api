@@ -45,7 +45,7 @@ public class ObjectCreator implements CommandLineRunner {
     }
 
     private void userCreator() {
-        if (!userRepository.existsByPhoneNumber("test")) {
+        if (!userRepository.existsByPhoneNumber("admin")) {
             userRepository.save(
                     new User(
                             "Javlon",

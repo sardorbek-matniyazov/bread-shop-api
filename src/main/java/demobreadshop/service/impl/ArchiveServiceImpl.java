@@ -23,15 +23,17 @@ import java.util.*;
 public class ArchiveServiceImpl implements ArchiveService {
     private final SaleRepository saleRepository;
     private final OutcomeRepository outcomeRepository;
+    private final PayArchiveRepository archiveRepository;
     private final RoleRepository roleRepository;
     private final InputRepository inputRepository;
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public ArchiveServiceImpl(SaleRepository saleRepository, OutcomeRepository outcomeRepository, RoleRepository roleRepository, InputRepository inputRepository, ClientRepository clientRepository, UserRepository userRepository) {
+    public ArchiveServiceImpl(SaleRepository saleRepository, OutcomeRepository outcomeRepository, PayArchiveRepository archiveRepository, RoleRepository roleRepository, InputRepository inputRepository, ClientRepository clientRepository, UserRepository userRepository) {
         this.saleRepository = saleRepository;
         this.outcomeRepository = outcomeRepository;
+        this.archiveRepository = archiveRepository;
         this.roleRepository = roleRepository;
         this.inputRepository = inputRepository;
         this.clientRepository = clientRepository;
@@ -202,7 +204,6 @@ public class ArchiveServiceImpl implements ArchiveService {
         return null;
     }
 
-
     @Override
     public List<ClientSumStatistics> getAllClientPaidSum(String start, String end) {
         if (start == null || end == null) {
@@ -219,7 +220,45 @@ public class ArchiveServiceImpl implements ArchiveService {
         return saleRepository.getAllClientSaleInfo(id, getTime(start), getTime(end));
     }
 
-    static Timestamp getTime(String time) {
+    @Override
+    public Map<String, Object> getAllBenefits(String start, String end) {
+        Map<String, Object> benefits = new HashMap<>();
+        if (start == null && end == null) {
+            InputProjection amountOfProduct = inputRepository.findAmountOfProduct(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            benefits.put("amount", amountOfProduct.getAmount());
+            benefits.put("productPrice", amountOfProduct.getPrice() == null ? 0 : amountOfProduct.getPrice());
+            InputProjection amountOfWarehouse = inputRepository.findAmountOfWarehouse(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            benefits.put("warehousePrice", amountOfWarehouse.getPrice() == null ? 0 : amountOfWarehouse.getPrice());
+        } else {
+            InputProjection amountOfProduct = inputRepository.findAmountOfProduct(getTime(start), getTime(end));
+            benefits.put("amount", amountOfProduct.getAmount());
+            benefits.put("productPrice", amountOfProduct.getPrice() == null ? 0 : amountOfProduct.getPrice());
+            InputProjection amountOfWarehouse = inputRepository.findAmountOfWarehouse(getTime(start), getTime(end));
+            benefits.put("warehousePrice", amountOfWarehouse.getPrice() == null ? 0 : amountOfWarehouse.getPrice());
+        }
+        return benefits;
+    }
+
+    @Override
+    public Map<String, Object> getAllSale(String start, String end) {
+        Map<String, Object> benefits = new HashMap<>();
+        if (start == null && end == null) {
+            Double allIncomeAmount = archiveRepository.findAllIncomeAmount(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            benefits.put("allIncome", allIncomeAmount);
+            Double allOutcome = outcomeRepository.sumAllOutcome(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            benefits.put("allOutcome", allOutcome);
+            benefits.put("benefit", (allIncomeAmount == null ? 0 : allIncomeAmount) - (allOutcome == null ? 0 :allOutcome));
+        } else {
+            Double allIncomeAmount = archiveRepository.findAllIncomeAmount(getTime(start), getTime(end));
+            benefits.put("allIncome", allIncomeAmount);
+            Double allOutcome = outcomeRepository.sumAllOutcome(getTime(start), getTime(end));
+            benefits.put("allOutcome", allOutcome);
+            benefits.put("benefit", allIncomeAmount == null ? 0 : allIncomeAmount - (allOutcome == null ? 0 :allOutcome));
+        }
+        return benefits;
+    }
+
+    public static Timestamp getTime(String time) {
         if (time == null) return null;
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(time);

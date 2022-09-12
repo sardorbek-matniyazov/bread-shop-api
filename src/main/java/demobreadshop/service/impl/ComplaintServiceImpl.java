@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -55,7 +56,8 @@ public class ComplaintServiceImpl implements ComplaintService {
                                 dto.getDescription(),
                                 user,
                                 dto.getAmount(),
-                                fileName
+                                fileName,
+                                file.getContentType()
                         )
                 );
             } else {
@@ -63,7 +65,8 @@ public class ComplaintServiceImpl implements ComplaintService {
                         new Complaint(
                                 dto.getDescription(),
                                 user,
-                                dto.getAmount()
+                                dto.getAmount(),
+                                "default.jpg"
                         )
                 );
             }
@@ -77,13 +80,59 @@ public class ComplaintServiceImpl implements ComplaintService {
     @SneakyThrows
     @Override
     public void downloadPhoto(String fileName, HttpServletResponse response) {
-        File file = new File(ConstProperties.FILE_PATH + fileName);
-        FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+        try {
+            File file = new File(ConstProperties.FILE_PATH + fileName);
+            Optional<Complaint> byFileName = repository.findByFileName(fileName);
+            if (byFileName.isPresent()) {
+                Complaint complaint = byFileName.get();
+                if (complaint.getContentType() != null) {
+                    response.setContentType(complaint.getContentType());
+                }
+            }
+            FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (FileNotFoundException e) {
+            File file = new File(ConstProperties.FILE_PATH + "default.jpeg");
+            response.setContentType("image/jpg");
+            FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+        }
     }
 
     @Override
     public Complaint get(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public String saveImage(MultipartFile file) {
+        return saveFile(file);
+    }
+
+    @Override
+    public MyResponse delete(Long id) {
+        Optional<Complaint> byId = repository.findById(id);
+        if (byId.isPresent()) {
+
+            Complaint complaint = byId.get();
+            if (AuthServiceImpl.isNonDeletable(complaint.getCreatedAt().getTime())) {
+                return MyResponse.CANT_DELETE;
+            }
+
+            Optional<User> byFullName = userRepository.findById(complaint.getId());
+            if (byFullName.isPresent()) {
+                User user = byFullName.get();
+                user.setBalance(user.getBalance() + complaint.getAmount());
+                userRepository.save(user);
+            }
+
+            repository.delete(complaint);
+
+            File file = new File(ConstProperties.FILE_PATH + complaint.getFileName());
+            if (file.delete()) {
+                System.out.println("Deleted file");
+            }
+            return MyResponse.SUCCESSFULLY_DELETED;
+        }
+        return MyResponse.COMPLAINT_NOT_FOUND;
     }
 
     @SneakyThrows
@@ -94,7 +143,6 @@ public class ComplaintServiceImpl implements ComplaintService {
             string += "." + split[split.length - 1];
 
             Path path = Paths.get(ConstProperties.FILE_PATH + string);
-            System.out.println(ConstProperties.FILE_PATH + string);
             Files.copy(file.getInputStream(), path);
 
             return string;

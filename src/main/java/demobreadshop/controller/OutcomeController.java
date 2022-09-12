@@ -33,8 +33,8 @@ public class OutcomeController {
 
     // k
     @GetMapping(value = "all")
-    public HttpEntity<?> all(){
-        return ResponseEntity.ok(service.getAll());
+    public HttpEntity<?> all(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end){
+        return ResponseEntity.ok(service.getAll(start, end));
     }
 
     @GetMapping(value = "types")

@@ -15,6 +15,6 @@ public class ComplaintDto {
     private String description;
     @NotNull(message = "Amount shouldn't be null")
     private Double amount;
-    @NotNull(message = "User shouldn't be null")
+    @NotNull(message = "User id shouldn't be null")
     private Long userId;
 }

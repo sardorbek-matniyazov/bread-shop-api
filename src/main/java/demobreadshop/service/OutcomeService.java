@@ -10,7 +10,7 @@ import java.util.Map;
 public interface OutcomeService {
     MyResponse create(OutcomeDto dto);
 
-    List<Outcome> getAll();
+    List<Outcome> getAll(String start, String end);
 
     Map<String, String> getTypes();
 

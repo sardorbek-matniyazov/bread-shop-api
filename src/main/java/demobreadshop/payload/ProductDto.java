@@ -20,7 +20,7 @@ public class ProductDto {
     @NotNull(message = "Product price shouldn't be null")
     private double price;
 
-    @NotNull(message = "Product type shouldn't be null")
+    @NotNull(message = "Product type is required")
     private String productType;
 
     List<ProductListDto> materials;

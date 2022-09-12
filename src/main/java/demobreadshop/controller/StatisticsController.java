@@ -70,6 +70,16 @@ public class StatisticsController {
         return ResponseEntity.ok(service.getAllClientIncome(start, end));
     }
 
+    @GetMapping(value = "benefit-input")
+    public HttpEntity<?> getAllBenefits(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
+        return ResponseEntity.ok(service.getAllBenefits(start, end));
+    }
+
+    @GetMapping(value = "benefit-sale")
+    public HttpEntity<?> getAllSale(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
+        return ResponseEntity.ok(service.getAllSale(start, end));
+    }
+
     @GetMapping(value = "finance")
     public HttpEntity<?> getFinance(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getFinanceInfo(start, end));
