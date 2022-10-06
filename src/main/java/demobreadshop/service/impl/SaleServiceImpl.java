@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -104,7 +105,8 @@ public class SaleServiceImpl implements SaleService {
                         wholePrice,
                         debtPrice,
                         product.getPrice(),
-                        debtPrice == 0 ? Status.PAYED : Status.DEBT
+                        debtPrice == 0 ? Status.PAYED : Status.DEBT,
+                        user.getUserKPI()
                 );
 
                 sale.setSaleType(type);

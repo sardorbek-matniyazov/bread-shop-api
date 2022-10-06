@@ -16,10 +16,10 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     List<Input> findAllByType(ProductType type);
 
     @Query(
-            value = "select sum(i.material_amount) as amount, u.full_name as name, u.user_kpi as kpi, sum(i.material_amount * u.user_kpi) as sum, u.users_id as userId " +
+            value = "select sum(i.material_amount) as amount, u.full_name as name, u.user_kpi as kpi, sum(i.material_amount * i.user_kpi_value) as sum, u.users_id as userId " +
                     "from input i join (users u join users_roles ur on u.id = ur.users_id) u on i.created_by = u.full_name " +
                     "where u.roles_id = ?1 and i.input_type = 'PRODUCT' " +
-                    "group by u.full_name, u.user_kpi, u.users_id",
+                    "group by u.full_name, u.users_id",
             nativeQuery = true
     )
     List<GroupStatistics> getAllGroupStatistics(Long roleId, Timestamp time, Timestamp timestamp);

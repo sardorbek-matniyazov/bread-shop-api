@@ -29,20 +29,15 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // sellerler satiwina qaray qancha summa tapqani dastavchik ham admin seller ler
     @Query(
-            value = "with bum as(\n" +
-                    " select s.created_by, o.material_amount as material_amount, sum(s.whole_price), sum(s.debt_price), sum(s.whole_price - s.debt_price)" +
-                    "    from sale s join output o on o.id = s.output_id " +
-                    "    where s.created_at >= ?2 and s.created_at <= ?3 " +
-                    "    group by s.id, o.material_amount) " +
-                    "    select u.full_name as fullName, sum(bum.material_amount * u.user_kpi) as allSum, u.user_kpi as userKpi, sum(bum.material_amount) as amount, u.users_id as userId " +
-                    "    from (users u join users_roles ur on u.id = ur.users_id) u join bum on bum.created_by = u.full_name " +
-                    "    where u.roles_id = ?1 " +
-                    "    group by u.full_name, u.user_kpi, u.users_id;",
+            value = "select u.user_kpi as userKpi, sum(o.material_amount * s.user_kpi_value) as allSum, o.created_by as fullName, sum(o.material_amount) as amount, u.id as userId " +
+            " from output o , users u , sale s, users_roles ur " +
+            " where o.id = s.output_id and o.created_by = u.full_name and ur.users_id = u.id and ur.roles_id = ?1 and s.created_by >= ?2 and s.created_at <= ?3 " +
+            " group by o.created_by, u.user_kpi, u.id;",
             nativeQuery = true
     )
     List<SaleStatistics> getAllUserInfoByRoleId(Long id, Timestamp time, Timestamp timestamp);
 
-    // isletilip atrg'an ingredientler statisticasi l
+    // isletilip atrg'an ingredientler statisticasi
     @Query(
             value = "with bum as (select sum(input.material_amount * pl.material_amount) as sum, pl.material_id as material_id " +
                     "from input join product_list pl on input.material_id = pl.warehouse_fk " +

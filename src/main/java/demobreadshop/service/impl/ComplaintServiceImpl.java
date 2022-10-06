@@ -10,6 +10,7 @@ import demobreadshop.repository.UserRepository;
 import demobreadshop.service.ComplaintService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,7 +67,8 @@ public class ComplaintServiceImpl implements ComplaintService {
                                 dto.getDescription(),
                                 user,
                                 dto.getAmount(),
-                                "default.jpg"
+                                "default.jpg",
+                                MediaType.IMAGE_JPEG_VALUE
                         )
                 );
             }
@@ -91,8 +93,9 @@ public class ComplaintServiceImpl implements ComplaintService {
             }
             FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
         } catch (FileNotFoundException e) {
-            File file = new File(ConstProperties.FILE_PATH + "default.jpeg");
-            response.setContentType("image/jpg");
+            File file = new File(ConstProperties.FILE_PATH + "default.jpg");
+            System.out.println(ConstProperties.FILE_PATH + "default.jpg");
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
         }
     }
@@ -117,7 +120,7 @@ public class ComplaintServiceImpl implements ComplaintService {
                 return MyResponse.CANT_DELETE;
             }
 
-            Optional<User> byFullName = userRepository.findById(complaint.getId());
+            Optional<User> byFullName = userRepository.findById(complaint.getUser().getId());
             if (byFullName.isPresent()) {
                 User user = byFullName.get();
                 user.setBalance(user.getBalance() + complaint.getAmount());

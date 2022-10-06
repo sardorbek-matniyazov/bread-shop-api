@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,13 +45,24 @@ public class Sale extends BaseEntity {
     @Column(name = "status")
     private Status type;
 
-    public Sale(Output output, Client client, double wholePrice, double debtPrice, double productPrice, Status type) {
+    @Column(name = "user_kpi_value")
+    private Double kpiValue;
+
+    public Sale(
+            Output output,
+            Client client,
+            double wholePrice,
+            double debtPrice,
+            double productPrice,
+            Status type,
+            Double userKpi) {
         this.output = output;
         this.client = client;
         this.productPrice = productPrice;
         this.wholePrice = wholePrice;
         this.debtPrice = debtPrice;
         this.type = type;
+        this.kpiValue = userKpi;
     }
 
     @JsonIgnore
@@ -65,10 +77,10 @@ public class Sale extends BaseEntity {
         response.put("amount", this.getOutput().getAmount());
         response.put("product", this.getOutput().getMaterial().getName());
         response.put("client", this.getClient().getFullName());
-        response.put("wholePrice", this.getWholePrice());
-        response.put("productPrice", this.getProductPrice());
-        response.put("paidPrice", this.getWholePrice() - this.getDebtPrice());
-        response.put("debtPrice", this.getDebtPrice());
+        response.put("wholePrice", BigDecimal.valueOf(this.getWholePrice()));
+        response.put("productPrice", BigDecimal.valueOf(this.getProductPrice()));
+        response.put("paidPrice", BigDecimal.valueOf(this.getWholePrice() - this.getDebtPrice()));
+        response.put("debtPrice", BigDecimal.valueOf(this.getDebtPrice()));
         response.put("type", this.getType());
         response.put("createdBy", this.getCreatedBy());
         response.put("createdAt", this.getCreatedAt());
