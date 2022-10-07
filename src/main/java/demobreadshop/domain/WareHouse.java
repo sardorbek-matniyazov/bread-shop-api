@@ -13,7 +13,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Entity
+@Entity(name = "ware_house")
 @NoArgsConstructor
 @AllArgsConstructor
 public class WareHouse extends BaseEntity {
@@ -22,6 +22,9 @@ public class WareHouse extends BaseEntity {
 
     @Column(name = "wh_price", nullable = false)
     private double price;
+
+    @Column(name = "kindergarten_price", nullable = false)
+    private double kindergartenPrice;
 
     // type kg
     @Column(name = "house_amount")

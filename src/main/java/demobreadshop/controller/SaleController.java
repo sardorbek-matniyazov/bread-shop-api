@@ -34,12 +34,17 @@ public class SaleController {
 
     @GetMapping(value = "/allDebt")
     public HttpEntity<?> getAllDebts() {
-        return ResponseEntity.ok(service.getAllByType(Status.DEBT));
+        return ResponseEntity.ok(service.getAllByType(Status.DEBT, false));
+    }
+
+    @GetMapping(value = "/allDebtKindergarten")
+    public HttpEntity<?> getAllDebtsOfKindergarten() {
+        return ResponseEntity.ok(service.getAllByType(Status.DEBT, true));
     }
 
     @GetMapping(value = "/allPayed")
     public HttpEntity<?> getAllPayed() {
-        return ResponseEntity.ok(service.getAllByType(Status.PAYED));
+        return ResponseEntity.ok(service.getAllByType(Status.PAYED, false));
     }
 
     @GetMapping(value = "/{id}")

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -21,4 +22,6 @@ public class ClientDto {
 
     private String comment;
 
+    @NotNull(message = "client type is required !")
+    private boolean isKindergarten;
 }

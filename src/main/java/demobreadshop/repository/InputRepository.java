@@ -18,7 +18,7 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     @Query(
             value = "select sum(i.material_amount) as amount, u.full_name as name, u.user_kpi as kpi, sum(i.material_amount * i.user_kpi_value) as sum, u.users_id as userId " +
                     "from input i join (users u join users_roles ur on u.id = ur.users_id) u on i.created_by = u.full_name " +
-                    "where u.roles_id = ?1 and i.input_type = 'PRODUCT' " +
+                    "where u.roles_id = ?1 and i.input_type = 'PRODUCT' and i.created_at >= ?1 and i.created_at <= ?3 " +
                     "group by u.full_name, u.users_id",
             nativeQuery = true
     )
@@ -43,7 +43,7 @@ public interface InputRepository extends JpaRepository<Input, Long> {
 
     @Query(
             value = "select sum(i.material_amount * i.product_price) as price, sum(i.material_amount) as amount " +
-                    "from input i where i.created_at >= ?1 and i.created_at <= ?2 and i.input_type = 'PRODUCT'",
+                    "from input i where i.created_at >= ?1 and i.created_at <= ?2 and i.input_type = 'PRODUCT';",
             nativeQuery = true
     )
     InputProjection findAmountOfProduct(Timestamp timestamp, Timestamp timestamp1);

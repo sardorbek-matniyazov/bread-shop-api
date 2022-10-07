@@ -6,4 +6,5 @@ public interface ProductProjection {
     Double getPrice();
     Long getId();
     Double getAmount();
+    Double getKindergartenPrice();
 }

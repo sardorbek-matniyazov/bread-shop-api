@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,8 @@ public class ClientServiceImpl implements ClientService {
                 new Client(
                         dto.getName(),
                         dto.getPhoneNumber(),
-                        dto.getComment()
+                        dto.getComment(),
+                        dto.isKindergarten()
                 )
         );
         return MyResponse.SUCCESSFULLY_CREATED;
@@ -75,6 +77,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional
     public MyResponse delete(long id) {
         final Optional<Client> byId = repository.findById(id);
         if (byId.isPresent()) {

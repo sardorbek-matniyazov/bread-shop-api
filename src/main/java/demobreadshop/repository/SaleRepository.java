@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
-    List<Sale> findAllByType(Status debt);
+    List<Sale> findAllByTypeAndClient_IsKindergarten(Status debt, boolean isKindergarten);
 
     // uliwmaliq sawda
     @Query(

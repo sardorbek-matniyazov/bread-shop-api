@@ -27,8 +27,16 @@ public class Client extends BaseEntity {
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "is_kindergarten")
+    private boolean isKindergarten = false;
+
     public Client(long id, String fullName, String phoneNumber, String comment) {
         super(id);
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.comment = comment;
+    }
+    public Client(String fullName, String phoneNumber, String comment) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.comment = comment;
@@ -43,6 +51,7 @@ public class Client extends BaseEntity {
         response.put("comment", getComment());
         response.put("createdBy", getCreatedBy());
         response.put("createdAt", getCreatedAt());
+        response.put("isKindergarten", this.isKindergarten());
         return response;
     }
 }

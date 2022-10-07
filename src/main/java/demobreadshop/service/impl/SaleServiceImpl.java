@@ -3,7 +3,6 @@ package demobreadshop.service.impl;
 import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
 import demobreadshop.domain.enums.*;
-import demobreadshop.domain.projection.SalaryHistoryProjection;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,7 +68,11 @@ public class SaleServiceImpl implements SaleService {
 
                 final WareHouse product = byId1.get();
 
+
                 double wholePrice = product.getPrice() * dto.getAmount();
+                if (client.isKindergarten()) {
+                    wholePrice = product.getKindergartenPrice() * dto.getAmount();
+                }
                 double debtPrice = wholePrice - dto.getCostCash() - dto.getCostCard();
 
                 if (debtPrice < 0) {
@@ -82,6 +84,7 @@ public class SaleServiceImpl implements SaleService {
                         dto.getAmount(),
                         OutputType.O_SALE
                 );
+
                 SaleType type;
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR))) {
@@ -104,7 +107,7 @@ public class SaleServiceImpl implements SaleService {
                         client,
                         wholePrice,
                         debtPrice,
-                        product.getPrice(),
+                        client.isKindergarten() ? product.getKindergartenPrice() : product.getPrice(),
                         debtPrice == 0 ? Status.PAYED : Status.DEBT,
                         user.getUserKPI()
                 );
@@ -187,8 +190,8 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public List<Sale> getAllByType(Status debt) {
-        return repository.findAllByType(Status.DEBT);
+    public List<Sale> getAllByType(Status type, boolean isKindergarten) {
+        return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten);
     }
 
     private void createPaymentArchive(Sale sale, double costCard, double costCash) {
