@@ -18,10 +18,12 @@ public class ProductDto {
 
     @Min(value = 1)
     @NotNull(message = "Product price shouldn't be null")
-    private double price;
+    private Double price;
 
     @NotNull(message = "Product type is required")
     private String productType;
+
+    private Double kindergartenPrice;
 
     List<ProductListDto> materials;
 }

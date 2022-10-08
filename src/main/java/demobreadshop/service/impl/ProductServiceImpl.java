@@ -55,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
                     ProductType.PRODUCT
             );
 
+            product.setKindergartenPrice(dto.getKindergartenPrice());
             product.setMaterials(makeMaterials(dto.getMaterials()));
 
             repository.save(product);
@@ -86,6 +87,7 @@ public class ProductServiceImpl implements ProductService {
             WareHouse product = repositoryById.get();
             product.setName(dto.getName());
             product.setPrice(dto.getPrice());
+            product.setKindergartenPrice(dto.getKindergartenPrice());
             // product.setDescription(dto.getDescription());
 
             if (product.getType().name().equals("PRODUCT")) {
