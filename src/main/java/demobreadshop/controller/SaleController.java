@@ -1,6 +1,7 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.Sale;
+import demobreadshop.domain.enums.PaymentStatus;
 import demobreadshop.domain.enums.Status;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
@@ -40,6 +41,20 @@ public class SaleController {
     @GetMapping(value = "/allDebtKindergarten")
     public HttpEntity<?> getAllDebtsOfKindergarten() {
         return ResponseEntity.ok(service.getAllByType(Status.DEBT, true));
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN'})")
+    @PutMapping(value = "/payment/{id}")
+    public HttpEntity<?> checkPaymentArchive(@PathVariable Long id) {
+        MyResponse check = service.checkPayment(id);
+        return check.isActive()
+                ? ResponseEntity.ok(check)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(check);
+    }
+
+    @GetMapping(value = "/payment/allWait")
+    public HttpEntity<?> getAllWaitPayments() {
+        return ResponseEntity.ok(service.getPaymentsByType(PaymentStatus.WAIT));
     }
 
     @GetMapping(value = "/allPayed")

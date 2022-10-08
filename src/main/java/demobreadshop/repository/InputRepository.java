@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface InputRepository extends JpaRepository<Input, Long> {
-    List<Input> findAllByType(ProductType type);
+    List<Input> findAllByTypeOrderByIdDesc(ProductType type);
 
     @Query(
             value = "select sum(i.material_amount) as amount, u.full_name as name, u.user_kpi as kpi, sum(i.material_amount * i.user_kpi_value) as sum, u.users_id as userId " +

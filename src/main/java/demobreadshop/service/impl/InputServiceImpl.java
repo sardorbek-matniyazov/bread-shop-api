@@ -1,25 +1,27 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.constants.ConstProperties;
-import demobreadshop.domain.Input;
-import demobreadshop.domain.ProductList;
-import demobreadshop.domain.User;
-import demobreadshop.domain.WareHouse;
+import demobreadshop.domain.*;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.InputDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.WorkerAccessDto;
 import demobreadshop.repository.InputRepository;
 import demobreadshop.repository.UserRepository;
 import demobreadshop.repository.WareHouseRepository;
+import demobreadshop.repository.WorkerTourniquetRepository;
 import demobreadshop.service.InputService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,17 +33,19 @@ public class InputServiceImpl implements InputService {
     private final InputRepository repository;
     private final WareHouseRepository wareHouseRepository;
     private final UserRepository userRepository;
+    private final WorkerTourniquetRepository workerTourniquetRepository;
 
     @Autowired
-    public InputServiceImpl(InputRepository repository, WareHouseRepository wareHouseRepository, UserRepository userRepository) {
+    public InputServiceImpl(InputRepository repository, WareHouseRepository wareHouseRepository, UserRepository userRepository, WorkerTourniquetRepository workerTourniquetRepository) {
         this.repository = repository;
         this.wareHouseRepository = wareHouseRepository;
         this.userRepository = userRepository;
+        this.workerTourniquetRepository = workerTourniquetRepository;
     }
 
     @Override
     public List<Input> getAll() {
-        return repository.findAllByType(ProductType.PRODUCT);
+        return repository.findAllByTypeOrderByIdDesc(ProductType.PRODUCT);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class InputServiceImpl implements InputService {
 
     @Override
     public List<Input> getAllWarehouseInputs() {
-        return repository.findAllByType(ProductType.MATERIAL);
+        return repository.findAllByTypeOrderByIdDesc(ProductType.MATERIAL);
     }
 
     @Override
@@ -60,10 +64,27 @@ public class InputServiceImpl implements InputService {
         if (byId.isPresent()) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+            User userTwo = user;
+
             final WareHouse product = byId.get();
+            if (product.getType().equals(ProductType.PRODUCT)) {
+                Optional<User> byId1;
+                if (user.getId().equals(dto.getWorkerOneId())) {
+                    byId1 = userRepository.findById(dto.getWorkerTwoId());
+                } else {
+                    byId1 = userRepository.findById(dto.getWorkerOneId());
+                }
+                if (byId1.isPresent()) {
+                    userTwo = byId1.get();
+                } else return MyResponse.WORKER_NOT_FOUND;
+            }
 
             if (user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN)) && product.getType().equals(ProductType.PRODUCT)) {
                 return MyResponse.YOU_CANT_CREATE;
+            }
+
+            if (product.getType().equals(ProductType.PRODUCT) && !user.isUserAccess() && !userTwo.isUserAccess()) {
+                return MyResponse.YOU_HAVEN_T_ACCESS;
             }
 
             product.setAmount(product.getAmount() + dto.getAmount());
@@ -73,7 +94,7 @@ public class InputServiceImpl implements InputService {
             Input input = repository.save(
                     new Input(
                             wareHouseRepository.save(product),
-                            dto.getAmount(),
+                            dto.getAmount() / 2,
                             product.getType(),
                             user.getUserKPI(),
                             product.getPrice(),
@@ -81,9 +102,32 @@ public class InputServiceImpl implements InputService {
                     )
             );
             changeMoneyWithKPI(input, ConstProperties.OPERATOR_PLUS);
+
+            if (input.getType().equals(ProductType.PRODUCT)) {
+                authenticateUser(userTwo);
+                input = repository.save(
+                        new Input(
+                                wareHouseRepository.save(product),
+                                dto.getAmount() / 2,
+                                product.getType(),
+                                user.getUserKPI(),
+                                product.getPrice(),
+                                benefitWithWarehouseId == null ? 0.0 : benefitWithWarehouseId
+                        )
+                );
+                changeMoneyWithKPI(input, ConstProperties.OPERATOR_PLUS);
+            }
+            // done
+            authenticateUser(user);
             return MyResponse.SUCCESSFULLY_CREATED;
         }
         return MyResponse.PRODUCT_NOT_FOUND;
+    }
+
+    private void authenticateUser(User user) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
     @Transactional
@@ -115,7 +159,41 @@ public class InputServiceImpl implements InputService {
         return MyResponse.INPUT_NOT_FOUND;
     }
 
-    // k
+    @Override
+    @Transactional
+    public MyResponse setAdminAccess(WorkerAccessDto dto) {
+        Optional<User> adminOneById = userRepository.findById(dto.getAdminOneId());
+        Optional<User> adminTwoById = userRepository.findById(dto.getAdminTwoId());
+
+        if (adminOneById.isPresent() && adminTwoById.isPresent()) {
+            User adminOne = adminOneById.get();
+            User adminTwo = adminTwoById.get();
+
+            if (adminOne.getRoles().stream().noneMatch(r -> r.getRoleName().equals(RoleName.WORKER))) {
+                return MyResponse.ARENT_WORKER;
+            }
+
+            if (adminTwo.getRoles().stream().noneMatch(r -> r.getRoleName().equals(RoleName.WORKER))) {
+                return MyResponse.ARENT_WORKER;
+            }
+
+            userRepository.setAccessUserFalse();
+            workerTourniquetRepository.setEndedDate(Timestamp.valueOf(LocalDateTime.now()));
+
+            userRepository.setAccessUser(adminOne.getId(), adminTwo.getId());
+            workerTourniquetRepository.save(
+                    new WorkerTourniquet(
+                            adminOne,
+                            adminTwo
+                    )
+            );
+
+            return MyResponse.SUCCESSFULLY_UPDATED;
+        }
+
+        return MyResponse.USER_NOT_FOUND;
+    }
+
     private void changeMaterials(Set<ProductList> materials, double amount, char type) {
         materials.forEach(productList -> {
             final WareHouse material = productList.getMaterial();

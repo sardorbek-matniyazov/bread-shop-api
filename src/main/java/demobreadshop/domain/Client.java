@@ -36,6 +36,7 @@ public class Client extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.comment = comment;
     }
+
     public Client(String fullName, String phoneNumber, String comment) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;

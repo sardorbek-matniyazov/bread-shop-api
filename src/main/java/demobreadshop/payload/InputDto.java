@@ -14,4 +14,7 @@ public class InputDto {
     private long productId;
     @NotNull(message = "Product amount shouldn't be null")
     private double amount;
+
+    private Long workerOneId;
+    private Long workerTwoId;
 }

@@ -3,6 +3,7 @@ package demobreadshop.controller;
 import demobreadshop.domain.Input;
 import demobreadshop.payload.InputDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.WorkerAccessDto;
 import demobreadshop.service.InputService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,14 @@ public class InputController {
     @PostMapping(value = "/create")
     public HttpEntity<?> create(@RequestBody @Valid InputDto dto) {
         MyResponse create = service.create(dto);
+        return create.isActive()
+                ? ResponseEntity.ok(create)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
+    }
+
+    @PutMapping(value = "/setAccess")
+    public HttpEntity<?> setAccessAdmins(@RequestBody @Valid WorkerAccessDto dto) {
+        MyResponse create = service.setAdminAccess(dto);
         return create.isActive()
                 ? ResponseEntity.ok(create)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);

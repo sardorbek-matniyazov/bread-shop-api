@@ -45,7 +45,12 @@ public class ArchiveServiceImpl implements ArchiveService {
         Map<String, Double> map = new HashMap<>();
         map.put("countClients", clientRepository.countAll());
         map.put("countDebt", saleRepository.countOfDebtClients().size() * 1.0);
-        map.put("sumDebt", saleRepository.sumOfDebt());
+
+        Double allKindergartenDebt = saleRepository.sumOfKindergarten();
+        allKindergartenDebt = allKindergartenDebt == null ? 0.0 : allKindergartenDebt;
+
+        map.put("sumDebt", saleRepository.sumOfDebt() - allKindergartenDebt);
+        map.put("kinderDebt", allKindergartenDebt);
         return map;
     }
 

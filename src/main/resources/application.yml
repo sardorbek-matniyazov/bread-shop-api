@@ -8,7 +8,7 @@ spring:
   profiles:
     active: spring.profiles.active
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
+    date-format: dd MMMM yyyy HH:mm
     time-zone: Asia/Tashkent
   datasource:
     username: postgres

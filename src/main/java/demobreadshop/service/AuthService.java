@@ -1,6 +1,7 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.User;
+import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.LoginDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.RegisterDto;
@@ -18,4 +19,6 @@ public interface AuthService {
     MyResponse update(long id, User dto);
 
     List<User> getAllUsers();
+
+    List<User> getAllUsersByRoleName(RoleName worker);
 }

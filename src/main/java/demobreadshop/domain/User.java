@@ -46,6 +46,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "balance")
     private double balance;
 
+    @Column(name = "user_access")
+    private boolean userAccess;
+
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

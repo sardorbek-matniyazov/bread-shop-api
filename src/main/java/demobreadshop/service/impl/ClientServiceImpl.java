@@ -69,6 +69,7 @@ public class ClientServiceImpl implements ClientService {
             client.setComment(dto.getComment());
             client.setFullName(dto.getName());
             client.setPhoneNumber(dto.getPhoneNumber());
+            client.setKindergarten(dto.isKindergarten());
             repository.save(client);
             return MyResponse.SUCCESSFULLY_UPDATED;
         }

@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -144,6 +145,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> getAllUsersByRoleName(RoleName role) {
+        return userRepository.findAll().stream().filter(
+                user -> user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(role))
+        ).collect(Collectors.toList());
     }
 
     static boolean isNonDeletable(long time) {

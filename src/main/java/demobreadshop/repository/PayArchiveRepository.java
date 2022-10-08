@@ -1,6 +1,7 @@
 package demobreadshop.repository;
 
 import demobreadshop.domain.PayArchive;
+import demobreadshop.domain.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,4 +24,12 @@ public interface PayArchiveRepository extends JpaRepository<PayArchive, Long> {
             nativeQuery = true
     )
     Double findAllIncomeAmount(Timestamp timestamp, Timestamp timestamp1);
+
+    @Query(
+            value = "select sale.id from sale join pay_archive pa on sale.id = pa.sale_id where pa.id = ?1;",
+            nativeQuery = true
+    )
+    Long findSaleId(Long id);
+
+    List<PayArchive> findAllByStatusOrderByIdDesc(PaymentStatus wait);
 }

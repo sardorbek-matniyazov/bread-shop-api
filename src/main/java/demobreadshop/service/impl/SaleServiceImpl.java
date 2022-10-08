@@ -11,6 +11,7 @@ import demobreadshop.service.SaleService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -114,7 +115,7 @@ public class SaleServiceImpl implements SaleService {
 
                 sale.setSaleType(type);
                 repository.save(sale);
-                createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
+                createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash(), PaymentStatus.PAID);
 
                 changeMoneyWithKPI(sale, ConstProperties.OPERATOR_PLUS);
                 return MyResponse.SUCCESSFULLY_CREATED;
@@ -174,6 +175,7 @@ public class SaleServiceImpl implements SaleService {
         if (byId.isPresent()) {
             Sale sale = byId.get();
             double currentDebt = sale.getDebtPrice() - dto.getCostCard() - dto.getCostCash();
+
             if (currentDebt < 0.0) {
                 return MyResponse.INPUT_TYPE_ERROR;
             }
@@ -181,9 +183,7 @@ public class SaleServiceImpl implements SaleService {
                 sale.setType(Status.PAYED);
             }
 
-            sale.setDebtPrice(currentDebt);
-            repository.save(sale);
-            createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash());
+            createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash(), PaymentStatus.WAIT);
             return MyResponse.SUCCESSFULLY_PAYED;
         }
         return MyResponse.SALE_NOT_FOUND;
@@ -191,15 +191,36 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getAllByType(Status type, boolean isKindergarten) {
-        return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten);
+        return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten, Sort.by(Sort.Direction.ASC, "id"));
     }
 
-    private void createPaymentArchive(Sale sale, double costCard, double costCash) {
+    @Override
+    public MyResponse checkPayment(Long id) {
+        Optional<PayArchive> byId = archiveRepository.findById(id);
+        if (byId.isPresent()) {
+            PayArchive payArchive = byId.get();
+
+            Long saleId = archiveRepository.findSaleId(id);
+            repository.setDebtPriceWithPayArchive(saleId, payArchive.getAmount());
+
+            return MyResponse.SUCCESSFULLY_UPDATED;
+        }
+
+        return MyResponse.PAYMENT_NOT_FOUND;
+    }
+
+    @Override
+    public List<PayArchive> getPaymentsByType(PaymentStatus wait) {
+        return archiveRepository.findAllByStatusOrderByIdDesc(wait);
+    }
+
+    private void createPaymentArchive(Sale sale, double costCard, double costCash, PaymentStatus status) {
         if (costCard != 0.0) {
             archiveRepository.save(
                     new PayArchive(
                             costCard,
                             PayType.CARD,
+                            status,
                             sale
                     )
             );
@@ -209,6 +230,7 @@ public class SaleServiceImpl implements SaleService {
                     new PayArchive(
                             costCash,
                             PayType.CASH,
+                            status,
                             sale
                     )
             );

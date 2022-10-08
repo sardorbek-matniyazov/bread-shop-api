@@ -1,6 +1,7 @@
 package demobreadshop.controller;
 
 import demobreadshop.domain.User;
+import demobreadshop.domain.enums.RoleName;
 import demobreadshop.payload.*;
 import demobreadshop.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,12 @@ public class AuthController {
     @GetMapping(value = "/allUsers")
     public HttpEntity<?> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_CAR', 'SELLER_ADMIN', 'WORKER', 'SUPERVISOR'})")
+    @GetMapping(value = "/allWorkers")
+    public HttpEntity<?> getAllWorkers() {
+        return ResponseEntity.ok(service.getAllUsersByRoleName(RoleName.WORKER));
     }
 
     @PreAuthorize(value = "hasAuthority('GL_ADMIN')")

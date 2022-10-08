@@ -28,13 +28,13 @@ public abstract class BaseEntity {
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMMM yyyy HH:mm")
     private Timestamp createdAt;
 
     @JsonIgnore
     @UpdateTimestamp
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMMM yyyy HH:mm")
     private Timestamp updatedAt;
 
     @CreatedBy

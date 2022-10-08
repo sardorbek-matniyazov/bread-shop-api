@@ -1,17 +1,18 @@
 package demobreadshop.repository;
 
 import demobreadshop.domain.Sale;
-import demobreadshop.domain.enums.PayType;
 import demobreadshop.domain.enums.Status;
 import demobreadshop.domain.projection.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
-    List<Sale> findAllByTypeAndClient_IsKindergarten(Status debt, boolean isKindergarten);
+    List<Sale> findAllByTypeAndClient_IsKindergarten(Status debt, boolean isKindergarten, Sort sort);
 
     // uliwmaliq sawda
     @Query(
@@ -155,4 +156,17 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     SaleInfoProjection getSalePayInfo(String payType, String fullName, Timestamp timestamp, Timestamp timestamp1);
+
+    @Query(
+            value = "update sale set debt_price = debt_price - ?2 where id = ?1;",
+            nativeQuery = true
+    )
+    @Modifying
+    Integer setDebtPriceWithPayArchive(Long saleId, double amount);
+
+    @Query(
+            value = "select sum(s.debt_price) from sale s join client c on c.id = s.client_id where c.is_kindergarten;",
+            nativeQuery = true
+    )
+    Double sumOfKindergarten();
 }
