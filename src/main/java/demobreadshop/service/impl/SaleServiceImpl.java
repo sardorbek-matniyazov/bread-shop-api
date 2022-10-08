@@ -50,7 +50,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getAll() {
-        return repository.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<PayArchive> getArchives(long id) {
-        return archiveRepository.findAllBySaleId(id);
+        return archiveRepository.findAllBySaleIdOrderByIdDesc(id);
     }
 
     @Transactional
@@ -173,8 +173,16 @@ public class SaleServiceImpl implements SaleService {
         }
         Optional<Sale> byId = repository.findById(dto.getSaleId());
         if (byId.isPresent()) {
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Sale sale = byId.get();
-            double currentDebt = sale.getDebtPrice() - dto.getCostCard() - dto.getCostCash();
+            if (user.getRoles().stream().noneMatch(role -> role.getRoleName().equals(RoleName.SELLER_ADMIN))
+                    && !sale.getCreatedBy().equals(user.getFullName())) {
+                return MyResponse.YOU_CANT_CREATE;
+            }
+
+            Double allWaitSum = repository.sumOfDebtByStatusWait(dto.getSaleId());
+            allWaitSum = allWaitSum== null ? 0.0 : allWaitSum;
+            double currentDebt = sale.getDebtPrice() - dto.getCostCard() - dto.getCostCash() - allWaitSum;
 
             if (currentDebt < 0.0) {
                 return MyResponse.INPUT_TYPE_ERROR;
@@ -191,7 +199,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getAllByType(Status type, boolean isKindergarten) {
-        return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten, Sort.by(Sort.Direction.ASC, "id"));
+        return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten, Sort.by(Sort.Direction.DESC, "id"));
     }
 
     @Override

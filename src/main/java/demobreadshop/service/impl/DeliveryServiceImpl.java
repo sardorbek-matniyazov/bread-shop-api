@@ -35,7 +35,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Delivery> getAll() {
-        return repository.findAllByOrderByCreatedAtDesc();
+        return repository.findAllByOrderByIdDesc();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Output> getDeliveries(long id) {
-        return outputRepository.findAllByDeliveryId(id);
+        return outputRepository.findAllByDeliveryIdOrderByIdDesc(id);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Output> getAllDeliveries() {
-        return outputRepository.findAllByTypeOrderByCreatedAtDesc(OutputType.O_DELIVERER);
+        return outputRepository.findAllByTypeOrderByIdDesc(OutputType.O_DELIVERER);
     }
 
     @Override

@@ -18,7 +18,8 @@ public interface WareHouseRepository extends JpaRepository<WareHouse, Long> {
     @Query(
             value = "select sum(k.material_amount * k.wh_price) as realPrice, wh.wh_name as name, wh.wh_price as price, wh.id as id, wh.house_amount as amount, wh.kindergarten_price as kindergartenPrice \n" +
                     "from (ware_house wh join product_list pl on wh.id = pl.material_id) k join ware_house wh on k.warehouse_fk = wh.id \n" +
-                    "group by wh.id",
+                    "group by wh.id " +
+                    "order by id DESC ",
             nativeQuery = true
     )
     List<ProductProjection> findAllProduct();

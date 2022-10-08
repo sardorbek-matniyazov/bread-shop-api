@@ -36,7 +36,7 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     @Query(
             value = "select i.material_amount as amount, i.user_kpi_value as userKpi, (i.material_amount * i.user_kpi_value) as allSum,  i.created_by as fullName, i.created_at as createdAt " +
                     "from input i " +
-                    "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3 ",
+                    "where i.created_by = ?1 and i.created_at >= ?2 and i.created_at <= ?3 order by i.id DESC ",
             nativeQuery = true
     )
     List<SalaryHistoryProjection> getAllInputSalaryHistory(String fullName, Timestamp time, Timestamp timestamp);

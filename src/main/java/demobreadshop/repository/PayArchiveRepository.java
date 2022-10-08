@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface PayArchiveRepository extends JpaRepository<PayArchive, Long> {
-    List<PayArchive> findAllBySaleId(long id);
+    List<PayArchive> findAllBySaleIdOrderByIdDesc(long id);
 
     @Query(
             value = "SELECT SUM(archive_amount) FROM pay_archive where pay_type = ?1",

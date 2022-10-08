@@ -39,5 +39,5 @@ public interface OutcomeRepository extends JpaRepository<Outcome, Long> {
     )
     List<OutcomeProjection> findAllWithRoleName(Timestamp start, Timestamp end);
 
-    List<Outcome> findAllByCreatedAtBetween(Timestamp start, Timestamp end);
+    List<Outcome> findAllByCreatedAtBetweenOrderByIdDesc(Timestamp start, Timestamp end);
 }

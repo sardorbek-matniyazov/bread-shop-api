@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     Delivery findByDelivererId(Long id);
-    List<Delivery> findAllByOrderByCreatedAtDesc();
+    List<Delivery> findAllByOrderByIdDesc();
 }

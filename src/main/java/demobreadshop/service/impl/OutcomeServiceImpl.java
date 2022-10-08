@@ -56,10 +56,10 @@ public class OutcomeServiceImpl implements OutcomeService {
     @Override
     public List<Outcome> getAll(String start, String end) {
         if (start == null && end == null) {
-            return repository.findAllByCreatedAtBetween(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+            return repository.findAllByCreatedAtBetweenOrderByIdDesc(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
         }
         else {
-            return repository.findAllByCreatedAtBetween(ArchiveServiceImpl.getTime(start), ArchiveServiceImpl.getTime(end));
+            return repository.findAllByCreatedAtBetweenOrderByIdDesc(ArchiveServiceImpl.getTime(start), ArchiveServiceImpl.getTime(end));
         }
     }
 

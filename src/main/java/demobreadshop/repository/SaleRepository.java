@@ -78,7 +78,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query(
             value = "select (o.material_amount * u.user_kpi) as allSum, o.created_at as createdAt, o.material_amount as amount, o.created_by as fullName, u.user_kpi as userKpi " +
                     "    from output o join users u on o.created_by = u.full_name " +
-                    "    where output_type = 'O_SALE' and u.id = ?1 and o.created_at >= ?2 and o.created_at <= ?3",
+                    "    where output_type = 'O_SALE' and u.id = ?1 and o.created_at >= ?2 and o.created_at <= ?3 order by o.id desc ",
             nativeQuery = true
     )
     List<SalaryHistoryProjection> findAllSalaryHistory(Long id, Timestamp time, Timestamp timestamp);
@@ -169,4 +169,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     Double sumOfKindergarten();
+
+    @Query(
+            value = "select sum(pay_archive.archive_amount) from pay_archive where sale_id = ?1",
+            nativeQuery = true
+    )
+    Double sumOfDebtByStatusWait(Long id);
 }
