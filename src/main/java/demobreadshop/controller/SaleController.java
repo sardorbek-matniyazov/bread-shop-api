@@ -45,7 +45,7 @@ public class SaleController {
 
     @CrossOrigin(origins = "https://trio.webclub.uz")
     @PreAuthorize(value = "hasAuthority({'GL_ADMIN'})")
-    @PutMapping(value = "/payment/{id}")
+    @PostMapping(value = "/payment/{id}")
     public HttpEntity<?> checkPaymentArchive(@PathVariable Long id) {
         MyResponse check = service.checkPayment(id);
         return check.isActive()
