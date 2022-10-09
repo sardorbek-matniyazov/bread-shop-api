@@ -47,7 +47,7 @@ public class User extends BaseEntity implements UserDetails {
     private double balance;
 
     @Column(name = "user_access")
-    private boolean userAccess;
+    private Boolean userAccess;
 
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @ManyToMany(fetch = FetchType.EAGER)

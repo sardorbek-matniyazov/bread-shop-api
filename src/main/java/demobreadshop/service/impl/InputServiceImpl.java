@@ -84,7 +84,7 @@ public class InputServiceImpl implements InputService {
                 return MyResponse.YOU_CANT_CREATE;
             }
 
-            if (product.getType().equals(ProductType.PRODUCT) && !user.isUserAccess() && !userTwo.isUserAccess()) {
+            if (product.getType().equals(ProductType.PRODUCT) && !user.getUserAccess() && !userTwo.getUserAccess()) {
                 return MyResponse.YOU_HAVEN_T_ACCESS;
             }
 
