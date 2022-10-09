@@ -43,6 +43,7 @@ public class PayArchive extends BaseEntity {
         response.put("type", this.getType());
         response.put("amount", this.getAmount());
         response.put("status", this.getStatus());
+        response.put("createdBy", this.getCreatedBy());
         response.put("createdAt", this.getCreatedAt());
         return response;
     }
