@@ -61,6 +61,14 @@ public class InputController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
     }
 
+    @PutMapping(value = "/setNonAccess")
+    public HttpEntity<?> setNonAccessAdmins() {
+        MyResponse create = service.setAdminNonAccess();
+        return create.isActive()
+                ? ResponseEntity.ok(create)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
+    }
+
     @Transactional
     @DeleteMapping(value = "/{id}")
     public HttpEntity<?> delete(@PathVariable long id) {

@@ -20,4 +20,6 @@ public interface InputService {
     MyResponse delete(long id);
 
     MyResponse setAdminAccess(WorkerAccessDto dto);
+
+    MyResponse setAdminNonAccess();
 }

@@ -194,6 +194,15 @@ public class InputServiceImpl implements InputService {
         return MyResponse.USER_NOT_FOUND;
     }
 
+    @Override
+    public MyResponse setAdminNonAccess() {
+
+        userRepository.setAccessUserFalse();
+        workerTourniquetRepository.setEndedDate(Timestamp.valueOf(LocalDateTime.now()));
+
+        return MyResponse.SUCCESSFULLY_UPDATED;
+    }
+
     private void changeMaterials(Set<ProductList> materials, double amount, char type) {
         materials.forEach(productList -> {
             final WareHouse material = productList.getMaterial();
