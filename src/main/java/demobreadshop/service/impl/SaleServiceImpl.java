@@ -175,7 +175,7 @@ public class SaleServiceImpl implements SaleService {
         if (byId.isPresent()) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Sale sale = byId.get();
-            if (user.getRoles().stream().noneMatch(role -> role.getRoleName().equals(RoleName.SELLER_ADMIN))
+            if (user.getRoles().stream().noneMatch(role -> role.getRoleName().equals(RoleName.SELLER_ADMIN) || role.getRoleName().equals(RoleName.GL_ADMIN))
                     && !sale.getCreatedBy().equals(user.getFullName())) {
                 return MyResponse.YOU_CANT_CREATE;
             }
