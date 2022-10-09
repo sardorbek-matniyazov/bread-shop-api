@@ -21,6 +21,7 @@ public class CorsConfig {
         config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.setMaxAge(0L);
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
@@ -32,7 +33,7 @@ public class CorsConfig {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
         messageSource.setCacheSeconds(3600);
-        messageSource.setDefaultEncoding("UTF-8"); // Add this
+        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 }
