@@ -43,7 +43,7 @@ public class SaleController {
         return ResponseEntity.ok(service.getAllByType(Status.DEBT, true));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN'})")
     @PutMapping(value = "/payment/{id}")
     public HttpEntity<?> checkPaymentArchive(@PathVariable Long id) {
         MyResponse check = service.checkPayment(id);
@@ -84,7 +84,7 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN', 'CAR_SELLER'})")
     @PostMapping(value = "/payDebt")
     public HttpEntity<?> payForDebt(@RequestBody @Valid DebtDto dto) {
         MyResponse sell = service.payForDebt(dto);

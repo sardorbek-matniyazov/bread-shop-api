@@ -27,6 +27,7 @@ public class WorkerTourniquet extends BaseEntity {
     @JsonValue()
     public Map<String, Object> toJson() {
         Map<String, Object> response = new HashMap<>();
+        response.put("id", super.getId());
         response.put("workerOne", this.workerOne.getFullName());
         response.put("workerTwo", this.workerTwo.getFullName());
         response.put("startedAt", super.getCreatedAt());
