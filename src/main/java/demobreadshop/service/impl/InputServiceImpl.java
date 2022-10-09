@@ -71,9 +71,10 @@ public class InputServiceImpl implements InputService {
                 Optional<User> byId1;
                 if (user.getId().equals(dto.getWorkerOneId())) {
                     byId1 = userRepository.findById(dto.getWorkerTwoId());
-                } else {
+                } else if (user.getId().equals(dto.getWorkerTwoId())) {
                     byId1 = userRepository.findById(dto.getWorkerOneId());
-                }
+                } else return MyResponse.YOU_HAVEN_T_ACCESS;
+
                 if (byId1.isPresent()) {
                     userTwo = byId1.get();
                 } else return MyResponse.WORKER_NOT_FOUND;
