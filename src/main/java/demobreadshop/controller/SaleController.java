@@ -43,6 +43,7 @@ public class SaleController {
         return ResponseEntity.ok(service.getAllByType(Status.DEBT, true));
     }
 
+    @CrossOrigin(origins = "https://trio.webclub.uz")
     @PreAuthorize(value = "hasAuthority({'GL_ADMIN'})")
     @PutMapping(value = "/payment/{id}")
     public HttpEntity<?> checkPaymentArchive(@PathVariable Long id) {

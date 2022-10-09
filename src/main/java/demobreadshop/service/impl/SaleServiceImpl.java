@@ -214,11 +214,8 @@ public class SaleServiceImpl implements SaleService {
             }
 
             Long saleId = archiveRepository.findSaleId(id);
-            System.out.println("get sale id");
             repository.setDebtPriceWithPayArchive(payArchive.getAmount(), saleId);
-            System.out.println("set debt price");
             payArchive.setStatus(PaymentStatus.PAID);
-            System.out.println("set payment status");
             archiveRepository.save(payArchive);
             return MyResponse.SUCCESSFULLY_UPDATED;
         }
