@@ -203,6 +203,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+    @Transactional
     public MyResponse checkPayment(Long id) {
         Optional<PayArchive> byId = archiveRepository.findById(id);
         if (byId.isPresent()) {
@@ -210,7 +211,8 @@ public class SaleServiceImpl implements SaleService {
 
             Long saleId = archiveRepository.findSaleId(id);
             repository.setDebtPriceWithPayArchive(saleId, payArchive.getAmount());
-
+            payArchive.setStatus(PaymentStatus.PAID);
+            archiveRepository.save(payArchive);
             return MyResponse.SUCCESSFULLY_UPDATED;
         }
 

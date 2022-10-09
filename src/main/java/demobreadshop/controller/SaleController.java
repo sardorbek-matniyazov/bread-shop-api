@@ -43,7 +43,7 @@ public class SaleController {
         return ResponseEntity.ok(service.getAllByType(Status.DEBT, true));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN'})")
+    @PreAuthorize(value = "hasAuthority({'GL_ADMIN'})")
     @PutMapping(value = "/payment/{id}")
     public HttpEntity<?> checkPaymentArchive(@PathVariable Long id) {
         MyResponse check = service.checkPayment(id);
