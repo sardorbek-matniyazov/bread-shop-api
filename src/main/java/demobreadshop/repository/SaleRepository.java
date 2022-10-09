@@ -158,11 +158,11 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     SaleInfoProjection getSalePayInfo(String payType, String fullName, Timestamp timestamp, Timestamp timestamp1);
 
     @Query(
-            value = "update sale set debt_price = debt_price - ?2 where id = ?1;",
+            value = "update sale set debt_price = debt_price - ?1 where id = ?2 ",
             nativeQuery = true
     )
     @Modifying
-    Integer setDebtPriceWithPayArchive(Long saleId, double amount);
+    Integer setDebtPriceWithPayArchive(double amount, long saleId);
 
     @Query(
             value = "select sum(s.debt_price) from sale s join client c on c.id = s.client_id where c.is_kindergarten;",

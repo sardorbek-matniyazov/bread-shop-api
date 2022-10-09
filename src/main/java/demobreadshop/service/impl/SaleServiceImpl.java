@@ -209,9 +209,16 @@ public class SaleServiceImpl implements SaleService {
         if (byId.isPresent()) {
             PayArchive payArchive = byId.get();
 
+            if (payArchive.getStatus().equals(PaymentStatus.PAID)) {
+                return MyResponse.INPUT_TYPE_ERROR;
+            }
+
             Long saleId = archiveRepository.findSaleId(id);
-            repository.setDebtPriceWithPayArchive(saleId, payArchive.getAmount());
+            System.out.println("get sale id");
+            repository.setDebtPriceWithPayArchive(payArchive.getAmount(), saleId);
+            System.out.println("set debt price");
             payArchive.setStatus(PaymentStatus.PAID);
+            System.out.println("set payment status");
             archiveRepository.save(payArchive);
             return MyResponse.SUCCESSFULLY_UPDATED;
         }

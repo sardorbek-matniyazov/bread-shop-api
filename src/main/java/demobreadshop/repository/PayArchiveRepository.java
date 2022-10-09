@@ -26,7 +26,7 @@ public interface PayArchiveRepository extends JpaRepository<PayArchive, Long> {
     Double findAllIncomeAmount(Timestamp timestamp, Timestamp timestamp1);
 
     @Query(
-            value = "select sale.id from sale join pay_archive pa on sale.id = pa.sale_id where pa.id = ?1;",
+            value = "select sale.id from sale join pay_archive pa on sale.id = pa.sale_id where pa.id = ?1 limit 1;",
             nativeQuery = true
     )
     Long findSaleId(Long id);
