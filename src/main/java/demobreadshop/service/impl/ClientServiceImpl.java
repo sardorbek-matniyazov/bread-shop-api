@@ -49,7 +49,7 @@ public class ClientServiceImpl implements ClientService {
                         dto.getName(),
                         dto.getPhoneNumber(),
                         dto.getComment(),
-                        dto.isKindergarten()
+                        dto.getIsKindergarten()
                 )
         );
         return MyResponse.SUCCESSFULLY_CREATED;
@@ -69,7 +69,7 @@ public class ClientServiceImpl implements ClientService {
             client.setComment(dto.getComment());
             client.setFullName(dto.getName());
             client.setPhoneNumber(dto.getPhoneNumber());
-            client.setKindergarten(dto.isKindergarten());
+            client.setKindergarten(dto.getIsKindergarten());
             repository.save(client);
             return MyResponse.SUCCESSFULLY_UPDATED;
         }

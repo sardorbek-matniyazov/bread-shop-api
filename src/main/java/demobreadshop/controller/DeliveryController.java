@@ -59,7 +59,7 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getDeliveries(id));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'SELLER_CAR', 'SELLER_ADMIN', 'WORKER'})")
+    @PreAuthorize(value = "hasAnyAuthority({'SELLER_CAR', 'SELLER_ADMIN'})")
     @PostMapping(value = "/createOutput")
     public HttpEntity<?> deliver(@RequestBody @Valid DeliveryDto dto) {
         MyResponse deliver = service.deliver(dto);

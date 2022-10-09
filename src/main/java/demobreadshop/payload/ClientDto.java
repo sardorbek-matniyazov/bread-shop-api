@@ -23,5 +23,5 @@ public class ClientDto {
     private String comment;
 
     @NotNull(message = "client type is required !")
-    private boolean isKindergarten;
+    private Boolean isKindergarten;
 }
