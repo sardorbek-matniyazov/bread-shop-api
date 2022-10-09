@@ -61,6 +61,7 @@ public class InputController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(create);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN' , 'SELLER_ADMIN'})")
     @PutMapping(value = "/setNonAccess")
     public HttpEntity<?> setNonAccessAdmins() {
         MyResponse create = service.setAdminNonAccess();

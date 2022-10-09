@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,7 +65,7 @@ public class InputServiceImpl implements InputService {
         if (byId.isPresent()) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-            User userTwo = user;
+            User userTwo = null;
 
             final WareHouse product = byId.get();
             if (product.getType().equals(ProductType.PRODUCT)) {
@@ -84,7 +85,7 @@ public class InputServiceImpl implements InputService {
                 return MyResponse.YOU_CANT_CREATE;
             }
 
-            if (product.getType().equals(ProductType.PRODUCT) && !user.getUserAccess() && !userTwo.getUserAccess()) {
+            if (product.getType().equals(ProductType.PRODUCT) && !user.getUserAccess() && userTwo != null && !userTwo.getUserAccess()) {
                 return MyResponse.YOU_HAVEN_T_ACCESS;
             }
 
@@ -196,6 +197,7 @@ public class InputServiceImpl implements InputService {
     }
 
     @Override
+    @Transactional
     public MyResponse setAdminNonAccess() {
 
         userRepository.setAccessUserFalse();
