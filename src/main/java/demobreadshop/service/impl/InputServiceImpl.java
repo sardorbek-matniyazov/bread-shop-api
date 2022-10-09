@@ -65,10 +65,13 @@ public class InputServiceImpl implements InputService {
         if (byId.isPresent()) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-            User userTwo = null;
+            User userTwo = user;
 
             final WareHouse product = byId.get();
             if (product.getType().equals(ProductType.PRODUCT)) {
+                if (dto.getWorkerOneId() == null || dto.getWorkerTwoId() == null) {
+                    return MyResponse.INPUT_TYPE_ERROR;
+                }
                 Optional<User> byId1;
                 if (user.getId().equals(dto.getWorkerOneId())) {
                     byId1 = userRepository.findById(dto.getWorkerTwoId());
@@ -85,7 +88,7 @@ public class InputServiceImpl implements InputService {
                 return MyResponse.YOU_CANT_CREATE;
             }
 
-            if (product.getType().equals(ProductType.PRODUCT) && !user.getUserAccess() && userTwo != null && !userTwo.getUserAccess()) {
+            if (product.getType().equals(ProductType.PRODUCT) && (!user.getUserAccess() || !userTwo.getUserAccess())) {
                 return MyResponse.YOU_HAVEN_T_ACCESS;
             }
 
