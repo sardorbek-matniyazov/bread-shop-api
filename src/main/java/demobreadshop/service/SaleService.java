@@ -3,7 +3,7 @@ package demobreadshop.service;
 import demobreadshop.domain.PayArchive;
 import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.PaymentStatus;
-import demobreadshop.domain.enums.Status;
+import demobreadshop.domain.enums.SaleStatus;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -23,7 +23,7 @@ public interface SaleService {
 
     MyResponse payForDebt(DebtDto dto);
 
-    List<Sale> getAllByType(Status debt, boolean isKindergarten);
+    List<Sale> getAllByType(SaleStatus debt, boolean isKindergarten);
 
     MyResponse checkPayment(Long id);
 

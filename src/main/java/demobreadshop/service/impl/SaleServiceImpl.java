@@ -109,7 +109,7 @@ public class SaleServiceImpl implements SaleService {
                         wholePrice,
                         debtPrice,
                         client.isKindergarten() ? product.getKindergartenPrice() : product.getPrice(),
-                        debtPrice == 0 ? Status.PAYED : Status.DEBT,
+                        debtPrice == 0 ? SaleStatus.PAYED : SaleStatus.DEBT,
                         user.getUserKPI()
                 );
 
@@ -187,9 +187,6 @@ public class SaleServiceImpl implements SaleService {
             if (currentDebt < 0.0) {
                 return MyResponse.INPUT_TYPE_ERROR;
             }
-            if (currentDebt == 0.0) {
-                sale.setType(Status.PAYED);
-            }
 
             createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash(), PaymentStatus.WAIT);
             return MyResponse.SUCCESSFULLY_PAYED;
@@ -198,7 +195,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public List<Sale> getAllByType(Status type, boolean isKindergarten) {
+    public List<Sale> getAllByType(SaleStatus type, boolean isKindergarten) {
         return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten, Sort.by(Sort.Direction.DESC, "id"));
     }
 

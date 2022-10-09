@@ -2,7 +2,7 @@ package demobreadshop.controller;
 
 import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.PaymentStatus;
-import demobreadshop.domain.enums.Status;
+import demobreadshop.domain.enums.SaleStatus;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.SaleDto;
@@ -35,15 +35,14 @@ public class SaleController {
 
     @GetMapping(value = "/allDebt")
     public HttpEntity<?> getAllDebts() {
-        return ResponseEntity.ok(service.getAllByType(Status.DEBT, false));
+        return ResponseEntity.ok(service.getAllByType(SaleStatus.DEBT, false));
     }
 
     @GetMapping(value = "/allDebtKindergarten")
     public HttpEntity<?> getAllDebtsOfKindergarten() {
-        return ResponseEntity.ok(service.getAllByType(Status.DEBT, true));
+        return ResponseEntity.ok(service.getAllByType(SaleStatus.DEBT, true));
     }
 
-    @CrossOrigin(origins = "https://trio.webclub.uz")
     @PreAuthorize(value = "hasAuthority({'GL_ADMIN'})")
     @PutMapping(value = "/payment/{id}")
     public HttpEntity<?> checkPaymentArchive(@PathVariable Long id) {
@@ -60,7 +59,7 @@ public class SaleController {
 
     @GetMapping(value = "/allPayed")
     public HttpEntity<?> getAllPayed() {
-        return ResponseEntity.ok(service.getAllByType(Status.PAYED, false));
+        return ResponseEntity.ok(service.getAllByType(SaleStatus.PAYED, false));
     }
 
     @GetMapping(value = "/{id}")

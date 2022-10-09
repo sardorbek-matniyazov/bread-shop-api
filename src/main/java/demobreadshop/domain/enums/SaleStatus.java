@@ -1,6 +1,6 @@
 package demobreadshop.domain.enums;
 
-public enum Status {
+public enum SaleStatus {
     DEBT,
     PAYED
 }

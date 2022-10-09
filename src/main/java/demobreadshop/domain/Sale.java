@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import demobreadshop.domain.enums.SaleType;
-import demobreadshop.domain.enums.Status;
+import demobreadshop.domain.enums.SaleStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,7 +43,7 @@ public class Sale extends BaseEntity {
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status type;
+    private SaleStatus type;
 
     @Column(name = "user_kpi_value")
     private Double kpiValue;
@@ -54,7 +54,7 @@ public class Sale extends BaseEntity {
             double wholePrice,
             double debtPrice,
             double productPrice,
-            Status type,
+            SaleStatus type,
             Double userKpi) {
         this.output = output;
         this.client = client;
@@ -65,6 +65,10 @@ public class Sale extends BaseEntity {
         this.kpiValue = userKpi;
     }
 
+    public Sale(Long id, Double debtPrice) {
+        super(id);
+        this.debtPrice = debtPrice;
+    }
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     @Column(name = "sale_type")

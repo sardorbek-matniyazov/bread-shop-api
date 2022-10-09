@@ -1,6 +1,7 @@
 package demobreadshop.repository;
 
 import demobreadshop.domain.PayArchive;
+import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

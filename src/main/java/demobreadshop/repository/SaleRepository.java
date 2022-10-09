@@ -1,7 +1,7 @@
 package demobreadshop.repository;
 
 import demobreadshop.domain.Sale;
-import demobreadshop.domain.enums.Status;
+import demobreadshop.domain.enums.SaleStatus;
 import demobreadshop.domain.projection.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
-    List<Sale> findAllByTypeAndClient_IsKindergarten(Status debt, boolean isKindergarten, Sort sort);
+    List<Sale> findAllByTypeAndClient_IsKindergarten(SaleStatus debt, boolean isKindergarten, Sort sort);
 
     // uliwmaliq sawda
     @Query(
@@ -66,7 +66,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // clientler statisticasi grafic kim ko'p sawda ishladi
     @Query(
-            value = "select c.full_name as fullName, c.phone_number as phoneNumber, c.id as clientId, sum(s.whole_price) as wholePrice " +
+            value = "select c.full_name as fullName, c.is_kindergarten as kindergarten, c.phone_number as phoneNumber, c.id as clientId, sum(s.whole_price) as wholePrice " +
                     "from sale s join client c on c.id = s.client_id " +
                     "where s.created_at >= ?1 and s.created_at <= ?2 " +
                     "group by c.created_by, c.id;",
@@ -158,7 +158,13 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     SaleInfoProjection getSalePayInfo(String payType, String fullName, Timestamp timestamp, Timestamp timestamp1);
 
     @Query(
-            value = "update sale set debt_price = debt_price - ?1 where id = ?2 ",
+            value = "UPDATE sale " +
+                    "SET debt_price = debt_price - ?1, " +
+                    "status = case " +
+                    "   when debt_price - ?1 = 0 then 'PAYED' " +
+                    "   else 'DEBT' " +
+                    "end " +
+                    "where id = ?2",
             nativeQuery = true
     )
     @Modifying
