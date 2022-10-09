@@ -27,15 +27,6 @@ public class CorsConfig {
         return bean;
     }
 
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/sale/payment/*").allowedOrigins("https://trio.webclub.uz");
-            }
-        };
-    }
-
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
