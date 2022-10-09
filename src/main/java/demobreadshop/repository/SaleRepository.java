@@ -171,7 +171,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     Double sumOfKindergarten();
 
     @Query(
-            value = "select sum(pay_archive.archive_amount) from pay_archive where sale_id = ?1",
+            value = "select sum(pay_archive.archive_amount) from pay_archive where sale_id = ?1 and pay_status='WAIT' ",
             nativeQuery = true
     )
     Double sumOfDebtByStatusWait(Long id);
