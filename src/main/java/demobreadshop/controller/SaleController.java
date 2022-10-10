@@ -84,7 +84,7 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN', 'CAR_SELLER'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SELLER_ADMIN', 'SELLER_CAR'})")
     @PostMapping(value = "/payDebt")
     public HttpEntity<?> payForDebt(@RequestBody @Valid DebtDto dto) {
         MyResponse sell = service.payForDebt(dto);
