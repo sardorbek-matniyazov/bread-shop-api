@@ -37,7 +37,7 @@ public class ComplaintController {
         return ResponseEntity.ok(service.get(id));
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SUPERVISOR'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN', 'SUPERVISOR', 'SELLER_CAR', 'SELLER_ADMIN'})")
     @PostMapping(value = "create")
     public HttpEntity<?> create(ComplaintDto dto, MultipartFile file) {
         System.out.println(file);
