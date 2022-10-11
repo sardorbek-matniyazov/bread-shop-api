@@ -55,7 +55,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             value = "with bum as " +
                     "(select sum(pa.archive_amount) as sum, s.id, s.created_by, s.created_at " +
                     " from sale s join pay_archive pa on s.id = pa.sale_id " +
-                    " where s.created_at >= ?1 and s.created_at <= ?2 " +
+                    " where s.created_at >= ?1 and s.created_at <= ?2 and pa.pay_status = 'PAID' " +
                     " group by s.id, s.created_by) " +
                     "select sum(bum.sum) as sumAmount, bum.created_by as fullName, u.phone_number, u.users_id as userId " +
                     "from bum join (users u join users_roles ur on u.id = ur.users_id) u on bum.created_by = u.full_name " +
@@ -87,6 +87,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             value = "with bum as (\n" +
                     "select sum(pa.archive_amount) as amount, s.id, pa.pay_type " +
                     "from sale s join pay_archive pa on s.id = pa.sale_id " +
+                    "where pa.pay_status = 'PAID' " +
                     "group by pa.pay_type, s.id " +
                     ") select sum(bum.amount) as amount, bum.pay_type as payType " +
                     "from sale s join bum on bum.id = s.id " +
@@ -101,7 +102,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             value = "with bum as (\n" +
                     "    select sum(pa.archive_amount) as amount, s.id, pa.pay_type, client_id " +
                     "    from sale s join pay_archive pa on s.id = pa.sale_id " +
-                    "    where s.created_at >= ?1 and s.created_at <= ?2 " +
+                    "    where s.created_at >= ?1 and s.created_at <= ?2 and pa.pay_status = 'PAID' " +
                     "    group by pa.pay_type, s.id " +
                     "    ) select sum(bum.amount) as amount, c.full_name as fullName " +
                     "    from client c join bum on bum.client_id = c.id " +
@@ -136,7 +137,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     Double sumOfDebtByTime(Timestamp time, Timestamp time1);
 
     @Query(
-            value = "select * from sale\n" +
+            value = "select * from sale " +
                     "where created_by = ?1 and created_at >= ?2 and created_at <= ?3",
             nativeQuery = true
     )
@@ -151,7 +152,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query(
             value = "select sum(pa.archive_amount) as amount, pa.pay_type as payType " +
                     "from sale s join pay_archive pa on s.id = pa.sale_id " +
-                    "where pa.pay_type = ?1 and s.created_by = ?2 and s.created_at >= ?3 and s.created_at <= ?4 " +
+                    "where pa.pay_type = ?1 and s.created_by = ?2 and s.created_at >= ?3 and s.created_at <= ?4 and pa.pay_status = 'PAID' " +
                     "group by pa.pay_type, s.created_by;",
             nativeQuery = true
     )
