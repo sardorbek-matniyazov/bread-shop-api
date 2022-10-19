@@ -55,6 +55,14 @@ public class ClientController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(update);
     }
 
+    @DeleteMapping(value = "{id}")
+    public HttpEntity<?> delete(@PathVariable Long id) {
+        MyResponse delete = service.delete(id);
+        return delete.isActive()
+                ? ResponseEntity.ok(delete)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(delete);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public HttpEntity<?> checkValidation(MethodArgumentNotValidException e) {
