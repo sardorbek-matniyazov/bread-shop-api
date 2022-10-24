@@ -59,6 +59,11 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getDeliveries(id));
     }
 
+    @GetMapping(value = "/{id}/returns")
+    public HttpEntity<?> getAllDeliveryReturns(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getAllReturns(id));
+    }
+
     @PreAuthorize(value = "hasAnyAuthority({'SELLER_CAR', 'SELLER_ADMIN'})")
     @PostMapping(value = "/createOutput")
     public HttpEntity<?> deliver(@RequestBody @Valid DeliveryDto dto) {

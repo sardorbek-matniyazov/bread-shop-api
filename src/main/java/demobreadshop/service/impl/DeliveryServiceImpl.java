@@ -22,8 +22,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final OutputRepository outputRepository;
     private final WareHouseRepository productRepository;
     private final ProductListRepository productListRepository;
-
     private final InputRepository inputRepository;
+
     @Autowired
     public DeliveryServiceImpl(DeliveryRepository repository, OutputRepository outputRepository, WareHouseRepository productRepository, ProductListRepository productListRepository, InputRepository inputRepository) {
         this.repository = repository;
@@ -158,6 +158,17 @@ public class DeliveryServiceImpl implements DeliveryService {
         return byDelivererId.getBalance();
     }
 
+    @Override
+    public List<Input> getAllReturns(Long id) {
+        Delivery byDelivererId = repository.findByDelivererId(id);
+        try {
+            return inputRepository.findByCreatedBy(byDelivererId.getDeliverer().getFullName());
+        } catch (NullPointerException e) {
+            log.error("Seller return list is null, haha");
+            return null;
+        }
+    }
+
     public void addBalanceDelivery(Delivery delivery, Output output) {
         AtomicBoolean isExist = new AtomicBoolean(false);
         changeBalanceDelivery(delivery, output, isExist, productListRepository, repository);
@@ -171,6 +182,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 productListRepository.save(e);
             }
         });
+
         if (!isExist.get()) {
             Set<ProductList> balance = delivery.getBalance();
             balance.add(

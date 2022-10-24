@@ -4,6 +4,7 @@ import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
+import demobreadshop.domain.projection.InputDataProjection;
 import demobreadshop.payload.InputDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.WorkerAccessDto;
@@ -23,7 +24,6 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,8 +45,8 @@ public class InputServiceImpl implements InputService {
     }
 
     @Override
-    public List<Input> getAll() {
-        return repository.findAllByTypeOrderByIdDesc(ProductType.PRODUCT);
+    public List<InputDataProjection> getAll() {
+        return repository.findAllInputByRoleAndProduct_Type(RoleName.WORKER.name(), ProductType.PRODUCT.name());
     }
 
     @Override

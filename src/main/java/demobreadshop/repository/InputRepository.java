@@ -2,10 +2,7 @@ package demobreadshop.repository;
 
 import demobreadshop.domain.Input;
 import demobreadshop.domain.enums.ProductType;
-import demobreadshop.domain.projection.GroupStatistics;
-import demobreadshop.domain.projection.InputProjection;
-import demobreadshop.domain.projection.InputStatistics;
-import demobreadshop.domain.projection.SalaryHistoryProjection;
+import demobreadshop.domain.projection.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,6 +12,15 @@ import java.util.List;
 public interface InputRepository extends JpaRepository<Input, Long> {
     List<Input> findAllByTypeOrderByIdDesc(ProductType type);
 
+    @Query(
+            value = "select i.id as id, wr.wh_name as product, i.material_amount as amount, i.created_by as createdBy, i.created_at as createdAt " +
+                    "    from ware_house wr, input i, users u, users_roles ur, role r " +
+                    "    where i.material_id = wr.id and i.created_by = u.full_name and u.id = ur.users_id and ur.roles_id = r.id and r.role_name = ?1 and wr.product_type = ?2 " +
+                    "    order by i.id DESC;",
+            nativeQuery = true
+    )
+    List<InputDataProjection> findAllInputByRoleAndProduct_Type(String roleName, String type);
+    
     @Query(
             value = "select sum(i.material_amount) as amount, u.full_name as name, u.user_kpi as kpi, sum(i.material_amount * i.user_kpi_value) as sum, u.users_id as userId " +
                     "from input i join (users u join users_roles ur on u.id = ur.users_id) u on i.created_by = u.full_name " +
@@ -54,4 +60,6 @@ public interface InputRepository extends JpaRepository<Input, Long> {
             nativeQuery = true
     )
     InputProjection findAmountOfWarehouse(Timestamp timestamp, Timestamp timestamp1);
+
+    List<Input> findByCreatedBy(String fullName);
 }

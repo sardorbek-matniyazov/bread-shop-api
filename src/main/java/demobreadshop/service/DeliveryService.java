@@ -1,6 +1,7 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.Delivery;
+import demobreadshop.domain.Input;
 import demobreadshop.domain.Output;
 import demobreadshop.domain.ProductList;
 import demobreadshop.payload.DeliveryDto;
@@ -27,4 +28,6 @@ public interface DeliveryService {
     MyResponse returnProduct();
 
     Set<ProductList> getCurrentBalance();
+
+    List<Input> getAllReturns(Long id);
 }
