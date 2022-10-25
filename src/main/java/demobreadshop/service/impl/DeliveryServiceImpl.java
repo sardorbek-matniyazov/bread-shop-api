@@ -1,9 +1,11 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.domain.*;
+import demobreadshop.domain.enums.InputType;
 import demobreadshop.domain.enums.OutputType;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.ProductListDto;
 import demobreadshop.repository.*;
 import demobreadshop.service.DeliveryService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +25,16 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final WareHouseRepository productRepository;
     private final ProductListRepository productListRepository;
     private final InputRepository inputRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public DeliveryServiceImpl(DeliveryRepository repository, OutputRepository outputRepository, WareHouseRepository productRepository, ProductListRepository productListRepository, InputRepository inputRepository) {
+    public DeliveryServiceImpl(DeliveryRepository repository, OutputRepository outputRepository, WareHouseRepository productRepository, ProductListRepository productListRepository, InputRepository inputRepository, UserRepository userRepository) {
         this.repository = repository;
         this.outputRepository = outputRepository;
         this.productRepository = productRepository;
         this.productListRepository = productListRepository;
         this.inputRepository = inputRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -123,28 +127,17 @@ public class DeliveryServiceImpl implements DeliveryService {
     public MyResponse returnProduct() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Delivery delivery = repository.findByDelivererId(user.getId());
-        Set<ProductList> balance;
+        Set<ProductList> balance = getCurrentBalance();
 
-        try {
-            balance = delivery.getBalance();
-        } catch (NullPointerException e) {
-            log.error(e.getMessage());
-            return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
-        }
-
-        balance.forEach(e -> {
-            WareHouse product = e.getMaterial();
-            product.setAmount(product.getAmount() + e.getAmount());
-            inputRepository.save(
+        balance.forEach(e -> inputRepository.save(
                     new Input(
-                            productRepository.save(product),
+                            e.getMaterial(),
                             e.getAmount(),
-                            product.getType()
+                            e.getMaterial().getType(),
+                            InputType.WAIT
                     )
-            );
-
-            productListRepository.delete(e);
-        });
+            )
+        );
 
         delivery.setBalance(new HashSet<>());
         repository.save(delivery);
@@ -160,13 +153,89 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Input> getAllReturns(Long id) {
-        Delivery byDelivererId = repository.findByDelivererId(id);
-        try {
-            return inputRepository.findByCreatedBy(byDelivererId.getDeliverer().getFullName());
-        } catch (NullPointerException e) {
-            log.error("Seller return list is null, haha");
-            return null;
+        Optional<User> byId = userRepository.findById(id);
+        if (byId.isPresent()) {
+            User user = byId.get();
+            try {
+                return inputRepository.findByCreatedByAndInputType(user.getFullName(), InputType.ACCEPTED);
+            } catch (NullPointerException e) {
+                log.error("Seller return accepted list is null, haha");
+                return null;
+            }
         }
+        return null;
+    }
+
+    @Override
+    public MyResponse confirmReturnedProduct(Long inputId) {
+        Optional<Input> byId = inputRepository.findById(inputId);
+        if (byId.isPresent()) {
+            Input input = byId.get();
+            if (input.getInputType().equals(InputType.ACCEPTED)) return MyResponse.INPUT_TYPE_ERROR;
+
+            input.setInputType(InputType.ACCEPTED);
+            WareHouse material = input.getMaterial();
+            material.setAmount(material.getAmount() + input.getAmount());
+
+            Set<ProductList> balance = getBalance(repository.findByDeliverer_FullName(input.getCreatedBy()).getId());
+            balance.stream().filter(e -> e.getMaterial().getId().equals(material.getId())).forEach(
+                    e -> {
+                        if (e.getAmount() - input.getAmount() == 0) productListRepository.delete(e);
+                        else {
+                            e.setAmount(e.getAmount() - input.getAmount());
+                            productListRepository.save(e);
+                        }
+                    }
+            );
+
+            inputRepository.save(input);
+            productRepository.save(material);
+
+            return MyResponse.SUCCESSFULLY_MOVED;
+        }
+        return MyResponse.INPUT_NOT_FOUND;
+    }
+
+    @Override
+    public List<Input> getAllWaitReturns(Long id) {
+        Optional<User> byId = userRepository.findById(id);
+        if (byId.isPresent()) {
+            User user = byId.get();
+            try {
+                return inputRepository.findByCreatedByAndInputType(user.getFullName(), InputType.WAIT);
+            } catch (NullPointerException e) {
+                log.error("Seller return wait list is null, haha");
+                return null;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public MyResponse returnSelectedProduct(ProductListDto dto) {
+        Set<ProductList> balance = getCurrentBalance();
+        balance.stream().filter(e -> e.getMaterial().getId().equals(dto.getMaterialId())).forEach(
+                e -> inputRepository.save(
+                        new Input(
+                                e.getMaterial(),
+                                dto.getAmount(),
+                                e.getMaterial().getType(),
+                                InputType.WAIT
+                        )
+                )
+        );
+        return MyResponse.SUCCESSFULLY_TRANSFERRED;
+    }
+
+    @Override
+    public MyResponse cancelReturnedProduct(Long inputId) {
+        Optional<Input> byId = inputRepository.findById(inputId);
+        if (byId.isPresent()) {
+            Input input = byId.get();
+            if (input.getInputType().equals(InputType.ACCEPTED)) return MyResponse.INPUT_TYPE_ERROR;
+            inputRepository.delete(input);
+        }
+        return MyResponse.INPUT_NOT_FOUND;
     }
 
     public void addBalanceDelivery(Delivery delivery, Output output) {

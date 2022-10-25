@@ -8,4 +8,5 @@ import java.util.List;
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     Delivery findByDelivererId(Long id);
     List<Delivery> findAllByOrderByIdDesc();
+    Delivery findByDeliverer_FullName(String deliverer_fullName);
 }

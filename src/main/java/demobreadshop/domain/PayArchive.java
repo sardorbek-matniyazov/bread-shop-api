@@ -1,5 +1,6 @@
 package demobreadshop.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseEntity;
 import demobreadshop.domain.enums.PayType;
@@ -32,8 +33,9 @@ public class PayArchive extends BaseEntity {
     @Column(name = "pay_status")
     private PaymentStatus status;
 
+    @JsonInclude
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Sale sale;
 
     @JsonValue
@@ -45,6 +47,7 @@ public class PayArchive extends BaseEntity {
         response.put("status", this.getStatus());
         response.put("createdBy", this.getCreatedBy());
         response.put("createdAt", this.getCreatedAt());
+        response.put("client", this.sale.getClient().getFullName());
         return response;
     }
 }

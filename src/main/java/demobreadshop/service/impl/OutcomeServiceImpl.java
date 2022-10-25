@@ -37,7 +37,7 @@ public class OutcomeServiceImpl implements OutcomeService {
         Outcome outcome = new Outcome(dto.getMoneyAmount(), outcomeType, dto.getComment());
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (outcomeType.equals(OutcomeType.OYLIK)) {
-            if (principal.getRoles().stream().noneMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN))) {
+            if (principal.getRoles().stream().noneMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN) || r.getRoleName().equals(RoleName.SELLER_ADMIN))) {
                 return MyResponse.YOU_CANT_CREATE;
             }
             Optional<User> byId = userRepository.findById(dto.getUserId());

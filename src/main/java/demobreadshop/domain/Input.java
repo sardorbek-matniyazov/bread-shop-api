@@ -3,9 +3,11 @@ package demobreadshop.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import demobreadshop.domain.base.BaseInput;
+import demobreadshop.domain.enums.InputType;
 import demobreadshop.domain.enums.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.Enumerated;
 import java.util.HashMap;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @NoArgsConstructor
@@ -34,6 +37,10 @@ public class Input extends BaseInput {
     @Column(name = "user_kpi_value")
     private double kpiValue;
 
+    @Column(name = "input_status")
+    @Enumerated(EnumType.STRING)
+    private InputType inputType = InputType.ACCEPTED;
+
     public Input(WareHouse material, double amount, ProductType type, double kpiValue,  double productPrice, Double realPrice) {
         super(material, amount);
         this.type = type;
@@ -42,15 +49,10 @@ public class Input extends BaseInput {
         this.realPrice = realPrice;
     }
 
-    public Input(WareHouse material, double amount, ProductType type, Double kpiValue) {
+    public Input(WareHouse material, double amount, ProductType type, InputType inputType) {
         super(material, amount);
         this.type = type;
-        this.kpiValue = kpiValue;
-    }
-
-    public Input(WareHouse material, double amount, ProductType type) {
-        super(material, amount);
-        this.type = type;
+        this.inputType = inputType;
     }
 
     @JsonValue

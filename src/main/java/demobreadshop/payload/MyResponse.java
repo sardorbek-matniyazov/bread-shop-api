@@ -36,6 +36,8 @@ public class MyResponse {
     public static final MyResponse WORKER_NOT_FOUND = new MyResponse("Worker not found", false);
     public static final MyResponse YOU_HAVEN_T_ACCESS = new MyResponse("You don't have access", false);
     public static final MyResponse PAYMENT_NOT_FOUND = new MyResponse("Payment Not Found", false);
+    public static final MyResponse SUCCESSFULLY_TRANSFERRED = new MyResponse("Product successfully transferred, but waited", true);
+    public static final MyResponse SUCCESSFULLY_MOVED = new MyResponse("Product successfully moved ", true);
 
     private String message;
     private boolean active;

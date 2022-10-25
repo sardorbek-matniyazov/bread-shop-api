@@ -75,6 +75,11 @@ public class StatisticsController {
         return ResponseEntity.ok(service.getAllBenefits(start, end));
     }
 
+    @GetMapping(value = "clientsDebt")
+    public HttpEntity<?> getAllClientsDebt() {
+        return ResponseEntity.ok(service.getAllClientsDebt());
+    }
+
     @GetMapping(value = "benefit-sale")
     public HttpEntity<?> getAllSale(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getAllSale(start, end));

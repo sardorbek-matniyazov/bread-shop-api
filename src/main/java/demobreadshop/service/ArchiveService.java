@@ -47,4 +47,6 @@ public interface ArchiveService {
     Map<String, Object> getAllBenefits(String start, String end);
 
     Map<String, Object> getAllSale(String start, String end);
+
+    List<ClientsDebt> getAllClientsDebt();
 }

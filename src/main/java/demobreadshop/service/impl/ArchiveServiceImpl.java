@@ -263,6 +263,11 @@ public class ArchiveServiceImpl implements ArchiveService {
         return benefits;
     }
 
+    @Override
+    public List<ClientsDebt> getAllClientsDebt() {
+        return saleRepository.getAllClientDebt();
+    }
+
     public static Timestamp getTime(String time) {
         if (time == null) return null;
         try {

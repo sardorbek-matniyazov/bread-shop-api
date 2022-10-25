@@ -3,6 +3,7 @@ package demobreadshop.controller;
 import demobreadshop.domain.Delivery;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.ProductListDto;
 import demobreadshop.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -64,6 +65,29 @@ public class DeliveryController {
         return ResponseEntity.ok(service.getAllReturns(id));
     }
 
+    @GetMapping(value = "/{id}/allWaitReturns")
+    public HttpEntity<?> getAllWaitReturns(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getAllWaitReturns(id));
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority({'SELLER_ADMIN'})")
+    @PostMapping(value = "/confirmInput/{inputId}")
+    public HttpEntity<?> confirmReturnedProduct(@PathVariable Long inputId) {
+        MyResponse confirm = service.confirmReturnedProduct(inputId);
+        return confirm.isActive()
+                ? ResponseEntity.ok(confirm)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(confirm);
+    }
+
+    @PreAuthorize(value = "hasAnyAuthority({'SELLER_ADMIN'})")
+    @PostMapping(value = "/cancelInput/{inputId}")
+    public HttpEntity<?> cancelReturnedProduct(@PathVariable Long inputId) {
+        MyResponse confirm = service.cancelReturnedProduct(inputId);
+        return confirm.isActive()
+                ? ResponseEntity.ok(confirm)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(confirm);
+    }
+
     @PreAuthorize(value = "hasAnyAuthority({'SELLER_CAR', 'SELLER_ADMIN'})")
     @PostMapping(value = "/createOutput")
     public HttpEntity<?> deliver(@RequestBody @Valid DeliveryDto dto) {
@@ -73,9 +97,19 @@ public class DeliveryController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(deliver);
     }
 
+    @PreAuthorize(value = "hasAuthority('SELLER_CAR')")
     @PostMapping(value = "/returnProduct")
     public HttpEntity<?> returnProduct() {
         MyResponse info = service.returnProduct();
+        return info.isActive()
+                ? ResponseEntity.ok(info)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
+    }
+
+    @PreAuthorize(value = "hasAuthority('SELLER_CAR')")
+    @PostMapping(value = "/returnSelectedProduct")
+    public HttpEntity<?> returnSelectedProduct(@RequestBody @Valid ProductListDto dto) {
+        MyResponse info = service.returnSelectedProduct(dto);
         return info.isActive()
                 ? ResponseEntity.ok(info)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);

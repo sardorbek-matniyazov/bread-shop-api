@@ -196,6 +196,9 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getAllByType(SaleStatus type, boolean isKindergarten) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.SELLER_CAR)))
+            return repository.findAllByTypeAndClient_IsKindergartenAndCreatedBy(type, isKindergarten, principal.getFullName(), Sort.by(Sort.Direction.DESC, "id"));
         return repository.findAllByTypeAndClient_IsKindergarten(type, isKindergarten, Sort.by(Sort.Direction.DESC, "id"));
     }
 

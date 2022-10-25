@@ -182,4 +182,13 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             nativeQuery = true
     )
     Double sumOfDebtByStatusWait(Long id);
+
+    @Query(
+            value = "select c.id as id, sum(s.debt_price) as debtAmount, c.full_name as client, c.is_kindergarten as kindergarten " +
+                    "    from client c join sale s on c.id = s.client_id group by c.id, c.is_kindergarten;",
+            nativeQuery = true
+    )
+    List<ClientsDebt> getAllClientDebt();
+
+    List<Sale> findAllByTypeAndClient_IsKindergartenAndCreatedBy(SaleStatus type, boolean isKindergarten, String fullName, Sort id);
 }

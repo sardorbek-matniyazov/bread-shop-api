@@ -6,6 +6,7 @@ import demobreadshop.domain.Output;
 import demobreadshop.domain.ProductList;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.ProductListDto;
 
 import java.util.List;
 import java.util.Set;
@@ -30,4 +31,12 @@ public interface DeliveryService {
     Set<ProductList> getCurrentBalance();
 
     List<Input> getAllReturns(Long id);
+
+    MyResponse confirmReturnedProduct(Long inputId);
+
+    List<Input> getAllWaitReturns(Long id);
+
+    MyResponse returnSelectedProduct(ProductListDto dto);
+
+    MyResponse cancelReturnedProduct(Long inputId);
 }
