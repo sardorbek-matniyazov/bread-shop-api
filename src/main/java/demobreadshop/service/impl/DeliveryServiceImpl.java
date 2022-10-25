@@ -154,11 +154,11 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Input> getAllReturns(Long id) {
-        Optional<User> byId = userRepository.findById(id);
+        Optional<Delivery> byId = repository.findById(id);
         if (byId.isPresent()) {
-            User user = byId.get();
+            Delivery delivery = byId.get();
             try {
-                return inputRepository.findByCreatedByAndInputTypeAndType(user.getFullName(), InputType.ACCEPTED, ProductType.PRODUCT);
+                return inputRepository.findByCreatedByAndInputTypeAndType(delivery.getDeliverer().getFullName(), InputType.ACCEPTED, ProductType.PRODUCT);
             } catch (NullPointerException e) {
                 log.error("Seller return accepted list is null, haha");
                 return null;
@@ -199,13 +199,13 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public List<Input> getAllWaitReturns(Long id) {
-        Optional<User> byId = userRepository.findById(id);
+        Optional<Delivery> byId = repository.findById(id);
         if (byId.isPresent()) {
-            User user = byId.get();
+            Delivery delivery = byId.get();
             try {
-                return inputRepository.findByCreatedByAndInputTypeAndType(user.getFullName(), InputType.WAIT, ProductType.PRODUCT);
+                return inputRepository.findByCreatedByAndInputTypeAndType(delivery.getDeliverer().getFullName(), InputType.WAIT, ProductType.PRODUCT);
             } catch (NullPointerException e) {
-                log.error("Seller return wait list is null, haha");
+                log.error("Seller return accepted list is null, haha");
                 return null;
             }
         }
