@@ -41,11 +41,12 @@ public class Input extends BaseInput {
     @Enumerated(EnumType.STRING)
     private InputType inputType = InputType.ACCEPTED;
 
-    public Input(WareHouse material, double amount, ProductType type, double kpiValue,  double productPrice, Double realPrice) {
+    public Input(WareHouse material, double amount, ProductType type, double kpiValue, InputType inputType,  double productPrice, Double realPrice) {
         super(material, amount);
         this.type = type;
         this.productPrice = productPrice;
         this.kpiValue = kpiValue;
+        this.inputType = inputType;
         this.realPrice = realPrice;
     }
 

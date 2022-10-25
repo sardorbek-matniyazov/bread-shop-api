@@ -3,6 +3,7 @@ package demobreadshop.service.impl;
 import demobreadshop.domain.*;
 import demobreadshop.domain.enums.InputType;
 import demobreadshop.domain.enums.OutputType;
+import demobreadshop.domain.enums.ProductType;
 import demobreadshop.payload.DeliveryDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.ProductListDto;
@@ -157,7 +158,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (byId.isPresent()) {
             User user = byId.get();
             try {
-                return inputRepository.findByCreatedByAndInputType(user.getFullName(), InputType.ACCEPTED);
+                return inputRepository.findByCreatedByAndInputTypeAndType(user.getFullName(), InputType.ACCEPTED, ProductType.PRODUCT);
             } catch (NullPointerException e) {
                 log.error("Seller return accepted list is null, haha");
                 return null;
@@ -202,7 +203,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (byId.isPresent()) {
             User user = byId.get();
             try {
-                return inputRepository.findByCreatedByAndInputType(user.getFullName(), InputType.WAIT);
+                return inputRepository.findByCreatedByAndInputTypeAndType(user.getFullName(), InputType.WAIT, ProductType.PRODUCT);
             } catch (NullPointerException e) {
                 log.error("Seller return wait list is null, haha");
                 return null;

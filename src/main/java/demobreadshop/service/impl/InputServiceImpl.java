@@ -2,6 +2,7 @@ package demobreadshop.service.impl;
 
 import demobreadshop.constants.ConstProperties;
 import demobreadshop.domain.*;
+import demobreadshop.domain.enums.InputType;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.InputDataProjection;
@@ -102,6 +103,7 @@ public class InputServiceImpl implements InputService {
                             dto.getAmount() / 2,
                             product.getType(),
                             user.getUserKPI(),
+                            InputType.ACCEPTED,
                             product.getPrice(),
                             benefitWithWarehouseId == null ? 0.0 : benefitWithWarehouseId
                     )
@@ -116,6 +118,7 @@ public class InputServiceImpl implements InputService {
                                 dto.getAmount() / 2,
                                 product.getType(),
                                 user.getUserKPI(),
+                                InputType.ACCEPTED,
                                 product.getPrice(),
                                 benefitWithWarehouseId == null ? 0.0 : benefitWithWarehouseId
                         )

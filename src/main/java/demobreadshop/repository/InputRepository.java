@@ -62,5 +62,5 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     )
     InputProjection findAmountOfWarehouse(Timestamp timestamp, Timestamp timestamp1);
 
-    List<Input> findByCreatedByAndInputType(String fullName, InputType inputType);
+    List<Input> findByCreatedByAndInputTypeAndType(String fullName, InputType accepted, ProductType product);
 }
