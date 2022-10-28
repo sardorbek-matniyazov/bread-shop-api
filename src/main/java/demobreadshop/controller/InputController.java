@@ -43,7 +43,7 @@ public class InputController {
         return ResponseEntity.ok(service.getAllWarehouseInputs());
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN' , 'WORKER'})")
+    @PreAuthorize(value = "hasAnyAuthority({'GL_ADMIN' , 'WORKER', 'SELLER_ADMIN'})")
     @Transactional
     @PostMapping(value = "/create")
     public HttpEntity<?> create(@RequestBody @Valid InputDto dto) {

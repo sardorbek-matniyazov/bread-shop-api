@@ -85,7 +85,9 @@ public class InputServiceImpl implements InputService {
                 } else return MyResponse.WORKER_NOT_FOUND;
             }
 
-            if (user.getRoles().stream().anyMatch(r -> r.getRoleName().equals(RoleName.GL_ADMIN)) && product.getType().equals(ProductType.PRODUCT)) {
+            if (user.getRoles().stream().anyMatch(r ->
+                    (r.getRoleName().equals(RoleName.GL_ADMIN)) || r.getRoleName().equals(RoleName.SELLER_ADMIN))
+                && product.getType().equals(ProductType.PRODUCT)) {
                 return MyResponse.YOU_CANT_CREATE;
             }
 
@@ -100,7 +102,7 @@ public class InputServiceImpl implements InputService {
             Input input = repository.save(
                     new Input(
                             wareHouseRepository.save(product),
-                            dto.getAmount() / 2,
+                            product.getType().equals(ProductType.PRODUCT) ? dto.getAmount() / 2 : dto.getAmount(),
                             product.getType(),
                             user.getUserKPI(),
                             InputType.ACCEPTED,
