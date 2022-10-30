@@ -52,10 +52,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // seller lar jiynap kelgen aqcha
     @Query(
-            value = "select sum(pa.archive_amount) as sumAmount, u.created_by as fullName, u.phone_number as phoneNumber " +
+            value = "select sum(pa.archive_amount) as sumAmount, u.full_name as fullName, u.phone_number as phoneNumber " +
                     "from pay_archive pa join users u on pa.created_by = u.full_name " +
                     "where pa.created_at >= ?1 and pa.created_at <= ?2 " +
-                    "group by u.created_by, u.phone_number;",
+                    "group by u.full_name, u.phone_number;",
             nativeQuery = true
     )
     List<SellerStatistics> getAllUserStatistics(Timestamp time, Timestamp timestamp);
