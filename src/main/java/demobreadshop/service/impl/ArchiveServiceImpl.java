@@ -268,6 +268,14 @@ public class ArchiveServiceImpl implements ArchiveService {
         return saleRepository.getAllClientDebt();
     }
 
+    @Override
+    public List<SellerStatistics> getAllSellerOutcomeStatistics(String start, String end) {
+        if (start == null && end == null) {
+            return saleRepository.getAllUserOutcomeStatistics(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
+        }
+        return saleRepository.getAllUserOutcomeStatistics(getTime(start), getTime(end));
+    }
+
     public static Timestamp getTime(String time) {
         if (time == null) return null;
         try {

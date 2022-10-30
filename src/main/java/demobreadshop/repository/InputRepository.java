@@ -4,6 +4,7 @@ import demobreadshop.domain.Input;
 import demobreadshop.domain.enums.InputType;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.projection.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -62,5 +63,5 @@ public interface InputRepository extends JpaRepository<Input, Long> {
     )
     InputProjection findAmountOfWarehouse(Timestamp timestamp, Timestamp timestamp1);
 
-    List<Input> findByCreatedByAndInputTypeAndType(String fullName, InputType accepted, ProductType product);
+    List<Input> findByCreatedByAndInputTypeAndType(String fullName, InputType accepted, ProductType product, Sort sort);
 }

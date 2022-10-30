@@ -38,6 +38,7 @@ public class MyResponse {
     public static final MyResponse PAYMENT_NOT_FOUND = new MyResponse("Payment Not Found", false);
     public static final MyResponse SUCCESSFULLY_TRANSFERRED = new MyResponse("Product successfully transferred, but waited", true);
     public static final MyResponse SUCCESSFULLY_MOVED = new MyResponse("Product successfully moved ", true);
+    public static final MyResponse BALANCE_DONT_RETURNED = new MyResponse("Product didn't return", true);
 
     private String message;
     private boolean active;

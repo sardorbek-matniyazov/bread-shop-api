@@ -11,6 +11,7 @@ import demobreadshop.repository.*;
 import demobreadshop.service.DeliveryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -128,16 +129,22 @@ public class DeliveryServiceImpl implements DeliveryService {
     public MyResponse returnProduct() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Delivery delivery = repository.findByDelivererId(user.getId());
-        Set<ProductList> balance = getCurrentBalance();
+        Set<ProductList> balance = delivery.getBalance();
 
-        balance.forEach(e -> inputRepository.save(
-                    new Input(
-                            e.getMaterial(),
-                            e.getAmount(),
-                            e.getMaterial().getType(),
-                            InputType.WAIT
-                    )
-            )
+        if (balance == null)
+            return MyResponse.YOU_DONT_HAVE_THIS_PRODUCT;
+
+        balance.forEach(e -> {
+                    inputRepository.save(
+                            new Input(
+                                    e.getMaterial(),
+                                    e.getAmount(),
+                                    e.getMaterial().getType(),
+                                    InputType.WAIT
+                            )
+                    );
+                    productListRepository.delete(e);
+                }
         );
 
         delivery.setBalance(new HashSet<>());
@@ -158,7 +165,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (byId.isPresent()) {
             Delivery delivery = byId.get();
             try {
-                return inputRepository.findByCreatedByAndInputTypeAndType(delivery.getDeliverer().getFullName(), InputType.ACCEPTED, ProductType.PRODUCT);
+                return inputRepository.findByCreatedByAndInputTypeAndType(delivery.getDeliverer().getFullName(), InputType.ACCEPTED, ProductType.PRODUCT, Sort.by(Sort.Direction.DESC, "id"));
             } catch (NullPointerException e) {
                 log.error("Seller return accepted list is null, haha");
                 return null;
@@ -203,7 +210,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (byId.isPresent()) {
             Delivery delivery = byId.get();
             try {
-                return inputRepository.findByCreatedByAndInputTypeAndType(delivery.getDeliverer().getFullName(), InputType.WAIT, ProductType.PRODUCT);
+                return inputRepository.findByCreatedByAndInputTypeAndType(delivery.getDeliverer().getFullName(), InputType.WAIT, ProductType.PRODUCT, Sort.by(Sort.Direction.DESC, "id"));
             } catch (NullPointerException e) {
                 log.error("Seller return accepted list is null, haha");
                 return null;
@@ -216,14 +223,17 @@ public class DeliveryServiceImpl implements DeliveryService {
     public MyResponse returnSelectedProduct(ProductListDto dto) {
         Set<ProductList> balance = getCurrentBalance();
         balance.stream().filter(e -> e.getMaterial().getId().equals(dto.getMaterialId())).forEach(
-                e -> inputRepository.save(
-                        new Input(
-                                e.getMaterial(),
-                                dto.getAmount(),
-                                e.getMaterial().getType(),
-                                InputType.WAIT
-                        )
-                )
+                e -> {
+                    inputRepository.save(
+                            new Input(
+                                    e.getMaterial(),
+                                    dto.getAmount(),
+                                    e.getMaterial().getType(),
+                                    InputType.WAIT
+                            )
+                    );
+                    e.setAmount(e.getAmount() - dto.getAmount());
+                }
         );
         return MyResponse.SUCCESSFULLY_TRANSFERRED;
     }
@@ -234,7 +244,29 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (byId.isPresent()) {
             Input input = byId.get();
             if (input.getInputType().equals(InputType.ACCEPTED)) return MyResponse.INPUT_TYPE_ERROR;
+            Delivery delivery = repository.findByDeliverer_FullName(input.getCreatedBy());
+
+            Optional<ProductList> first = delivery.getBalance().stream().filter(e -> Objects.equals(e.getMaterial().getId(), input.getMaterial().getId())).findFirst();
+            if (first.isPresent()) {
+                ProductList productList = first.get();
+                productList.setAmount(productList.getAmount() + input.getAmount());
+                productListRepository.save(productList);
+            } else {
+                delivery.getBalance().add(
+                        productListRepository.save(
+                                new ProductList(
+                                        input.getMaterial(),
+                                        input.getAmount()
+                                )
+                        )
+                );
+
+            }
+
+            repository.save(delivery);
             inputRepository.delete(input);
+
+            return MyResponse.BALANCE_DONT_RETURNED;
         }
         return MyResponse.INPUT_NOT_FOUND;
     }

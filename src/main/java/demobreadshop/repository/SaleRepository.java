@@ -52,14 +52,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // seller lar jiynap kelgen aqcha
     @Query(
-            value = "with bum as " +
-                    "(select sum(pa.archive_amount) as sum, s.id, s.created_by, s.created_at " +
-                    " from sale s join pay_archive pa on s.id = pa.sale_id " +
-                    " where s.created_at >= ?1 and s.created_at <= ?2 and pa.pay_status = 'PAID' " +
-                    " group by s.id, s.created_by) " +
-                    "select sum(bum.sum) as sumAmount, bum.created_by as fullName, u.phone_number, u.users_id as userId " +
-                    "from bum join (users u join users_roles ur on u.id = ur.users_id) u on bum.created_by = u.full_name " +
-                    "group by u.phone_number, bum.created_by, u.users_id",
+            value = "select sum(pa.archive_amount) as sumAmount, u.created_by as fullName, u.phone_number as phoneNumber " +
+                    "from pay_archive pa join users u on pa.created_by = u.full_name " +
+                    "where pa.created_at >= ?1 and pa.created_at <= ?2 " +
+                    "group by u.created_by, u.phone_number;",
             nativeQuery = true
     )
     List<SellerStatistics> getAllUserStatistics(Timestamp time, Timestamp timestamp);
@@ -152,7 +148,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query(
             value = "select sum(pa.archive_amount) as amount, pa.pay_type as payType " +
                     "from sale s join pay_archive pa on s.id = pa.sale_id " +
-                    "where pa.pay_type = ?1 and s.created_by = ?2 and s.created_at >= ?3 and s.created_at <= ?4 and pa.pay_status = 'PAID' " +
+                    "where pa.pay_type = ?1 and s.created_by = ?2 and s.created_at >= ?3 and s.created_at <= ?4 " +
                     "group by pa.pay_type, s.created_by;",
             nativeQuery = true
     )
@@ -191,4 +187,14 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<ClientsDebt> getAllClientDebt();
 
     List<Sale> findAllByTypeAndClient_IsKindergartenAndCreatedBy(SaleStatus type, boolean isKindergarten, String fullName, Sort id);
+
+    // sellerlar qilg'an qarajatlar
+    @Query(
+            value = "select sum(outcome_amount) as sumAmount, u.full_name as fullName, u.phone_number as phoneNumber " +
+                    "    from outcome o join (users join users_roles on users.id = users_roles.users_id) u on o.created_by = u.full_name " +
+                    "    where o.created_at >= ?1 and o.created_at <= ?2 and (u.roles_id = 2 or u.roles_id = 3) " +
+                    "    group by u.full_name, u.phone_number;",
+            nativeQuery = true
+    )
+    List<SellerStatistics> getAllUserOutcomeStatistics(Timestamp time, Timestamp time1);
 }

@@ -134,4 +134,8 @@ public class StatisticsController {
     public HttpEntity<?> getAllSaleInfoStatistics(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
         return ResponseEntity.ok(service.getSaleInfo(start, end));
     }
+    @GetMapping(value = "seller-outcome")
+    public HttpEntity<?> getAllSellerOutcome(@RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) {
+        return ResponseEntity.ok(service.getAllSellerOutcomeStatistics(start, end));
+    }
 }
