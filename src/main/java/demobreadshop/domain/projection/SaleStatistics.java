@@ -3,7 +3,9 @@ package demobreadshop.domain.projection;
 public interface SaleStatistics {
     Double getAmount();
     Double getAllSum();
-    Double getUserKpi();
+    default String getUserKpi() {
+        return "changed";
+    }
     String getFullName();
     Long getUserId();
 }

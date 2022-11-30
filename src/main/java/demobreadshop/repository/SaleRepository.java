@@ -30,10 +30,15 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     // sellerler satiwina qaray qancha summa tapqani dastavchik ham admin seller ler
     @Query(
-            value = "select u.user_kpi as userKpi, sum(o.material_amount * s.user_kpi_value) as allSum, o.created_by as fullName, sum(o.material_amount) as amount, u.id as userId " +
-            " from output o , users u , sale s, users_roles ur " +
-            " where o.id = s.output_id and o.created_by = u.full_name and ur.users_id = u.id and ur.roles_id = ?1 and s.created_by >= ?2 and s.created_at <= ?3 " +
-            " group by o.created_by, u.user_kpi, u.id;",
+            value = "with bum as (select sum(s.user_kpi_value * o.material_amount) as allSum, " +
+                    "       s.created_by as fullName, " +
+                    "       sum(o.material_amount) as amount " +
+                    "from sale s join output o on s.output_id = o.id " +
+                    "where s.created_at >= ?2 and s.created_at <= ?3 " +
+                    "group by s.created_by) " +
+                    "SELECT bum.allSum, bum.fullName, bum.amount, users_id as userId " +
+                    "from bum, users, users_roles " +
+                    "where bum.fullName = users.full_name and users.id = users_roles.users_id and users_roles.roles_id = ?1",
             nativeQuery = true
     )
     List<SaleStatistics> getAllUserInfoByRoleId(Long id, Timestamp time, Timestamp timestamp);
