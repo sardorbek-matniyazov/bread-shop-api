@@ -95,7 +95,7 @@ public class SaleController {
     }
 
     @PutMapping(value = "payment/update/{id}")
-    public HttpEntity<?> updatePaymentWithPaymentId(@PathVariable Long id, PaymentDateDto dto) {
+    public HttpEntity<?> updatePaymentWithPaymentId(@PathVariable Long id, @RequestBody @Valid PaymentDateDto dto) {
         return ResponseEntity.ok(service.updatePaymentDate(id, dto));
     }
 
