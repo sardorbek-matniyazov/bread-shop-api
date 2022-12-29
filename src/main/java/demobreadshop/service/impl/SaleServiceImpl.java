@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static demobreadshop.service.impl.DeliveryServiceImpl.divideAmountOfProductInDelivery;
@@ -251,7 +253,10 @@ public class SaleServiceImpl implements SaleService {
             final PayArchive payArchive = byId.get();
             System.out.println(dto.getDateInString());
             System.out.println(dto);
-            payArchive.setCreatedAt(makeTimestampWithDateAndTime(dto.getDateInString()));
+            final Timestamp date = makeTimestampWithDateAndTime(dto.getDateInString());
+            System.out.println(date);
+            payArchive.setCreatedAt(date);
+            archiveRepository.save(payArchive);
         }
         return MyResponse.SUCCESSFULLY_UPDATED;
     }
@@ -270,16 +275,13 @@ public class SaleServiceImpl implements SaleService {
     }
 
     public static Timestamp makeTimestampWithDateAndTime(String str) {
-        final String[] split = str.split("-");
-        return new Timestamp(
-                Integer.parseInt(split[0]),
-                Integer.parseInt(split[1]),
-                Integer.parseInt(split[2]),
-                Integer.parseInt(split[3]),
-                Integer.parseInt(split[4]),
-                Integer.parseInt(split[5]),
-                Integer.parseInt(split[5])
-        );
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd:HH:mm").parse(str);
+            return new Timestamp(date.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return Timestamp.valueOf(LocalDateTime.now());
+        }
     }
 
     private void createPaymentArchive(Sale sale, double costCard, double costCash, PaymentStatus status) {
