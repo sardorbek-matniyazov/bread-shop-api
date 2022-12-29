@@ -5,6 +5,7 @@ import demobreadshop.domain.*;
 import demobreadshop.domain.enums.*;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.PaymentDateDto;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.repository.*;
 import demobreadshop.service.SaleService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -175,20 +177,34 @@ public class SaleServiceImpl implements SaleService {
         if (byId.isPresent()) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Sale sale = byId.get();
-            if (user.getRoles().stream().noneMatch(role -> role.getRoleName().equals(RoleName.SELLER_ADMIN) || role.getRoleName().equals(RoleName.GL_ADMIN))
+
+            // pay for kinderGarden
+            if (sale.getClient().isKindergarten()
+                    && user.getRoles().stream().noneMatch(
+                            role -> role.getRoleName().equals(RoleName.GL_ADMIN)
+            )) return MyResponse.YOU_CANT_CREATE;
+
+            if (!sale.getClient().isKindergarten() && user.getRoles().stream().noneMatch(role -> role.getRoleName().equals(RoleName.SELLER_ADMIN))
                     && !sale.getCreatedBy().equals(user.getFullName())) {
                 return MyResponse.YOU_CANT_CREATE;
             }
 
-            Double allWaitSum = repository.sumOfDebtByStatusWait(dto.getSaleId());
-            allWaitSum = allWaitSum== null ? 0.0 : allWaitSum;
+             /*
+             Double allWaitSum = repository.sumOfDebtByStatusWait(dto.getSaleId());
+            allWaitSum = allWaitSum == null ? 0.0 : allWaitSum;
             double currentDebt = sale.getDebtPrice() - dto.getCostCard() - dto.getCostCash() - allWaitSum;
+            */
 
-            if (currentDebt < 0.0) {
+            if (sale.getDebtPrice() < 0.0) {
                 return MyResponse.INPUT_TYPE_ERROR;
             }
 
+            // changing debt price
+            sale.setDebtPrice(sale.getDebtPrice() - dto.getCostCash() - dto.getCostCard());
+
             createPaymentArchive(sale, dto.getCostCard(), dto.getCostCash(), PaymentStatus.WAIT);
+            // saving sale
+            repository.save(sale);
             return MyResponse.SUCCESSFULLY_PAYED;
         }
         return MyResponse.SALE_NOT_FOUND;
@@ -213,8 +229,8 @@ public class SaleServiceImpl implements SaleService {
                 return MyResponse.INPUT_TYPE_ERROR;
             }
 
-            Long saleId = archiveRepository.findSaleId(id);
-            repository.setDebtPriceWithPayArchive(payArchive.getAmount(), saleId);
+            // Long saleId = archiveRepository.findSaleId(id);
+            //repository.setDebtPriceWithPayArchive(payArchive.getAmount(), saleId);
             payArchive.setStatus(PaymentStatus.PAID);
             archiveRepository.save(payArchive);
             return MyResponse.SUCCESSFULLY_UPDATED;
@@ -226,6 +242,44 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<PayArchive> getPaymentsByType(PaymentStatus wait) {
         return archiveRepository.findAllByStatusOrderByIdDesc(wait);
+    }
+
+    @Override
+    public MyResponse updatePaymentDate(Long id, PaymentDateDto dto) {
+        final Optional<PayArchive> byId = archiveRepository.findById(id);
+        if (byId.isPresent()) {
+            final PayArchive payArchive = byId.get();
+            System.out.println(dto.getDateInString());
+            System.out.println(dto);
+            payArchive.setCreatedAt(makeTimestampWithDateAndTime(dto.getDateInString()));
+        }
+        return MyResponse.SUCCESSFULLY_UPDATED;
+    }
+
+    @Override
+    public MyResponse deletePayment(Long id) {
+        final Optional<PayArchive> byId = archiveRepository.findById(id);
+        if (byId.isPresent()) {
+            final PayArchive payArchive = byId.get();
+            final Sale sale = payArchive.getSale();
+            sale.setDebtPrice(sale.getDebtPrice() + payArchive.getAmount());
+            repository.save(sale);
+            archiveRepository.delete(payArchive);
+        }
+        return MyResponse.SUCCESSFULLY_DELETED;
+    }
+
+    public static Timestamp makeTimestampWithDateAndTime(String str) {
+        final String[] split = str.split("-");
+        return new Timestamp(
+                Integer.parseInt(split[0]),
+                Integer.parseInt(split[1]),
+                Integer.parseInt(split[2]),
+                Integer.parseInt(split[3]),
+                Integer.parseInt(split[4]),
+                Integer.parseInt(split[5]),
+                Integer.parseInt(split[5])
+        );
     }
 
     private void createPaymentArchive(Sale sale, double costCard, double costCash, PaymentStatus status) {

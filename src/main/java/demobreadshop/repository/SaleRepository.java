@@ -69,7 +69,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query(
             value = "select c.full_name as fullName, c.is_kindergarten as kindergarten, c.phone_number as phoneNumber, c.id as clientId, sum(s.whole_price) as wholePrice " +
                     "from sale s join client c on c.id = s.client_id " +
-                    "where s.created_at >= ?1 and s.created_at <= ?2 " +
+                    "where s.created_at >= :start and s.created_at <= :end " +
                     "group by c.created_by, c.id;",
             nativeQuery = true
     )
@@ -145,10 +145,13 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<Sale> getAllSellerSales(String fullName, Timestamp start, Timestamp end);
 
     @Query(
-            value = "SELECT * from sale where client_id = ?1 and created_at >= ?2 and created_at <= ?3",
+            value = "select sum(s.whole_price) as wholePrice, sum(s.whole_price - s.debt_price) as paidPrice, sum(o.material_amount) as amount, w.wh_name as product " +
+                    "from sale s, output o, ware_house w " +
+                    "where s.output_id=o.id and o.material_id=w.id and s.client_id=?1 and s.created_at>=?2 and s.created_at<=?3 " +
+                    "group by client_id, material_id, wh_name;",
             nativeQuery = true
     )
-    List<Sale> getAllClientSaleInfo(Long clientId, Timestamp timestamp, Timestamp timestamp1);
+    List<ClientSaleInfoProjection> getAllClientSaleInfo(Long clientId, Timestamp timestamp, Timestamp timestamp1);
 
     @Query(
             value = "select sum(pa.archive_amount) as amount, pa.pay_type as payType " +

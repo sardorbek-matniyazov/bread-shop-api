@@ -5,6 +5,7 @@ import demobreadshop.domain.enums.PaymentStatus;
 import demobreadshop.domain.enums.SaleStatus;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
+import demobreadshop.payload.PaymentDateDto;
 import demobreadshop.payload.SaleDto;
 import demobreadshop.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,13 +85,23 @@ public class SaleController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
     }
 
-    @PreAuthorize(value = "hasAnyAuthority({'SELLER_ADMIN', 'SELLER_CAR'})")
+    @PreAuthorize(value = "hasAnyAuthority({'SELLER_ADMIN', 'SELLER_CAR', 'GL_ADMIN'})")
     @PostMapping(value = "/payDebt")
     public HttpEntity<?> payForDebt(@RequestBody @Valid DebtDto dto) {
         MyResponse sell = service.payForDebt(dto);
         return sell.isActive()
                 ? ResponseEntity.ok(sell)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sell);
+    }
+
+    @PutMapping(value = "payment/update/{id}")
+    public HttpEntity<?> updatePaymentWithPaymentId(@PathVariable Long id, PaymentDateDto dto) {
+        return ResponseEntity.ok(service.updatePaymentDate(id, dto));
+    }
+
+    @DeleteMapping(value = "payment/{id}")
+    public HttpEntity<?> deletePaymentWithId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deletePayment(id));
     }
 
     @DeleteMapping(value = "/{id}")

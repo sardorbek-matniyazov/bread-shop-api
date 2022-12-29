@@ -1,13 +1,21 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.constants.ConstProperties;
-import demobreadshop.domain.*;
+import demobreadshop.domain.Outcome;
+import demobreadshop.domain.Role;
+import demobreadshop.domain.User;
 import demobreadshop.domain.enums.OutcomeType;
 import demobreadshop.domain.enums.PayType;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
-import demobreadshop.repository.*;
+import demobreadshop.repository.ClientRepository;
+import demobreadshop.repository.InputRepository;
+import demobreadshop.repository.OutcomeRepository;
+import demobreadshop.repository.PayArchiveRepository;
+import demobreadshop.repository.RoleRepository;
+import demobreadshop.repository.SaleRepository;
+import demobreadshop.repository.UserRepository;
 import demobreadshop.service.ArchiveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +24,12 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -121,7 +134,7 @@ public class ArchiveServiceImpl implements ArchiveService {
         if (start == null && end == null) {
             return saleRepository.getAllClientSale(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
         }
-        return saleRepository.getAllClientSale(getTime(start), getTime(start));
+        return saleRepository.getAllClientSale(getTime(start), getTime(end));
     }
 
     @Override
@@ -218,7 +231,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public List<Sale> getAllClientSaleInfo(Long id, String start, String end) {
+    public List<ClientSaleInfoProjection> getAllClientSaleInfo(Long id, String start, String end) {
         if (start == null || end == null) {
             return saleRepository.getAllClientSaleInfo(id, new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
         }
@@ -231,15 +244,16 @@ public class ArchiveServiceImpl implements ArchiveService {
         if (start == null && end == null) {
             InputProjection amountOfProduct = inputRepository.findAmountOfProduct(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
             benefits.put("amount", amountOfProduct.getAmount());
-            benefits.put("productPrice", amountOfProduct.getPrice() == null ? 0 : amountOfProduct.getPrice());
+            benefits.put("productPrice", amountOfProduct.getPrice() == null ? 0.0 : amountOfProduct.getPrice());
             InputProjection amountOfWarehouse = inputRepository.findAmountOfWarehouse(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
-            benefits.put("warehousePrice", amountOfWarehouse.getPrice() == null ? 0 : amountOfWarehouse.getPrice());
+            benefits.put("warehousePrice", amountOfWarehouse.getPrice() == null ? 0.0 : amountOfWarehouse.getPrice());
         } else {
             InputProjection amountOfProduct = inputRepository.findAmountOfProduct(getTime(start), getTime(end));
             benefits.put("amount", amountOfProduct.getAmount());
-            benefits.put("productPrice", amountOfProduct.getPrice() == null ? 0 : amountOfProduct.getPrice());
+            benefits.put("productPrice", amountOfProduct.getPrice() == null ? 0.0 : amountOfProduct.getPrice());
+
             InputProjection amountOfWarehouse = inputRepository.findAmountOfWarehouse(getTime(start), getTime(end));
-            benefits.put("warehousePrice", amountOfWarehouse.getPrice() == null ? 0 : amountOfWarehouse.getPrice());
+            benefits.put("warehousePrice", amountOfWarehouse.getPrice() == null ? 0.0 : amountOfWarehouse.getPrice());
         }
         return benefits;
     }
@@ -252,13 +266,13 @@ public class ArchiveServiceImpl implements ArchiveService {
             benefits.put("allIncome", allIncomeAmount);
             Double allOutcome = outcomeRepository.sumAllOutcome(new Timestamp(System.currentTimeMillis() - ConstProperties.ONE_MONTH * 60 * 1000 * 60 * 60), new Timestamp(System.currentTimeMillis()));
             benefits.put("allOutcome", allOutcome);
-            benefits.put("benefit", (allIncomeAmount == null ? 0 : allIncomeAmount) - (allOutcome == null ? 0 :allOutcome));
+            benefits.put("benefit", (allIncomeAmount == null ? 0.0 : allIncomeAmount) - (allOutcome == null ? 0.0 : allOutcome));
         } else {
             Double allIncomeAmount = archiveRepository.findAllIncomeAmount(getTime(start), getTime(end));
             benefits.put("allIncome", allIncomeAmount);
             Double allOutcome = outcomeRepository.sumAllOutcome(getTime(start), getTime(end));
             benefits.put("allOutcome", allOutcome);
-            benefits.put("benefit", allIncomeAmount == null ? 0 : allIncomeAmount - (allOutcome == null ? 0 :allOutcome));
+            benefits.put("benefit", allIncomeAmount == null ? 0.0 : allIncomeAmount - (allOutcome == null ? 0.0 :allOutcome));
         }
         return benefits;
     }

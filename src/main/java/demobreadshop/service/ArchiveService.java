@@ -1,7 +1,6 @@
 package demobreadshop.service;
 
 import demobreadshop.domain.Outcome;
-import demobreadshop.domain.Sale;
 import demobreadshop.domain.enums.ProductType;
 import demobreadshop.domain.enums.RoleName;
 import demobreadshop.domain.projection.*;
@@ -42,7 +41,7 @@ public interface ArchiveService {
 
     List<ClientSumStatistics> getAllClientPaidSum(String start, String end);
 
-    List<Sale> getAllClientSaleInfo(Long id, String start, String end);
+    List<ClientSaleInfoProjection> getAllClientSaleInfo(Long id, String start, String end);
 
     Map<String, Object> getAllBenefits(String start, String end);
 
