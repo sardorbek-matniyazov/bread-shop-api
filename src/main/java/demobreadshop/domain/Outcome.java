@@ -44,6 +44,7 @@ public class Outcome extends BaseEntity {
         response.put("amount", this.getAmount());
         response.put("createdBy", this.getCreatedBy());
         response.put("createdAt", this.getCreatedAt());
+        response.put("comment", this.getComment());
         return response;
     }
 }
