@@ -10,7 +10,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     Delivery findByDelivererId(Long id);
 
     @Query(
-            value = "SELECT * FROM delivery ORDER BY id DESC LIMIT 1000",
+            value = "SELECT * FROM delivery ORDER BY id DESC LIMIT 2000",
             nativeQuery = true
     )
     List<Delivery> findAllByOrderByIdDesc();
