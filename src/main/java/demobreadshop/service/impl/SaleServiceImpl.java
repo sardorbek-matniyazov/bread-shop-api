@@ -1,13 +1,31 @@
 package demobreadshop.service.impl;
 
 import demobreadshop.constants.ConstProperties;
-import demobreadshop.domain.*;
-import demobreadshop.domain.enums.*;
+import demobreadshop.domain.Client;
+import demobreadshop.domain.Delivery;
+import demobreadshop.domain.Output;
+import demobreadshop.domain.PayArchive;
+import demobreadshop.domain.Sale;
+import demobreadshop.domain.User;
+import demobreadshop.domain.WareHouse;
+import demobreadshop.domain.enums.OutputType;
+import demobreadshop.domain.enums.PayType;
+import demobreadshop.domain.enums.PaymentStatus;
+import demobreadshop.domain.enums.RoleName;
+import demobreadshop.domain.enums.SaleStatus;
+import demobreadshop.domain.enums.SaleType;
 import demobreadshop.payload.DebtDto;
 import demobreadshop.payload.MyResponse;
 import demobreadshop.payload.PaymentDateDto;
 import demobreadshop.payload.SaleDto;
-import demobreadshop.repository.*;
+import demobreadshop.repository.ClientRepository;
+import demobreadshop.repository.DeliveryRepository;
+import demobreadshop.repository.OutputRepository;
+import demobreadshop.repository.PayArchiveRepository;
+import demobreadshop.repository.ProductListRepository;
+import demobreadshop.repository.SaleRepository;
+import demobreadshop.repository.UserRepository;
+import demobreadshop.repository.WareHouseRepository;
 import demobreadshop.service.SaleService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateError;
@@ -22,7 +40,9 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static demobreadshop.service.impl.DeliveryServiceImpl.divideAmountOfProductInDelivery;
@@ -54,7 +74,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getAll() {
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        return repository.findAllByLimit();
     }
 
     @Override

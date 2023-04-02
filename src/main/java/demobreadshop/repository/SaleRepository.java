@@ -12,6 +12,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
+
+    @Query(
+            value = "select * from sale order by id desc limit 1000",
+            nativeQuery = true
+    )
+    List<Sale> findAllByLimit();
     List<Sale> findAllByTypeAndClient_IsKindergarten(SaleStatus debt, boolean isKindergarten, Sort sort);
 
     // uliwmaliq sawda
